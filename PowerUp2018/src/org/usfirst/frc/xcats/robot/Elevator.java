@@ -17,6 +17,10 @@ public class Elevator {
 		_elevatorMaster.set(Enums.ELEVATOR_SPEED);
 	}
 	
+	public void lower() {
+		_elevatorMaster.set(-Enums.ELEVATOR_SPEED);
+	}
+	
 	public void stop() {
 		_elevatorMaster.set(0);
 	}

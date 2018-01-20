@@ -64,6 +64,7 @@ public class Autonomous {
 	String _autoSelected;
 	String _defenseSelected;
 	String _shooterModeSelected;
+	String _gameData;
 	SendableChooser _defensePosition;
 	SendableChooser _gearProcessing;
 
@@ -198,6 +199,7 @@ public class Autonomous {
 		_steps =  new ArrayList<AutonomousStep>();
 		
 		boolean blueAlliance = false;
+		_gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
 			blueAlliance = true;

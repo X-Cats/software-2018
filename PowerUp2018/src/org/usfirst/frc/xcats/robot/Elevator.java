@@ -10,8 +10,8 @@ public class Elevator {
 	
 	public Elevator() {
 		_elevatorMaster = new XCatsSpeedController("Elevator", Enums.ELEVATOR_MASTER_CAN_ID, true, SCType.TALON, null, null);
-		_elevatorFollower = new XCatsSpeedController("Elevator", Enums.ELEVATOR_FOLLOWER_CAN_ID, true, SCType.TALON, null, null);
-		_elevatorFollower.setFollower(Enums.ELEVATOR_MASTER_CAN_ID);
+		//_elevatorFollower = new XCatsSpeedController("Elevator", Enums.ELEVATOR_FOLLOWER_CAN_ID, true, SCType.TALON, null, null);
+		//_elevatorFollower.setFollower(Enums.ELEVATOR_MASTER_CAN_ID);
 	}
 	
 	public void raise() {

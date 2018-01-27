@@ -7,7 +7,7 @@ public class AutonomousStep {
 		                   STOP, RELEASE, DRIVE_DISTANCE,ROTATE,GEAR,BRAKEMODE,COASTMODE,
 		                   HIGH_SPEED,LOW_SPEED,CALCANGLE,FEED,GET_ANGLE_CORRECTION};
 		
-		//sdf;lkjgggfjkl;
+		//sdf;lkjggkl;
 		public String name= "";
 		public double stepTime=0;
 		public double leftSpeed=0;

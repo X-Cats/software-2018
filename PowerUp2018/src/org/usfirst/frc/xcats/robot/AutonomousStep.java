@@ -6,7 +6,8 @@ public class AutonomousStep {
 	public enum stepTypes {DRIVE, DRIVESTRAIGHT, DRIVE_DEADRECON,SHOOT, GRAB, UNGRAB, LIFT, LOWER, LIFT_TO_LOW, WAIT, 
 		                   STOP, RELEASE, DRIVE_DISTANCE,ROTATE,GEAR,BRAKEMODE,COASTMODE,
 		                   HIGH_SPEED,LOW_SPEED,CALCANGLE,FEED,GET_ANGLE_CORRECTION};
-				
+		
+		                 //fjfk
 		public String name= "";
 		public double stepTime=0;
 		public double leftSpeed=0;

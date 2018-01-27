@@ -60,16 +60,16 @@ public class XCatsDrive {
 			}
 		}		
 		
-		if (Enums.DRIVE_MOTOR_NUMBERS.length > 4){
-			this._motors[Enums.AUX_LEFT] = new XCatsSpeedController("motor"+Enums.AUX_LEFT,_channels[Enums.AUX_LEFT], useCAN, sctype, null,null);
-			this._motors[Enums.AUX_RIGHT] = new XCatsSpeedController("motor"+Enums.AUX_RIGHT,_channels[Enums.AUX_RIGHT], useCAN, sctype, null,null);
-			_motors[Enums.AUX_LEFT].setInverted(true);
-
-			if (Enums.USE_2SC_TANK){			
-				this._motors[Enums.AUX_LEFT].setFollower(Enums.CAN_DRIVE_MOTOR_NUMBERS[Enums.FRONT_LEFT]);
-				this._motors[Enums.AUX_RIGHT].setFollower(Enums.CAN_DRIVE_MOTOR_NUMBERS[Enums.FRONT_RIGHT]);
-			}
-		}				
+//		if (Enums.DRIVE_MOTOR_NUMBERS.length > 4){
+//			this._motors[Enums.AUX_LEFT] = new XCatsSpeedController("motor"+Enums.AUX_LEFT,_channels[Enums.AUX_LEFT], useCAN, sctype, null,null);
+//			this._motors[Enums.AUX_RIGHT] = new XCatsSpeedController("motor"+Enums.AUX_RIGHT,_channels[Enums.AUX_RIGHT], useCAN, sctype, null,null);
+//			_motors[Enums.AUX_LEFT].setInverted(true);
+//
+//			if (Enums.USE_2SC_TANK){			
+//				this._motors[Enums.AUX_LEFT].setFollower(Enums.CAN_DRIVE_MOTOR_NUMBERS[Enums.FRONT_LEFT]);
+//				this._motors[Enums.AUX_RIGHT].setFollower(Enums.CAN_DRIVE_MOTOR_NUMBERS[Enums.FRONT_RIGHT]);
+//			}
+//	}				
 	}
 	
 	/*
@@ -254,7 +254,7 @@ public class XCatsDrive {
 	public void setDashboardIO(boolean input, boolean output){
 		
 		for (int i=0; i<_motors.length; i++){
-			_motors[i].setDashboardIO(input, output);
+			//_motors[i].setDashboardIO(input, output);
 			
 		}		
 	}

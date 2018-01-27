@@ -33,15 +33,15 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         
     	try{
-    		visionThread = new Thread(() -> {
-    			_autoTarget = new AutoTarget();
-    			
-    			while (!Thread.interrupted()) {
-    				_autoTarget.processImage();
-    			}
-    		});
-    		visionThread.setDaemon(true);
-    		visionThread.start();    			
+//    		visionThread = new Thread(() -> {
+//    			_autoTarget = new AutoTarget();
+//    			
+//    			while (!Thread.interrupted()) {
+//    				_autoTarget.processImage();
+//    			}
+//    		});
+//    		visionThread.setDaemon(true);
+//    		visionThread.start();    			
 
             _controls = new RobotControls();
             _teleop = new Teleop(_controls);
@@ -77,7 +77,7 @@ public class Robot extends IterativeRobot {
     
     public void teleopInit() {
     	try {
-        	_auto.disable();    
+        	//_auto.disable();    
         	_teleop.init();
     	}
     	catch (Exception e){

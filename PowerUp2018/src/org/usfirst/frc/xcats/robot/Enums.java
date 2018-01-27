@@ -35,7 +35,7 @@ public class Enums {
 	public static final boolean USE_CAN = true;			// if the motors are wired with CAN bus use this
 	public static final double  MOTOR_STOP_TIME = .1;	//when using coast mode this is how to stop gradually	
 	public static final boolean USE_NAVX = true;		//when using NAVX set this to true;
-	public static final boolean USE_COMPRESSOR = true;  //set to true when using a compressor
+	public static final boolean USE_COMPRESSOR = false;  //set to true when using a compressor
 	public static final boolean USE_SOFTWARE_SPEED_REDUCTION = false; 	//set to true only if you wish to use the trigger button to engage a sofware reduction of speed low/high
 	public static final boolean USE_2SC_TANK = true;     //when true, then the robot drive is 2 motor controllers and the rest are followers
 	public static final double BROWNOUT_VOLTAGE_THRESHOLD = 7.5;
@@ -45,7 +45,7 @@ public class Enums {
 	public static final double  ROBOT_LENGTH_EXTENDED = 40; // length of robot with shooter down
 
 	//vision constants
-	public static final boolean VISION_SYSTEM_ENABLED = true;
+	public static final boolean VISION_SYSTEM_ENABLED = false;
 	public static final int CAMERA_FOV_HORIZONTAL = 61;  // Horizontal field of view for MSoft Lifecam
 	public static final boolean CAMERA_USE_REDUCED_BRIGHTNESS = false; //reduces brightness during acquisition for vision processing
 //	public static final int PIXEL_PER_DEGREE = 14;   // commented out to allow for various resolutions

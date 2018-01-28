@@ -35,7 +35,7 @@ public class Enums {
 	public static final boolean USE_CAN = true;			// if the motors are wired with CAN bus use this
 	public static final double  MOTOR_STOP_TIME = .1;	//when using coast mode this is how to stop gradually	
 	public static final boolean USE_NAVX = true;		//when using NAVX set this to true;
-	public static final boolean USE_COMPRESSOR = false;  //set to true when using a compressor
+	public static final boolean USE_COMPRESSOR = true;  //set to true when using a compressor
 	public static final boolean USE_SOFTWARE_SPEED_REDUCTION = false; 	//set to true only if you wish to use the trigger button to engage a sofware reduction of speed low/high
 	public static final boolean USE_2SC_TANK = true;     //when true, then the robot drive is 2 motor controllers and the rest are followers
 	public static final double BROWNOUT_VOLTAGE_THRESHOLD = 7.5;
@@ -59,13 +59,13 @@ public class Enums {
 
 	//these values keep track specifically of the specific motor controllers
 	//if we only need 2 motors in the drive, use FRONT_LEFT and FRONT_RIGHT. Make sure that the arrays below have a length of 2
-	public static final int  REAR_LEFT = 0,  FRONT_LEFT = 1, AUX_LEFT = 2, REAR_RIGHT = 3, FRONT_RIGHT = 4,  AUX_RIGHT = 5 ;
+	public static final int  REAR_LEFT = 0,  FRONT_LEFT = 1, REAR_RIGHT = 2, FRONT_RIGHT = 3;
 //	public static final int DRIVE_MOTOR_NUMBERS[] = {FRONT_LEFT, FRONT_RIGHT}; //if we do not use CAN bus, the motors are created in this sequence
-	public static final int     DRIVE_MOTOR_NUMBERS[] = { REAR_LEFT, FRONT_LEFT, AUX_LEFT,  REAR_RIGHT, FRONT_RIGHT, AUX_RIGHT}; //if we do not use CAN bus, the motors are created in this sequence
+	public static final int     DRIVE_MOTOR_NUMBERS[] = { REAR_LEFT, FRONT_LEFT, REAR_RIGHT, FRONT_RIGHT}; //if we do not use CAN bus, the motors are created in this sequence
 
 	//before we put the encoders on drive because the cable was not long enough to reach the "Front" motor
 	//public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 2, 3, 4, 5, 6}; //these are the CAN bus ids of the motors
-	public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 3, 2, 4, 6, 5}; //these are the CAN bus ids of the motors
+	public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 3, 4, 6}; //these are the CAN bus ids of the motors
 		
 	//This is for the use of the compressor
 	public static final int     PCM_SHIFTER_FORWARD = 4, PCM_SHIFTER_REVERSE=5;  //this is used to shift the gear ration on the drive train from low to high (SHIFTER)

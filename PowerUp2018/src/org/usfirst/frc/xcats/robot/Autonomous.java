@@ -28,7 +28,8 @@ public class Autonomous {
 	private double _calculatedAngle = 0;
 	private VisionData _visionData ;
 	private boolean _hasCaptured=false;
-	
+	private boolean _skipGearEjection = false;
+
 	private double _totalAutoTime = Enums.AUTONOMOUS_TIME;
 	private AutonomousStep _currentAutoStep;
 	private Timer _stepTimer = new Timer();
@@ -36,37 +37,34 @@ public class Autonomous {
 
 	private boolean _isExecuting = false;
 	private boolean _cancelExecution = false;
+	private boolean _isEjecting = false;
 	
 	private DigitalOutput _lightsColor = new DigitalOutput(Enums.LIGHTS_ALLIANCE_COLOR);//digial output for controlling color of lights
 
-		
+	private static final double FIRST_LEG_DISTANCE = 73.0;	// this is the distance from the auto line to the lip of the defenses	
 
 	final String _defaultAuto = "Do Nothing";
 	final String _autoForwardOnly = "Go forward only and stop";
-	final String _autoL1 = "L1";
-	final String _autoL2 = "L2";
-	final String _autoCenter = "C";
-	final String _autoR1 = "R1";
-	final String _autoR2 = "R2";
+	final String _auto1 = "Feeder Side Peg";
+	final String _auto2 = "Center Gear Peg";
+	final String _auto3 = "Boiler Side Peg";
 	final String _autoReadFile = "TextFile read";
 	final String _autoTestSpeed = "Run 3 sec at input speed";
 	final String _autoTestDistance = "Run 48 in at input speed";
+	final String _autoFeederRun = "Feeder side run field";
 	final String _autoInTeleop = "TeleopCommands";
 	final String _autoRotator = "Test Rotations";
 	
-	//Sendable chooser strings for overide to scale
-	final String _autoCrossCourt = "L2"; //
+	final String _autoGearEject = "Eject";
+	final String _autoGearNothing = "Do Nothing";
+	final String _autoGearRun = "Eject and run";
 	
 	private Navx _navx;
 	
 	String _autoSelected;
-
-	String _gameData;
-	SendableChooser _robotPosition;
-
-
 	String _defenseSelected;
 	String _shooterModeSelected;
+	String _gameData;
 	SendableChooser _defensePosition;
 	SendableChooser _gearProcessing;
 
@@ -75,19 +73,24 @@ public class Autonomous {
 
 		_controls = controls;      	//passes the controls object reference
 
-		_robotPosition = new SendableChooser();
-		_robotPosition.addDefault("Default Auto", _defaultAuto);
-		_robotPosition.addObject(_autoForwardOnly, _autoForwardOnly);
-		_robotPosition.addObject(_autoL1, _autoL1);
-		_robotPosition.addObject(_autoL2, _autoL2);
-		_robotPosition.addObject(_autoR1, _autoR1);
-		_robotPosition.addObject(_autoR2, _autoR2);
-		_robotPosition.addObject(_autoCenter, _autoCenter);
-		_robotPosition.addObject(_autoReadFile,_autoReadFile);
-		_robotPosition.addObject(_autoTestSpeed, _autoTestSpeed);
-		_robotPosition.addObject(_autoTestDistance,_autoTestDistance);
-		_robotPosition.addObject(_autoRotator, _autoRotator);
-		SmartDashboard.putData("Auto choices", _robotPosition);			
+		_defensePosition = new SendableChooser();
+		_defensePosition.addDefault("Default Auto", _defaultAuto);
+		_defensePosition.addObject(_autoForwardOnly, _autoForwardOnly);
+		_defensePosition.addObject(_auto1, _auto1);
+		_defensePosition.addObject(_auto2, _auto2);
+		_defensePosition.addObject(_auto3, _auto3);
+		_defensePosition.addObject(_autoReadFile,_autoReadFile);
+		_defensePosition.addObject(_autoTestSpeed, _autoTestSpeed);
+		_defensePosition.addObject(_autoTestDistance,_autoTestDistance);
+		_defensePosition.addObject(_autoRotator, _autoRotator);
+		SmartDashboard.putData("Auto choices", _defensePosition);			
+		
+		_gearProcessing = new SendableChooser();
+		_gearProcessing.addDefault(_autoGearEject, _autoGearEject);
+		_gearProcessing.addObject(_autoGearNothing, _autoGearNothing);
+		_gearProcessing.addObject(_autoGearRun, _autoGearRun);
+		SmartDashboard.putData("Gear Ejection choices", _gearProcessing);			
+		
 		
 		
 		/**
@@ -102,7 +105,34 @@ public class Autonomous {
 
 		SmartDashboard.putNumber(_autoTestSpeed, 0.5); 			//this is the speed to run the auto calibration test
 		//put any properties here on the smart dashboard that you want to adjust from there.
-		
+		/*			
+			SmartDashboard.putNumber("forward time", 2.8); //1.4 old
+			SmartDashboard.putNumber("forward speed", -.5); //-.8 old 
+			SmartDashboard.putNumber("short forward time", 1.8);
+			SmartDashboard.putNumber("short forward speed", -.5);
+			SmartDashboard.putNumber("backward time", 2.0); //2.8 OLD
+			SmartDashboard.putNumber("backward speed",0.5);
+			SmartDashboard.putNumber("short backward time", .25); //.1 proto
+			SmartDashboard.putNumber("short backward speed", .3);
+			SmartDashboard.putNumber("turn time", 2.3); //2.3  //2 old
+			SmartDashboard.putNumber("short turn time", 2); //2  //2 old
+			SmartDashboard.putNumber("turn right speed", .25); //.5 proto
+			SmartDashboard.putNumber("turn left speed", .25); //.5 proto
+			SmartDashboard.putNumber("stop time", .1);
+			SmartDashboard.putNumber("strafe time", 2.5);
+			SmartDashboard.putNumber("strafe speed", 1);
+			SmartDashboard.putNumber("strafe right speed", .1);
+			SmartDashboard.putNumber("strafe left speed", -.1);
+			SmartDashboard.putNumber("lift speed", -1.4); //-1 proto
+			SmartDashboard.putNumber("lift time", 1.4);
+			SmartDashboard.putNumber("short lift speed", -.3); //-.4 proto
+			SmartDashboard.putNumber("short lift time", .4);
+			SmartDashboard.putNumber("lower speed", 0); //.8 proto
+			SmartDashboard.putNumber("lower time", 1.4); //1.2 proto
+			SmartDashboard.putNumber("wait time", .4);
+			SmartDashboard.putNumber("auto type", 0);
+
+		 */
 		System.out.println("auto constructor");
 
 	}
@@ -126,7 +156,8 @@ public class Autonomous {
 		System.out.println("auto init");
 
 		if (_autoSelected != this._autoInTeleop){
-			_autoSelected = (String) _robotPosition.getSelected();
+			_autoSelected = (String) _defensePosition.getSelected();
+			_shooterModeSelected = (String) _gearProcessing.getSelected();
 			System.out.println("Auto selected: " + _autoSelected);		
 	
 	
@@ -168,6 +199,7 @@ public class Autonomous {
 		_steps =  new ArrayList<AutonomousStep>();
 		
 		boolean blueAlliance = false;
+		_gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
 			blueAlliance = true;
@@ -176,17 +208,38 @@ public class Autonomous {
 			_lightsColor.set(true);//sets lights to match alliance color
 		
 		SmartDashboard.putBoolean("Alliance Color", blueAlliance);
+		
+//		if (Enums.IS_FINAL_ROBOT){
+//			//use the switch on the robot to identify autonomous
+//			
+//			AnalogInput autoSelector = new AnalogInput(Enums.AUTO_SWITCH_ANALOG);
+//			SmartDashboard.putNumber("Auto Selector Value", autoSelector.getValue()/100);
+//			
+//			if (autoSelector.getValue()/100 < 0.5)
+//				_autoSelected = _defaultAuto;
+//			else if (autoSelector.getValue()/100 < 1.5 && autoSelector.getValue()/100 > 0.5)
+//				_autoSelected = _auto1;  //left
+//			else if (autoSelector.getValue()/100 < 2.5 && autoSelector.getValue()/100 > 1.5)
+//				_autoSelected = _auto2;  //center
+//			else if (autoSelector.getValue()/100 < 3.5 && autoSelector.getValue()/100 > 2.5)
+//				_autoSelected = _auto3;  //right
+//			else if (autoSelector.getValue()/100 < 4.5 && autoSelector.getValue()/100 > 3.5)
+//				//read from the sendable chooser
+//				System.out.println("Using Sendable Chooser Autonomous mode" + _autoSelected);
+//			else
+//				_autoSelected = _defaultAuto;
+//		}
 		SmartDashboard.putString("AutoSelected", _autoSelected);
 //			_autoSelected= _auto2;		
 		switch (_autoSelected) {
-		case _autoL1: 
+		case _auto2: 
 			caseName="Middle Gear";
 
 			//note we set coastmode in teleop init, but setting it here is a good practice
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
 		
 			break;
-		case _autoL2: 
+		case _auto1: 
 			caseName="Feeder Gear";
 			addSideSteps(blueAlliance,false);
 			if (_shooterModeSelected == _autoGearRun)
@@ -194,31 +247,13 @@ public class Autonomous {
 	
 			break;
 			
-		case _autoCenter: 
+		case _auto3: 
 			caseName="Boiler Gear";
 			addSideSteps(blueAlliance,true);
 			if (_shooterModeSelected == _autoGearRun)
 				addSideRunSteps (blueAlliance,true);
 			
 			break;
-	
-		case _autoR1: 
-			caseName="Feeder Gear";
-			addSideSteps(blueAlliance,false);
-			if (_shooterModeSelected == _autoGearRun)
-				addSideRunSteps (blueAlliance,false);
-	
-			break;
-			
-		case _autoR2: 
-			caseName="Feeder Gear";
-			addSideSteps(blueAlliance,false);
-			if (_shooterModeSelected == _autoGearRun)
-				addSideRunSteps (blueAlliance,false);
-	
-			break;
-
-
 
 		case _autoRotator:
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
@@ -488,6 +523,18 @@ public class Autonomous {
 
 				break;
 
+				
+				
+			case GEAR: 
+				//if we have not requested an ejection, do so now
+				if (!_isEjecting){
+					_isEjecting = true;					
+				}					
+				
+				//wait until the gear is fully deployed, this will back up the robot too
+				
+			
+				break;
 				
 			case BRAKEMODE:
 				_controls.setBrakeMode();

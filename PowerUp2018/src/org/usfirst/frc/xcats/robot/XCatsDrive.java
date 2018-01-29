@@ -213,10 +213,10 @@ public class XCatsDrive {
 					_motors[Enums.REAR_LEFT].set(left_y);
 					_motors[Enums.REAR_RIGHT].set(right_y);			
 				}
-				if (_motors.length > 4 && !Enums.USE_2SC_TANK) {
-					_motors[Enums.AUX_LEFT].set(left_y);
-					_motors[Enums.AUX_RIGHT].set(right_y);			
-				}
+//				if (_motors.length > 4 && !Enums.USE_2SC_TANK) {
+//					_motors[Enums.AUX_LEFT].set(left_y);
+//					_motors[Enums.AUX_RIGHT].set(right_y);			
+//				}
 			}			
 		}
 		catch (Exception e){
@@ -233,10 +233,10 @@ public class XCatsDrive {
 			_motors[Enums.REAR_LEFT].set(leftSpeed);
 			_motors[Enums.REAR_RIGHT].set(rightSpeed);
 		}
-		if (_motors.length > 4 && !Enums.USE_2SC_TANK){
-			_motors[Enums.AUX_LEFT].set(leftSpeed);
-			_motors[Enums.AUX_RIGHT].set(rightSpeed);
-		}
+//		if (_motors.length > 4 && !Enums.USE_2SC_TANK){
+//			_motors[Enums.AUX_LEFT].set(leftSpeed);
+//			_motors[Enums.AUX_RIGHT].set(rightSpeed);
+//		}
 
 	
 	}

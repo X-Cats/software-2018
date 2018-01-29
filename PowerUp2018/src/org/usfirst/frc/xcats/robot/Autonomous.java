@@ -60,9 +60,15 @@ public class Autonomous {
 	private Navx _navx;
 	
 	String _autoSelected;
+
 	String _gameData;
 	SendableChooser _robotPosition;
 
+
+	String _defenseSelected;
+	String _shooterModeSelected;
+	SendableChooser _defensePosition;
+	SendableChooser _gearProcessing;
 
 	public Autonomous (RobotControls controls)
 	{
@@ -162,7 +168,6 @@ public class Autonomous {
 		_steps =  new ArrayList<AutonomousStep>();
 		
 		boolean blueAlliance = false;
-		_gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
 			blueAlliance = true;

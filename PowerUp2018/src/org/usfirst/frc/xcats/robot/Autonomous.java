@@ -41,27 +41,29 @@ public class Autonomous {
 
 		
 
-	final String _defaultAuto = "Do Nothing";
-	final String _autoForwardOnly = "Go forward only and stop";
-	final String _autoL1 = "L1";
-	final String _autoL2 = "L2";
-	final String _autoCenter = "C";
-	final String _autoR1 = "R1";
-	final String _autoR2 = "R2";
-	final String _autoReadFile = "TextFile read";
-	final String _autoTestSpeed = "Run 3 sec at input speed";
-	final String _autoTestDistance = "Run 48 in at input speed";
-	final String _autoInTeleop = "TeleopCommands";
-	final String _autoRotator = "Test Rotations";
+	private final String _defaultAuto = "Do Nothing";
+	private final String _autoForwardOnly = "Go forward only and stop";
+	private final String _autoL1 = "L1";
+	private final String _autoL2 = "L2";
+	private final String _autoCenter = "C";
+	private final String _autoR1 = "R1";
+	private final String _autoR2 = "R2";
+	private final String _autoReadFile = "TextFile read";
+	private final String _autoTestSpeed = "Run 3 sec at input speed";
+	private final String _autoTestDistance = "Run 48 in at input speed";
+	private final String _autoInTeleop = "TeleopCommands";
+	private final String _autoRotator = "Test Rotations";
 	
 	//Sendable chooser strings for overide to scale
-	final String _autoCrossCourt = "L2"; //
+	private final String _autoCrossCourtYes = "Yes"; //override to score on opposite side of scale
+	private final String _autoCrossCourtNo = "No"; //don't override to score on opposite side of scale
 	
 	private Navx _navx;
 	
-	String _autoSelected;
-	String _gameData;
-	SendableChooser _robotPosition;
+	private String _autoSelected;
+	private String _gameData;
+	private SendableChooser _robotPosition;
+	private SendableChooser _crossCourt;
 
 
 	public Autonomous (RobotControls controls)
@@ -81,7 +83,12 @@ public class Autonomous {
 		_robotPosition.addObject(_autoTestSpeed, _autoTestSpeed);
 		_robotPosition.addObject(_autoTestDistance,_autoTestDistance);
 		_robotPosition.addObject(_autoRotator, _autoRotator);
-		SmartDashboard.putData("Auto choices", _robotPosition);			
+		SmartDashboard.putData("Auto choices", _robotPosition);	
+		
+		_crossCourt = new SendableChooser();
+		_crossCourt.addDefault(_autoCrossCourtNo, _autoCrossCourtNo);
+		_crossCourt.addObject(_autoCrossCourtYes, _autoCrossCourtYes);
+		SmartDashboard.putData("Cross Court Choices", _crossCourt);	
 		
 		
 		/**
@@ -175,42 +182,34 @@ public class Autonomous {
 //			_autoSelected= _auto2;		
 		switch (_autoSelected) {
 		case _autoL1: 
-			caseName="Middle Gear";
+			
 
 			//note we set coastmode in teleop init, but setting it here is a good practice
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
 		
 			break;
 		case _autoL2: 
-			caseName="Feeder Gear";
-			addSideSteps(blueAlliance,false);
-			if (_shooterModeSelected == _autoGearRun)
-				addSideRunSteps (blueAlliance,false);
+			
+			
+			
 	
 			break;
 			
 		case _autoCenter: 
-			caseName="Boiler Gear";
-			addSideSteps(blueAlliance,true);
-			if (_shooterModeSelected == _autoGearRun)
-				addSideRunSteps (blueAlliance,true);
+			
+			
 			
 			break;
 	
 		case _autoR1: 
-			caseName="Feeder Gear";
-			addSideSteps(blueAlliance,false);
-			if (_shooterModeSelected == _autoGearRun)
-				addSideRunSteps (blueAlliance,false);
+			
+			
 	
 			break;
 			
 		case _autoR2: 
-			caseName="Feeder Gear";
-			addSideSteps(blueAlliance,false);
-			if (_shooterModeSelected == _autoGearRun)
-				addSideRunSteps (blueAlliance,false);
-	
+			
+		
 			break;
 
 
@@ -277,114 +276,6 @@ public class Autonomous {
 		
 	}
 	
-	private void addSideSteps(boolean isBlueAlliance, boolean isBoilerSide){
-		//boolean isBoilerSide = false;
-		double leg1Speed = 0.7;
-		double leg2Speed = 0.7;
-		double leg3Speed = 0.5;
-		
-		double boilerAngle = 0;
-		double rotationAngle = 0;
-		double distanceLeg1 = 0;
-		double distanceLeg2 = 0;
-		double distanceLeg3 = 0;
-		double leftSpeed = 0;
-		double rightSpeed = 0;
-
-		
-		if (isBoilerSide){
-			System.out.println("BOILER SIDE Auto!!");
-		} else {
-			System.out.println("FEEDER SIDE Auto!!");
-		}
-
-		
-		
-//		double boilerSideLeg1 = 117.4 - 14 - 9 + 2 +2; // these were james at the last penfield practice
-		double boilerSideLeg1 = 117.4 - 14 - 9 + 2 + 2 + 3;
-//		double boilerSideLeg2 = 44 - 14 + 18 + 3 - 12; // these were james at the last penfield practice
-//		double boilerSideLeg2 = 44 - 14 + 18 + 3 - 18;
-		double boilerSideLeg2 = 44 - 14 + 18 + 3 - 18 +5 -3 ;
-//		double feederSideLeg1 = 104 - 14 - 9 + 4; //these were James's settings at last penfield practice
-		double feederSideLeg1 = 104 - 14 - 9 - 5; //14 is half the robot length but need to subtract the 15.5/tan(60)
-//		double feederSideLeg2 = 52 - 14 + 18 + 3; // these were Jame's settings at last penfied practice
-		double feederSideLeg2 = 52 - 14 + 18 + 6; // 19 = 15.5/sin(60) which is the left bumber membership
-		
-		double feederSideLeg3 = 0;
-		double boilerSideLeg3 = 0;
-		
-		
-		//from Carl's latest drawing
-		feederSideLeg1 = 95.181 - 14.0 - 10.0 + 10 -4.0; // 14 = half the length of the robot.
-		feederSideLeg3 = 35;  //stop 30 inches from the pin to take a picture 
-		feederSideLeg2 = 69.036 - 14.0 + 15.0 - 3.0 - 2.0 - feederSideLeg3;
-		
-		boilerSideLeg1 = 108.8 - 14.0;
-//		boilerSideLeg3 = 41.799 - 14.0 - 3.0;
-//		boilerSideLeg3 = 41.799 - 14.0 - 5.0;  // mpk - changed on 4/10 8:03pm
-		boilerSideLeg3 = 41.799 - 14.0 - 5.0 -5;  // mpk - changed on 4/10 8:20pm, to increase dist for camera shot
-		boilerSideLeg2 = 1;
-
-		if (!isBoilerSide){	
-			rotationAngle = (isBlueAlliance ? -60 : 60);
-		} else {			
-			rotationAngle = (isBlueAlliance ? 60 : -60);
-		}
-
-		
-		distanceLeg1 = (isBoilerSide ? boilerSideLeg1 : feederSideLeg1);
-		distanceLeg2 = (isBoilerSide ? boilerSideLeg2 : feederSideLeg2);
-		distanceLeg3 = (isBoilerSide ? boilerSideLeg3 : feederSideLeg3);
-		
-		
-		if (Enums.AUTO_FROM_CORNER){
-			distanceLeg1 = 73;
-			distanceLeg2 = 60;
-			distanceLeg3 = 25;						
-		}
-				
-		
-
-					
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.LOW_SPEED,"Low speed transmission",0,0,0,0)); //make sure we are in low speed
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"Drive Forward an inch",0.2,0.3,0.3,0)); //drive an inch at low speed to make sure encoders are zeroing
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward 1",0,leg1Speed,leg1Speed,distanceLeg1));
-
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn 60",0,0,0,rotationAngle));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"wait to settle 1",0.5,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward 2",0,leg2Speed,leg2Speed,distanceLeg2));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"wait to settle",0.5,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GET_ANGLE_CORRECTION,"Get Angle Correction",0.25,0,0,0));
-		
-		if (_shooterModeSelected != _autoGearNothing){
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Correct Angle",0,0,0,0));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward 3",0,leg3Speed,leg3Speed,distanceLeg3));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GEAR,"Place Gear",0,0,0,60));
-		}
-		
-		//If we are isBoilerSide then add the steps for the ball handling
-//		SmartDashboard.putBoolean("is Boiler Side", isBoilerSide);
-//		if (isBoilerSide){			
-//			boilerAngle = (isBlueAlliance ? -40   : 40   );
-//			leftSpeed   = (isBlueAlliance ? -0.77 : -0.92);
-//			rightSpeed  = (isBlueAlliance ? -0.92 : -0.77);
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn to boiler1",0,0,0,boilerAngle));			
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive to Boiler1",0,leftSpeed,rightSpeed,134)); //drive forward about 20 inch
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.LIFT,"Lift Bottom",0,0,0,0)); 
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.FEED,"Feed Balls",10,0,0,0)); 
-//		}
-		
-		//finish the autonomous
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
-		
-//note we set coastmode in teleop init, but setting it here is a good practice
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
-		
-		
-	}
-
 	
 	public boolean isExecuting(){
 		return _isExecuting;

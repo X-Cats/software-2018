@@ -90,7 +90,7 @@ public class RobotControls {
 			_compressor = new Compressor(Enums.PCM_CAN_ID);
 			_compressor.start();
 			if(Enums.IS_FINAL_ROBOT){
-				
+				_dblSolShifter = new DoubleSolenoid(Enums.PCM_CAN_ID,Enums.PCM_SHIFTER_FORWARD,Enums.PCM_SHIFTER_REVERSE);
 			}else{
 			_dblSolShifter = new DoubleSolenoid(Enums.PCM_CAN_ID,Enums.PCM_SHIFTER_FORWARD,Enums.PCM_SHIFTER_REVERSE);
 			}

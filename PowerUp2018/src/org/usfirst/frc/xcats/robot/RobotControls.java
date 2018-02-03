@@ -63,6 +63,8 @@ public class RobotControls {
 	private Autonomous _commandAuto;
 	private AutoTarget _autoTarget;
 	private boolean _autoMode=false; 
+	
+	private Elevator _elevator;
 
 	public RobotControls ()
 	{
@@ -80,6 +82,8 @@ public class RobotControls {
 		_drive.zeroEncoder();
 		
 		_autoTarget = new AutoTarget(false);
+		
+		_elevator = new Elevator();
 		
 		//_autoTarget.setCameraForAuto();
 
@@ -138,6 +142,7 @@ public class RobotControls {
 		System.out.println("Slow mode" +_slowMode);
 		}
 //		setLowSpeed();
+		
 		
 	}
 	
@@ -359,6 +364,14 @@ public class RobotControls {
 		if (_commandAuto != null){
 			return;
 		}
+		
+		//buttons to raise elevator
+		if(_operatorJS.getRawButton(4))
+			_elevator.raise();
+		else if(_operatorJS.getRawButton(1))
+			_elevator.lower();
+		else
+			_elevator.stop();
 		
 		
 		//these feeder buttons are mutually exclusive, but need to be on a 

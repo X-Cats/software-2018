@@ -25,7 +25,7 @@ public class Enums {
 	 * so if the right side is going 5% farther than the left when the speeds are the same
 	 * the right = right + -0.05 * right
 	*/
-	public static final double SPEED_CALIBRATION = 0.0;  
+	//not used public static final double SPEED_CALIBRATION = 0.0;  
 	
 	public static final boolean IS_FINAL_ROBOT = false;
 	public static final String  DRIVE_CONTROLLER_TYPE = "Talon"; // choices are "Jaguar" or "Talon"

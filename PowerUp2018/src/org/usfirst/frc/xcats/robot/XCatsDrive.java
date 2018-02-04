@@ -25,6 +25,7 @@ public class XCatsDrive {
 	private int _channels[];
 	private double _leftEncZero=0;
 	private double _rightEncZero=0;
+	
 
 	
 	public XCatsDrive (boolean useCAN, boolean isTalon)
@@ -119,6 +120,7 @@ public class XCatsDrive {
 		System.out.println("                                                                Zero Encoders! "+ getAbsAvgEncoderValue());
 	}
 	public double getAbsAvgEncoderValue(){
+		
 		if ((Math.abs(this._motors[Enums.FRONT_LEFT].getEncPosition() - _leftEncZero ) * Math.abs(this._motors[Enums.FRONT_RIGHT].getEncPosition() - _rightEncZero)) != 0)
 			return (Math.abs(this._motors[Enums.FRONT_LEFT].getEncPosition() - _leftEncZero ) + Math.abs(this._motors[Enums.FRONT_RIGHT].getEncPosition() - _rightEncZero)) / 2.0;
 		else if(Math.abs(this._motors[Enums.FRONT_LEFT].getEncPosition() - _leftEncZero ) != 0)

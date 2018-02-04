@@ -421,6 +421,8 @@ public class RobotControls {
 		_drive.updateStatus();
 		_autoTarget.updateStatus();
 		
+		SmartDashboard.putNumber("Encoder Value", _drive.getAbsAvgEncoderValue());
+		
 		if (_commandAuto != null)
 			_commandAuto.updateStatus();
 		

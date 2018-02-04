@@ -578,6 +578,7 @@ public class Autonomous {
 		if (_stepTimer.get() > time)
 		{
 			_controls.getDrive().set(0, 0, 0, 0);
+			SmartDashboard.putNumber("Encoder Value", _controls.getDrive().getAbsAvgEncoderValue());
 			startNextStep();
 		}
 		else

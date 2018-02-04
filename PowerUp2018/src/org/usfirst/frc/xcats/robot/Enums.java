@@ -66,7 +66,9 @@ public class Enums {
 	//before we put the encoders on drive because the cable was not long enough to reach the "Front" motor
 	//public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 2, 3, 4, 5, 6}; //these are the CAN bus ids of the motors
 	public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 3, 4, 6}; //these are the CAN bus ids of the motors
-		
+	
+	public static final double SPEED_CONTROLLER_ZERO_TIME = 0.140;//delay time to allow encoders to zero
+	
 	//This is for the use of the compressor
 	public static final int     PCM_SHIFTER_FORWARD = 4, PCM_SHIFTER_REVERSE=5;  //this is used to shift the gear ration on the drive train from low to high (SHIFTER)
 	public static final double  SHIFTER_DELAY_TIME = 0.25;  // this time is used for the "slack speed" inbetween gear shifts

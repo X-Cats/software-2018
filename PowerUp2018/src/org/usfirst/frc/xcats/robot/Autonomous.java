@@ -49,7 +49,9 @@ public class Autonomous {
 	private final String _autoR1 = "R1";
 	private final String _autoR2 = "R2";
 	private final String _autoReadFile = "TextFile read";
-	private final String _autoTestSpeed = "Run 3 sec at input speed";
+	private final String _autoTestSpeed = "Run test time at input speed";
+	private final String _autoTestTime = "Test time";
+	private final String _autoTestGear = "Test High Gear";
 	private final String _autoTestDistance = "Run 48 in at input speed";
 	private final String _autoInTeleop = "TeleopCommands";
 	private final String _autoRotator = "Test Rotations";
@@ -104,6 +106,8 @@ public class Autonomous {
 
 		SmartDashboard.putNumber(_autoTestSpeed, 0.5); 			//this is the speed to run the auto calibration test
 		//put any properties here on the smart dashboard that you want to adjust from there.
+		SmartDashboard.putNumber(_autoTestTime, 3);
+		SmartDashboard.putBoolean(_autoTestGear, false);
 
 		System.out.println("auto constructor");
 
@@ -170,6 +174,8 @@ public class Autonomous {
 		//we are going to construct the steps needed for our autonomous mode
 		//		int choice=1;
 		double speedTest =SmartDashboard.getNumber(_autoTestSpeed, 0.5);
+		int calibrationRunTime = (int) SmartDashboard.getNumber(_autoTestTime, 3);
+		boolean highSpeedTest = SmartDashboard.getBoolean(_autoTestGear, false);
 		String caseName="";
 		_steps =  new ArrayList<AutonomousStep>();
 
@@ -299,7 +305,9 @@ public class Autonomous {
 		case _autoTestSpeed:
 			caseName="Speed Test";
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"Drive",5,speedTest,speedTest,0));
+			if(highSpeedTest)
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"High Speed",0,0,0,0));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"Drive",calibrationRunTime,speedTest,speedTest,0));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
 			break;

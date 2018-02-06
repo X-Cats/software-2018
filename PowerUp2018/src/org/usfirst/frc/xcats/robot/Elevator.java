@@ -33,5 +33,13 @@ public class Elevator {
 	public void goToScale() {
 		
 	}
+	
+	public void raiseLinkage() {
+		
+	}
+	
+	public void lowerLinkage() {
+		
+	}
 
 }

@@ -41,5 +41,9 @@ public class Elevator {
 	public void lowerLinkage() {
 		
 	}
+	
+	public void stopLinkage() {
+		
+	}
 
 }

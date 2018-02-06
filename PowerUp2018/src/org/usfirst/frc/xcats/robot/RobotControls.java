@@ -394,6 +394,14 @@ public class RobotControls {
 			_elevator.goToSwitch();//currently not implemented
 		if(_operatorJS.getRawButton(4))
 			_elevator.goToScale();//currently not implemented
+		
+		//buttons for 4-bar linkage
+		if(_operatorJS.getPOV() == 90)
+			_elevator.raiseLinkage();
+		else if(_operatorJS.getPOV() == 270)
+			_elevator.lowerLinkage();
+		else
+			_elevator.stop();
 			
 	
 		

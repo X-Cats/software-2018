@@ -84,6 +84,7 @@ public class RobotControls {
 		
 		_autoTarget = new AutoTarget(false);
 		
+		//2018 mechanisms
 		_elevator = new Elevator();
 		_acquisition = new Acquisition();
 		

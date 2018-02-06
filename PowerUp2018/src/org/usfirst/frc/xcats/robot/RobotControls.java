@@ -65,6 +65,7 @@ public class RobotControls {
 	private boolean _autoMode=false; 
 	
 	private Elevator _elevator;
+	private Acquisition _acquisition;
 
 	public RobotControls ()
 	{
@@ -84,6 +85,7 @@ public class RobotControls {
 		_autoTarget = new AutoTarget(false);
 		
 		_elevator = new Elevator();
+		_acquisition = new Acquisition();
 		
 		//_autoTarget.setCameraForAuto();
 
@@ -366,17 +368,33 @@ public class RobotControls {
 		}
 		
 		//buttons to raise elevator
-		if(_operatorJS.getRawButton(4))
+		if(_operatorJS.getPOV() == 360)//up on POV stick
 			_elevator.raise();
-		else if(_operatorJS.getRawButton(1))
+		else if(_operatorJS.getPOV() == 180)//down on POV stick
 			_elevator.lower();
 		else
 			_elevator.stop();
 		
+		//buttons for acquisition arms
+		if(_operatorJS.getRawButton(6))
+			_acquisition.armsOut();
+		else if(_operatorJS.getRawButton(5))
+			_acquisition.armsIn();
 		
-		//these feeder buttons are mutually exclusive, but need to be on a 
-		//different thumb from the feeder raise and lower
+		//buttons for acquisition wheels
+		if(_operatorJS.getRawButton(2))
+			_acquisition.release();
+		else if(_operatorJS.getRawButton(3))
+			_acquisition.intake();
+		else
+			_acquisition.stop();
 		
+		//buttons for setpoints on elevator
+		if(_operatorJS.getRawButton(1))
+			_elevator.goToSwitch();//currently not implemented
+		if(_operatorJS.getRawButton(4))
+			_elevator.goToScale();//currently not implemented
+			
 	
 		
 		

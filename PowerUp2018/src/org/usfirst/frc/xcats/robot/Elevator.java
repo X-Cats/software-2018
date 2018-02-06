@@ -25,5 +25,13 @@ public class Elevator {
 	public void stop() {
 		_elevatorMaster.set(0);
 	}
+	
+	public void goToSwitch() {
+		
+	}
+	
+	public void goToScale() {
+		
+	}
 
 }

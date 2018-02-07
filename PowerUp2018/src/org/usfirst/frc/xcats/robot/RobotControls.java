@@ -85,6 +85,7 @@ public class RobotControls {
 		
 		_autoTarget = new AutoTarget(false);
 		
+		//2018 mechanisms
 		_elevator = new Elevator();
 		_acquisition = new Acquisition();
 		_climber = new Climber();
@@ -402,6 +403,15 @@ public class RobotControls {
 			_climber.climb();
 		else
 			_climber.stop();
+
+		//buttons for 4-bar linkage
+		if(_operatorJS.getPOV() == 90)
+			_elevator.raiseLinkage();
+		else if(_operatorJS.getPOV() == 270)
+			_elevator.lowerLinkage();
+		else
+			_elevator.stop();
+
 			
 	
 		

@@ -6,7 +6,7 @@ import org.usfirst.frc.xcats.robot.XCatsSpeedController.SCType;
 public class Elevator {
 	
 	private XCatsSpeedController _elevatorMaster;
-	private XCatsSpeedController _elevatorFollower;
+	//private XCatsSpeedController _elevatorFollower;
 	
 	public Elevator() {
 		_elevatorMaster = new XCatsSpeedController("Elevator", Enums.ELEVATOR_MASTER_CAN_ID, true, SCType.TALON, null, null);
@@ -31,6 +31,18 @@ public class Elevator {
 	}
 	
 	public void goToScale() {
+		
+	}
+	
+	public void raiseLinkage() {
+		
+	}
+	
+	public void lowerLinkage() {
+		
+	}
+	
+	public void stopLinkage() {
 		
 	}
 

@@ -191,28 +191,32 @@ public class Autonomous {
 
 		SmartDashboard.putBoolean("Alliance Color", blueAlliance);
 		SmartDashboard.putString("AutoSelected", _autoSelected);
-		//			_autoSelected= _auto2;		
+		//			_autoSelected= _auto2;	
+		
 		switch (_autoSelected) {
 		case _autoL1: 
-
+			
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
 			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'R') {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,225));
+				//this is cross court going from left position to scale on the right
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.65,0.65,235));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,207));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,207));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,-90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,.4,0.4,85));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,85));
 			}else if(_gameData.charAt(1) == 'L'){
+				//this is going from leftmost position to scale on the left
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.5,0.5,285));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,21));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.4,0.4,21));
 			}else if(_gameData.charAt(0) == 'L'){
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,129));
+				// this goes from leftmost position to switch
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.5,0.5,129));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,34));
@@ -403,11 +407,15 @@ public class Autonomous {
 				break;
 
 			case DRIVE_DISTANCE:
-				if (Enums.IS_FINAL_ROBOT)					
+				if (_controls.getIsSlowMode())
 					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
 				else
-					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+					encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
 
+//				if (_controls.getIsSlowMode())
+//					encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+//				else
+//					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
 				driveStraight(0,_currentAutoStep.leftSpeed,_currentAutoStep.rightSpeed,encPos);
 
 				break;
@@ -415,8 +423,19 @@ public class Autonomous {
 			case DRIVE_PROFILE:
 				if (Enums.IS_FINAL_ROBOT)					
 					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
-				else
-					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+				else {
+					//System.out.println("Slow mode in Auto: " +_controls.getIsSlowMode());
+					if (_controls.getIsSlowMode())
+						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+					else
+						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+
+//					if (_controls.getIsSlowMode())
+//						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+//					else
+//						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+
+				}
 
 				driveStraightProfile(0,_currentAutoStep.leftSpeed,_currentAutoStep.rightSpeed,encPos);
 
@@ -544,8 +563,8 @@ public class Autonomous {
 
 	private void rotate( double distance){
 		//float deltaYaw;
-		double  speed =0.25;
-		double tolerance=0.5;
+		double  speed = 0.3;
+		double tolerance=0.65;
 		int direction=1;
 
 		
@@ -662,26 +681,27 @@ public class Autonomous {
 		double remainingPercent = 0;
 		remainingDistance = targetEncPosition - _controls.getDrive().getAbsAvgEncoderValue();
 		remainingPercent = remainingDistance/targetEncPosition;
-		double leftsign = (left >= 0) ? 1:-1;
-		double rightsign = (right >= 0) ? 1:-1;
+		double leftsign = (left >= 0) ? 1.0 : -1.0;
+		double rightsign = (right >= 0) ? 1.0 : -1.0;
 		 
 		
-	if (remainingDistance <= 2500) {
-		left = 0.30 * leftsign;
-		right = 0.30 * rightsign;
-	}else if (remainingDistance <= 4000){
-		left = 0.35 * leftsign;
-		right = 0.35 * rightsign;
-	}else if (remainingDistance <= 5000){
-		left = 0.40 * leftsign;
-		right = 0.40 * rightsign;
-	}else if (remainingDistance <= 6000){
-		left = 0.45 * leftsign;
-		right = 0.45 * rightsign;
-	}else if (remainingDistance <= 7000){
-		left = 0.50 * leftsign;
-		right = 0.50 * rightsign;
-	}	
+	if (remainingDistance <= 6000) {
+		left =  (Math.abs(left) > 0.30) ?  0.30 * leftsign : left ;  //only brake if setpoint is greater than setpoint
+		right = (Math.abs(right) > 0.30) ? 0.30 * rightsign : right;
+	}
+//	else if (remainingDistance <= 4000){
+//		left = 0.35 * leftsign;
+//		right = 0.35 * rightsign;
+//	}else if (remainingDistance <= 5000){
+//		left = 0.40 * leftsign;
+//		right = 0.40 * rightsign;
+//	}else if (remainingDistance <= 6000){
+//		left = 0.45 * leftsign;
+//		right = 0.45 * rightsign;
+//	}else if (remainingDistance <= 7000){
+//		left = 0.50 * leftsign;
+//		right = 0.50 * rightsign;
+//	}	
 		
 		float deltaYaw;
 

@@ -94,6 +94,7 @@ public class Enums {
 
 	//Climber
 	public static final int CLIMBER_CAN_ID = 56;//can id for climber motor
+	public static final double CLIMBER_SPEED = 0.5;//speed for climber motor, gurrently at test value
 
 	//Autonomous uses the chooser object to select mode
 	public static final int AUTONOMOUS_TIME = 15;

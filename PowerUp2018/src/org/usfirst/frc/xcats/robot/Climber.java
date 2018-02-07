@@ -10,10 +10,12 @@ public class Climber {
 
     //run climber forward
     public void climb(){
+    	_climber.set(Enums.CLIMBER_SPEED);
 
     }
 
     public void stop(){
+    	_climber.set(0);
 
     }
 

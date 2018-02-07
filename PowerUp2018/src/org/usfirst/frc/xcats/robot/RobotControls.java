@@ -399,7 +399,7 @@ public class RobotControls {
 			_elevator.goToScale();//currently not implemented
 
 		//buttons for climber
-		if(_operatorJS.getRawButton(7))
+		if(_operatorJS.getRawButton(8))
 			_climber.climb();
 		else
 			_climber.stop();

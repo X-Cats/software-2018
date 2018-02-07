@@ -405,9 +405,9 @@ public class RobotControls {
 			_climber.stop();
 
 		//buttons for 4-bar linkage
-		if(_operatorJS.getPOV() == 90)
+		if(_operatorJS.getPOV() == 90) //right on pov stick
 			_elevator.raiseLinkage();
-		else if(_operatorJS.getPOV() == 270)
+		else if(_operatorJS.getPOV() == 270) //left on pov stick
 			_elevator.lowerLinkage();
 		else
 			_elevator.stop();

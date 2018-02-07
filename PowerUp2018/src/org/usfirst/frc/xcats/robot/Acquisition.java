@@ -19,10 +19,12 @@ public class Acquisition {
 		_armsSolenoid = new DoubleSolenoid(Enums.PCM_CAN_ID, Enums.PCM_ARMS_IN, Enums.PCM_ARMS_OUT);
 	}
 	
+	//intake cube
 	public void intake() {
 		_leftAcquisition.set(Enums.ACQUISITION_SPEED);
 	}
 	
+	//push out cube
 	public void release() {
 		_leftAcquisition.set(-Enums.ACQUISITION_SPEED);
 	}
@@ -31,10 +33,12 @@ public class Acquisition {
 		_leftAcquisition.set(0);
 	}
 	
+	//push secondary wheels for acquisition in
 	public void armsIn() {
 		_armsSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 	
+	//pull secondary wheels for acquisition out
 	public void armsOut() {
 		_armsSolenoid.set(DoubleSolenoid.Value.kReverse);	
 	}

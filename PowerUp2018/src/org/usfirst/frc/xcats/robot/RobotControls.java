@@ -44,7 +44,7 @@ public class RobotControls {
 	private Timer _shiftTimer;
 	private boolean _shifting=false;
 
-	private boolean _slowMode = true;
+	private boolean _slowMode = false;
 	private boolean _liftMode = false;
 	private XCatsJSButton _speedToggleButton;
 	private XCatsJSButton _highSpeedButton;
@@ -133,7 +133,7 @@ public class RobotControls {
 		// always initialize the robot in low gear
 		if(Enums.USE_COMPRESSOR) {
 		_dblSolShifter.set(DoubleSolenoid.Value.kReverse);
-		_slowMode = (_dblSolShifter.get() == DoubleSolenoid.Value.kReverse ? true : false);
+		_slowMode = (_dblSolShifter.get() == DoubleSolenoid.Value.kForward ? false : true);
 		System.out.println("State of shifter ="+ _dblSolShifter.get());
 		System.out.println("Slow mode" +_slowMode);
 		}
@@ -149,6 +149,9 @@ public class RobotControls {
 	}
 	public Navx getNavx(){
 		return _navx;
+	}
+	public boolean getIsSlowMode () {
+		return _slowMode;
 	}
 	public void setHighSpeed(){
 		
@@ -382,6 +385,8 @@ public class RobotControls {
 	
 	public void updateStatus ()
 	{
+//		System.out.println("State of shifter ="+ _dblSolShifter.get());
+		
 		try {
 //			SmartDashboard.putNumber("pdp total current", _pdp.getTotalCurrent());
 //			SmartDashboard.putNumber("pdp total energy",_pdp.getTotalEnergy());

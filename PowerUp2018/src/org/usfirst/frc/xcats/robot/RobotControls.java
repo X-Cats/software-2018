@@ -66,6 +66,7 @@ public class RobotControls {
 	
 	private Elevator _elevator;
 	private Acquisition _acquisition;
+	private Climber _climber;
 
 	public RobotControls ()
 	{
@@ -86,6 +87,7 @@ public class RobotControls {
 		
 		_elevator = new Elevator();
 		_acquisition = new Acquisition();
+		_climber = new Climber();
 		
 		//_autoTarget.setCameraForAuto();
 
@@ -394,6 +396,12 @@ public class RobotControls {
 			_elevator.goToSwitch();//currently not implemented
 		if(_operatorJS.getRawButton(4))
 			_elevator.goToScale();//currently not implemented
+
+		//buttons for climber
+		if(_operatorJS.getRawButton(7))
+			_climber.climb();
+		else
+			_climber.stop();
 			
 	
 		

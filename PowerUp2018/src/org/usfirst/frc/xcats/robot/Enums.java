@@ -91,7 +91,10 @@ public class Enums {
 	public static final double ELEVATOR_SPEED = 0.5;//speed for elevator motor, currently test value
 	public static final int ELEVATOR_SWITCH_SET_POINT = 0;//encoder value for elevator switch position, currently at test value
 	public static final int ELEVATOR_SCALE_SET_POINT = 0;//encoder value for elevator scale position, currently at test value
-	
+
+	//Climber
+	public static final int CLIMBER_CAN_ID = 56;//can id for climber motor
+
 	//Autonomous uses the chooser object to select mode
 	public static final int AUTONOMOUS_TIME = 15;
 	public static final int AUTO_SWITCH_ANALOG = 0;

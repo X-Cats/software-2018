@@ -93,6 +93,10 @@ public class Enums {
 	public static final double ELEVATOR_SPEED = 0.5;//speed for elevator motor, currently test value
 	public static final int ELEVATOR_SWITCH_SET_POINT = 0;//encoder value for elevator switch position, currently at test value
 	public static final int ELEVATOR_SCALE_SET_POINT = 0;//encoder value for elevator scale position, currently at test value
+	public static final int ELEVATOR_BOTTOM_LIMIT = 0;
+	public static final int ELEVATOR_SWITCH_LIMIT = 1;
+	public static final int ELEVATOR_SCALE_LIMIT = 2;
+	public static final int ELEVATOR_TOP_LIMIT = 3;
 
 	//Climber
 	public static final int CLIMBER_CAN_ID = 56;//can id for climber motor

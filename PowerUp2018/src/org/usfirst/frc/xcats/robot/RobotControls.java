@@ -75,6 +75,7 @@ public class RobotControls {
     private double max_world_linear_accel_z;
 
     final static double kCollisionThreshold_DeltaG = 0.5f;
+    final static double kBumpThreshold_DeltaG = 2.5f;
 
 	public RobotControls ()
 	{
@@ -102,7 +103,7 @@ public class RobotControls {
 			_compressor = new Compressor(Enums.PCM_CAN_ID);
 			_compressor.start();
 			if(Enums.IS_FINAL_ROBOT){
-				
+				_dblSolShifter = new DoubleSolenoid(Enums.PCM_CAN_ID,Enums.PCM_SHIFTER_FORWARD,Enums.PCM_SHIFTER_REVERSE);
 			}else{
 			_dblSolShifter = new DoubleSolenoid(Enums.PCM_CAN_ID,Enums.PCM_SHIFTER_FORWARD,Enums.PCM_SHIFTER_REVERSE);
 			}
@@ -394,8 +395,8 @@ public class RobotControls {
 		//these feeder buttons are mutually exclusive, but need to be on a 
 		//different thumb from the feeder raise and lower
 		
-	
-		
+		if (_leftJS.getRawButtonReleased(9)) 
+			resetCollisionData();
 		
 	}
 
@@ -463,9 +464,20 @@ public class RobotControls {
 		
 	}    
     
+    private void resetCollisionData() {
+
+        last_world_linear_accel_x = 0;
+        last_world_linear_accel_y = 0;
+        last_world_linear_accel_z = 0;
+        max_world_linear_accel_x = 0;
+        max_world_linear_accel_y = 0;
+        max_world_linear_accel_z = 0;		
+	}    
+    
     private void detectCollision() {
 
         boolean collisionDetected = false;
+        boolean bumpDetected = false;
         double[] jerkXYZ = {0,0,0};
         double[] maxAccelXYZ = {0,0,0};
         
@@ -486,22 +498,30 @@ public class RobotControls {
             jerkXYZ[1] = Math.abs(currentJerkY);
             jerkXYZ[2] = Math.abs(currentJerkZ);
         }
+        // bump detection may only be accurate if in LowSpeed - can we test for this here?
+        if ( Math.abs(currentJerkZ) > kBumpThreshold_DeltaG ) {
+               bumpDetected = true;
+               jerkXYZ[0] = Math.abs(currentJerkX);
+               jerkXYZ[1] = Math.abs(currentJerkY);
+               jerkXYZ[2] = Math.abs(currentJerkZ);
+           }
         
         if ( ( Math.abs(curr_world_linear_accel_x) > Math.abs(max_world_linear_accel_x) )) {
         	max_world_linear_accel_x = curr_world_linear_accel_x;
-        	maxAccelXYZ[0] = Math.abs(curr_world_linear_accel_x);
         }
         if ( ( Math.abs(curr_world_linear_accel_y) > Math.abs(max_world_linear_accel_y) )) {
         	max_world_linear_accel_y = curr_world_linear_accel_y;
-        	maxAccelXYZ[1] = Math.abs(curr_world_linear_accel_y);
         }
         if ( ( Math.abs(curr_world_linear_accel_z) > Math.abs(max_world_linear_accel_z) )) {
         	max_world_linear_accel_z = curr_world_linear_accel_z;
-        	maxAccelXYZ[2] = Math.abs(curr_world_linear_accel_z);
         }
-        SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
-        SmartDashboard.putNumberArray("Collision jerk values X, Y, Z", 
-        		jerkXYZ);
+    	maxAccelXYZ[0] = Math.abs(max_world_linear_accel_x);
+    	maxAccelXYZ[1] = Math.abs(max_world_linear_accel_y);
+    	maxAccelXYZ[2] = Math.abs(max_world_linear_accel_z);
+//        SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
+        SmartDashboard.putBoolean("BumpDetected", bumpDetected);
+//        SmartDashboard.putNumberArray("Collision jerk values X, Y, Z", 
+//        		jerkXYZ);
         SmartDashboard.putNumberArray("Max accel values X, Y, Z", 
         		maxAccelXYZ);
     }

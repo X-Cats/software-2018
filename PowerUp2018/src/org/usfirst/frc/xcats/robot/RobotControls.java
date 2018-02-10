@@ -63,6 +63,10 @@ public class RobotControls {
 	private Autonomous _commandAuto;
 	private AutoTarget _autoTarget;
 	private boolean _autoMode=false; 
+	
+	private Elevator _elevator;
+	private Acquisition _acquisition;
+	private Climber _climber;
 
 	public RobotControls ()
 	{
@@ -80,6 +84,11 @@ public class RobotControls {
 		_drive.zeroEncoder();
 		
 		_autoTarget = new AutoTarget(false);
+		
+		//2018 mechanisms
+		_elevator = new Elevator();
+		_acquisition = new Acquisition();
+		_climber = new Climber();
 		
 		//_autoTarget.setCameraForAuto();
 
@@ -138,6 +147,7 @@ public class RobotControls {
 		System.out.println("Slow mode" +_slowMode);
 		}
 //		setLowSpeed();
+		
 		
 	}
 	
@@ -363,10 +373,49 @@ public class RobotControls {
 			return;
 		}
 		
+		//buttons to raise elevator
+		if(_operatorJS.getPOV() == 360)//up on POV stick
+			_elevator.raise();
+		else if(_operatorJS.getPOV() == 180)//down on POV stick
+			_elevator.lower();
+		else
+			_elevator.stop();
 		
-		//these feeder buttons are mutually exclusive, but need to be on a 
-		//different thumb from the feeder raise and lower
+		//buttons for acquisition arms
+		if(_operatorJS.getRawButton(6))
+			_acquisition.armsOut();
+		else if(_operatorJS.getRawButton(5))
+			_acquisition.armsIn();
 		
+		//buttons for acquisition wheels
+		if(_operatorJS.getRawButton(2))
+			_acquisition.release();
+		else if(_operatorJS.getRawButton(3))
+			_acquisition.intake();
+		else
+			_acquisition.stop();
+		
+		//buttons for setpoints on elevator
+		if(_operatorJS.getRawButton(1))
+			_elevator.goToSwitch();//currently not implemented
+		if(_operatorJS.getRawButton(4))
+			_elevator.goToScale();//currently not implemented
+
+		//buttons for climber
+		if(_operatorJS.getRawButton(8))
+			_climber.climb();
+		else
+			_climber.stop();
+
+		//buttons for 4-bar linkage
+		if(_operatorJS.getPOV() == 90) //right on pov stick
+			_elevator.raiseLinkage();
+		else if(_operatorJS.getPOV() == 270) //left on pov stick
+			_elevator.lowerLinkage();
+		else
+			_elevator.stop();
+
+			
 	
 		
 		

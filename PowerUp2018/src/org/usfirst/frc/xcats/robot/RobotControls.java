@@ -47,7 +47,7 @@ public class RobotControls {
 	private Timer _shiftTimer;
 	private boolean _shifting=false;
 
-	private boolean _slowMode = true;
+	private boolean _slowMode = false;
 	private boolean _liftMode = false;
 	private XCatsJSButton _speedToggleButton;
 	private XCatsJSButton _highSpeedButton;
@@ -76,7 +76,10 @@ public class RobotControls {
 
     final static double kCollisionThreshold_DeltaG = 0.5f;
     final static double kBumpThreshold_DeltaG = 2.5f;
-
+	
+	private Elevator _elevator;
+	private Acquisition _acquisition;
+	private Climber _climber;
 	public RobotControls ()
 	{
 
@@ -93,6 +96,11 @@ public class RobotControls {
 		_drive.zeroEncoder();
 		
 		_autoTarget = new AutoTarget(false);
+		
+		//2018 mechanisms
+		_elevator = new Elevator();
+		_acquisition = new Acquisition();
+		_climber = new Climber();
 		
 		//_autoTarget.setCameraForAuto();
 
@@ -164,11 +172,12 @@ public class RobotControls {
 		// always initialize the robot in low gear
 		if(Enums.USE_COMPRESSOR) {
 		_dblSolShifter.set(DoubleSolenoid.Value.kReverse);
-		_slowMode = (_dblSolShifter.get() == DoubleSolenoid.Value.kReverse ? true : false);
+		_slowMode = (_dblSolShifter.get() == DoubleSolenoid.Value.kForward ? false : true);
 		System.out.println("State of shifter ="+ _dblSolShifter.get());
 		System.out.println("Slow mode" +_slowMode);
 		}
 //		setLowSpeed();
+		
 		
 	}
 	
@@ -180,6 +189,9 @@ public class RobotControls {
 	}
 	public Navx getNavx(){
 		return _navx;
+	}
+	public boolean getIsSlowMode () {
+		return _slowMode;
 	}
 	public void setHighSpeed(){
 		
@@ -391,13 +403,51 @@ public class RobotControls {
 			return;
 		}
 		
+		//buttons to raise elevator
+		if(_operatorJS.getPOV() == 360)//up on POV stick
+			_elevator.raise();
+		else if(_operatorJS.getPOV() == 180)//down on POV stick
+			_elevator.lower();
+		else
+			_elevator.stop();
 		
-		//these feeder buttons are mutually exclusive, but need to be on a 
-		//different thumb from the feeder raise and lower
+		//buttons for acquisition arms
+		if(_operatorJS.getRawButton(6))
+			_acquisition.armsOut();
+		else if(_operatorJS.getRawButton(5))
+			_acquisition.armsIn();
 		
 		if (_leftJS.getRawButtonReleased(9)) 
 			resetCollisionData();
+		//buttons for acquisition wheels
+		if(_operatorJS.getRawButton(2))
+			_acquisition.release();
+		else if(_operatorJS.getRawButton(3))
+			_acquisition.intake();
+		else
+			_acquisition.stop();
 		
+		//buttons for setpoints on elevator
+		if(_operatorJS.getRawButton(1))
+			_elevator.goToSwitch();//currently not implemented
+		if(_operatorJS.getRawButton(4))
+			_elevator.goToScale();//currently not implemented
+
+		//buttons for climber
+		if(_operatorJS.getRawButton(8))
+			_climber.climb();
+		else
+			_climber.stop();
+
+		//buttons for 4-bar linkage
+		if(_operatorJS.getPOV() == 90) //right on pov stick
+			_elevator.raiseLinkage();
+		else if(_operatorJS.getPOV() == 270) //left on pov stick
+			_elevator.lowerLinkage();
+		else
+			_elevator.stop();
+
+			
 	}
 
 
@@ -413,6 +463,8 @@ public class RobotControls {
 	
 	public void updateStatus ()
 	{
+//		System.out.println("State of shifter ="+ _dblSolShifter.get());
+		
 		try {
 //			SmartDashboard.putNumber("pdp total current", _pdp.getTotalCurrent());
 //			SmartDashboard.putNumber("pdp total energy",_pdp.getTotalEnergy());
@@ -451,6 +503,8 @@ public class RobotControls {
 		
 		_drive.updateStatus();
 		_autoTarget.updateStatus();
+		
+		SmartDashboard.putNumber("Encoder Value", _drive.getAbsAvgEncoderValue());
 		
 		if (_commandAuto != null)
 			_commandAuto.updateStatus();

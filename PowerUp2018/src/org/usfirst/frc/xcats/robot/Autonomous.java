@@ -28,7 +28,6 @@ public class Autonomous {
 	private double _calculatedAngle = 0;
 	private VisionData _visionData ;
 	private boolean _hasCaptured=false;
-	private boolean _skipGearEjection = false;
 
 	private double _totalAutoTime = Enums.AUTONOMOUS_TIME;
 	private AutonomousStep _currentAutoStep;
@@ -37,62 +36,64 @@ public class Autonomous {
 
 	private boolean _isExecuting = false;
 	private boolean _cancelExecution = false;
-	private boolean _isEjecting = false;
-	
+
 	private DigitalOutput _lightsColor = new DigitalOutput(Enums.LIGHTS_ALLIANCE_COLOR);//digial output for controlling color of lights
 
-	private static final double FIRST_LEG_DISTANCE = 73.0;	// this is the distance from the auto line to the lip of the defenses	
 
-	final String _defaultAuto = "Do Nothing";
-	final String _autoForwardOnly = "Go forward only and stop";
-	final String _auto1 = "Feeder Side Peg";
-	final String _auto2 = "Center Gear Peg";
-	final String _auto3 = "Boiler Side Peg";
-	final String _autoReadFile = "TextFile read";
-	final String _autoTestSpeed = "Run 3 sec at input speed";
-	final String _autoTestDistance = "Run 48 in at input speed";
-	final String _autoFeederRun = "Feeder side run field";
-	final String _autoInTeleop = "TeleopCommands";
-	final String _autoRotator = "Test Rotations";
-	
-	final String _autoGearEject = "Eject";
-	final String _autoGearNothing = "Do Nothing";
-	final String _autoGearRun = "Eject and run";
-	
+
+	private final String _defaultAuto = "Do Nothing";
+	private final String _autoForwardOnly = "Go forward only and stop";
+	private final String _autoL1 = "L1";
+	private final String _autoL2 = "L2";
+	private final String _autoCenter = "C";
+	private final String _autoR1 = "R1";
+	private final String _autoR2 = "R2";
+	private final String _autoReadFile = "TextFile read";
+	private final String _autoTestSpeed = "Run test time at input speed";
+	private final String _autoTestTime = "Test time";
+	private final String _autoTestGear = "Test High Gear";
+	private final String _autoTestDistance = "Run for 60 in at input speed";
+	private final String _autoInTeleop = "TeleopCommands";
+	private final String _autoRotator = "Test Rotations";
+
+	//Sendable chooser strings for overide to scale
+	private final String _autoCrossCourtYes = "Yes"; //override to score on opposite side of scale
+	private final String _autoCrossCourtNo = "No"; //don't override to score on opposite side of scale
+
 	private Navx _navx;
-	
-	String _autoSelected;
-	String _defenseSelected;
-	String _shooterModeSelected;
-	String _gameData;
-	SendableChooser _defensePosition;
-	SendableChooser _gearProcessing;
+
+	private String _autoSelected;
+	private String _crossCourtSelected;
+	private String _gameData;
+	private SendableChooser _robotPosition;
+	private SendableChooser _crossCourt;
+
 
 	public Autonomous (RobotControls controls)
 	{
 
 		_controls = controls;      	//passes the controls object reference
 
-		_defensePosition = new SendableChooser();
-		_defensePosition.addDefault("Default Auto", _defaultAuto);
-		_defensePosition.addObject(_autoForwardOnly, _autoForwardOnly);
-		_defensePosition.addObject(_auto1, _auto1);
-		_defensePosition.addObject(_auto2, _auto2);
-		_defensePosition.addObject(_auto3, _auto3);
-		_defensePosition.addObject(_autoReadFile,_autoReadFile);
-		_defensePosition.addObject(_autoTestSpeed, _autoTestSpeed);
-		_defensePosition.addObject(_autoTestDistance,_autoTestDistance);
-		_defensePosition.addObject(_autoRotator, _autoRotator);
-		SmartDashboard.putData("Auto choices", _defensePosition);			
-		
-		_gearProcessing = new SendableChooser();
-		_gearProcessing.addDefault(_autoGearEject, _autoGearEject);
-		_gearProcessing.addObject(_autoGearNothing, _autoGearNothing);
-		_gearProcessing.addObject(_autoGearRun, _autoGearRun);
-		SmartDashboard.putData("Gear Ejection choices", _gearProcessing);			
-		
-		
-		
+		_robotPosition = new SendableChooser();
+		_robotPosition.addDefault("Default Auto", _defaultAuto);
+		_robotPosition.addObject(_autoForwardOnly, _autoForwardOnly);
+		_robotPosition.addObject(_autoL1, _autoL1);
+		_robotPosition.addObject(_autoL2, _autoL2);
+		_robotPosition.addObject(_autoR1, _autoR1);
+		_robotPosition.addObject(_autoR2, _autoR2);
+		_robotPosition.addObject(_autoCenter, _autoCenter);
+		_robotPosition.addObject(_autoReadFile,_autoReadFile);
+		_robotPosition.addObject(_autoTestSpeed, _autoTestSpeed);
+		_robotPosition.addObject(_autoTestDistance,_autoTestDistance);
+		_robotPosition.addObject(_autoRotator, _autoRotator);
+		SmartDashboard.putData("Auto choices", _robotPosition);	
+
+		_crossCourt = new SendableChooser();
+		_crossCourt.addDefault(_autoCrossCourtNo, _autoCrossCourtNo);
+		_crossCourt.addObject(_autoCrossCourtYes, _autoCrossCourtYes);
+		SmartDashboard.putData("Cross Court Choices", _crossCourt);	
+
+
 		/**
 		 * This autonomous (along with the chooser code above) shows how to select between different autonomous modes
 		 * using the dashboard. The sendable chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
@@ -105,34 +106,9 @@ public class Autonomous {
 
 		SmartDashboard.putNumber(_autoTestSpeed, 0.5); 			//this is the speed to run the auto calibration test
 		//put any properties here on the smart dashboard that you want to adjust from there.
-		/*			
-			SmartDashboard.putNumber("forward time", 2.8); //1.4 old
-			SmartDashboard.putNumber("forward speed", -.5); //-.8 old 
-			SmartDashboard.putNumber("short forward time", 1.8);
-			SmartDashboard.putNumber("short forward speed", -.5);
-			SmartDashboard.putNumber("backward time", 2.0); //2.8 OLD
-			SmartDashboard.putNumber("backward speed",0.5);
-			SmartDashboard.putNumber("short backward time", .25); //.1 proto
-			SmartDashboard.putNumber("short backward speed", .3);
-			SmartDashboard.putNumber("turn time", 2.3); //2.3  //2 old
-			SmartDashboard.putNumber("short turn time", 2); //2  //2 old
-			SmartDashboard.putNumber("turn right speed", .25); //.5 proto
-			SmartDashboard.putNumber("turn left speed", .25); //.5 proto
-			SmartDashboard.putNumber("stop time", .1);
-			SmartDashboard.putNumber("strafe time", 2.5);
-			SmartDashboard.putNumber("strafe speed", 1);
-			SmartDashboard.putNumber("strafe right speed", .1);
-			SmartDashboard.putNumber("strafe left speed", -.1);
-			SmartDashboard.putNumber("lift speed", -1.4); //-1 proto
-			SmartDashboard.putNumber("lift time", 1.4);
-			SmartDashboard.putNumber("short lift speed", -.3); //-.4 proto
-			SmartDashboard.putNumber("short lift time", .4);
-			SmartDashboard.putNumber("lower speed", 0); //.8 proto
-			SmartDashboard.putNumber("lower time", 1.4); //1.2 proto
-			SmartDashboard.putNumber("wait time", .4);
-			SmartDashboard.putNumber("auto type", 0);
+		SmartDashboard.putNumber(_autoTestTime, 3);
+		SmartDashboard.putBoolean(_autoTestGear, false);
 
-		 */
 		System.out.println("auto constructor");
 
 	}
@@ -156,15 +132,18 @@ public class Autonomous {
 		System.out.println("auto init");
 
 		if (_autoSelected != this._autoInTeleop){
-			_autoSelected = (String) _defensePosition.getSelected();
-			_shooterModeSelected = (String) _gearProcessing.getSelected();
-			System.out.println("Auto selected: " + _autoSelected);		
-	
-	
+			_autoSelected = (String) _robotPosition.getSelected();
+			System.out.println("Auto selected: " + _autoSelected);
+
+			_crossCourtSelected = (String) _crossCourt.getSelected();
+			System.out.println("Cross Court Selected: " + _crossCourtSelected);
+
+
 			//build the steps for the selected autonomous
 			setAuto();
 		}
-		
+
+
 		_navx = _controls.getNavx();
 		_navx.zeroYaw();
 		_initCompassHeading = _navx.getCompassHeading();
@@ -193,67 +172,136 @@ public class Autonomous {
 	{	
 
 		//we are going to construct the steps needed for our autonomous mode
-//		int choice=1;
+		//		int choice=1;
 		double speedTest =SmartDashboard.getNumber(_autoTestSpeed, 0.5);
+		int calibrationRunTime = (int) SmartDashboard.getNumber(_autoTestTime, 3);
+		boolean highSpeedTest = SmartDashboard.getBoolean(_autoTestGear, false);
 		String caseName="";
 		_steps =  new ArrayList<AutonomousStep>();
-		
+
 		boolean blueAlliance = false;
 		_gameData = DriverStation.getInstance().getGameSpecificMessage();
-		
+		SmartDashboard.putString("GameData", _gameData);
+
 		if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
 			blueAlliance = true;
 			_lightsColor.set(false);//sets lights to match alliance color
 		}else
 			_lightsColor.set(true);//sets lights to match alliance color
-		
+
 		SmartDashboard.putBoolean("Alliance Color", blueAlliance);
-		
-//		if (Enums.IS_FINAL_ROBOT){
-//			//use the switch on the robot to identify autonomous
-//			
-//			AnalogInput autoSelector = new AnalogInput(Enums.AUTO_SWITCH_ANALOG);
-//			SmartDashboard.putNumber("Auto Selector Value", autoSelector.getValue()/100);
-//			
-//			if (autoSelector.getValue()/100 < 0.5)
-//				_autoSelected = _defaultAuto;
-//			else if (autoSelector.getValue()/100 < 1.5 && autoSelector.getValue()/100 > 0.5)
-//				_autoSelected = _auto1;  //left
-//			else if (autoSelector.getValue()/100 < 2.5 && autoSelector.getValue()/100 > 1.5)
-//				_autoSelected = _auto2;  //center
-//			else if (autoSelector.getValue()/100 < 3.5 && autoSelector.getValue()/100 > 2.5)
-//				_autoSelected = _auto3;  //right
-//			else if (autoSelector.getValue()/100 < 4.5 && autoSelector.getValue()/100 > 3.5)
-//				//read from the sendable chooser
-//				System.out.println("Using Sendable Chooser Autonomous mode" + _autoSelected);
-//			else
-//				_autoSelected = _defaultAuto;
-//		}
 		SmartDashboard.putString("AutoSelected", _autoSelected);
-//			_autoSelected= _auto2;		
+		//			_autoSelected= _auto2;	
+		
+		//these segments are from our drawing in one note.
+		double segmentA = 235; //was 235
+		double segmentB = 311; //was 285
+		double segmentC = 8; //was 21
+		double segmentD = 6; //was 34
+		double segmentE = 152; //was 129
+		double segmentF = 112; //was 112
+		double segmentG = 45; // was 45
+		double segmentH = 60; //was 60
+		double segmentI = 50; //was 50
+		double segmentJ = 195; //was 207
+		double segmentK = 65; //was 85
+
+		
+		
 		switch (_autoSelected) {
-		case _auto2: 
-			caseName="Middle Gear";
+		case _autoL1: 
+			
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
+			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'R') {
+				//this is cross court going from left position to scale on the right
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.65,0.65,segmentA));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,segmentJ));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,-90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
+			}else if(_gameData.charAt(1) == 'L'){
+				//this is going from leftmost position to scale on the left
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.5,0.5,segmentB));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,45));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.4,0.4,segmentC));
+			}else if(_gameData.charAt(0) == 'L'){
+				// this goes from leftmost position to switch
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.5,0.5,segmentE));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
+			}
+
+
+			//note we set coastmode in teleop init, but setting it here is a good practice
+			//_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
+
+			break;
+		case _autoL2: 
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.7,0.7,segmentF));
+
+			break;
+
+		case _autoCenter: 
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0));
+			if (_gameData.charAt(0) == 'L') {
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.7,0.7,segmentG));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentH));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentI));
+			}else {
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.7,0.7,segmentG));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentH));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentI));
+			}
+			break;
+
+		case _autoR1: 
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
+			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'L') {
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentA));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentJ));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,.4,0.4,segmentK));
+			}else if(_gameData.charAt(1) == 'R'){
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentB));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
+			}else if(_gameData.charAt(0) == 'R'){
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentE));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
+			}
 
 			//note we set coastmode in teleop init, but setting it here is a good practice
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
-		
+
+
 			break;
-		case _auto1: 
-			caseName="Feeder Gear";
-			addSideSteps(blueAlliance,false);
-			if (_shooterModeSelected == _autoGearRun)
-				addSideRunSteps (blueAlliance,false);
-	
+
+		case _autoR2: 
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.7,0.7,segmentF));
+
 			break;
-			
-		case _auto3: 
-			caseName="Boiler Gear";
-			addSideSteps(blueAlliance,true);
-			if (_shooterModeSelected == _autoGearRun)
-				addSideRunSteps (blueAlliance,true);
-			
-			break;
+
+//----------------------------------------------------------------------------------------------------------------------------------
 
 		case _autoRotator:
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
@@ -263,26 +311,29 @@ public class Autonomous {
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive Forward2",0,.5,.5,30));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn 60",0,0,0,-60));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive Forward3",0,.5,.5,30));
-			
+
 			break;
-			
+
 		case _autoTestSpeed:
 			caseName="Speed Test";
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"Drive",5,speedTest,speedTest,0));
+			if(highSpeedTest)
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"High Speed",0,0,0,0));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"Drive",calibrationRunTime,speedTest,speedTest,0));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
-			break;
-			
-		case _autoTestDistance:
-			caseName="Distance Test";
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive",0,speedTest,speedTest,48));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
+			if(highSpeedTest)
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for robot to stop",5,0,0,0));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
 			break;
 
-			
+		case _autoTestDistance:
+			caseName="Distance Test";
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive",0,speedTest,speedTest,60));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
+			break;
+
+
 		default: 
 			caseName="Do Nothing";
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
@@ -313,119 +364,11 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"start moving",0.5,0.5,0.5,0)); //move some
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"HI speed transmission",0,0,0,0)); //swich tranny
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"Drive Down Field",1.0,0.75,0.75,0)); //drive down the field
-		
-		
-	}
-	
-	private void addSideSteps(boolean isBlueAlliance, boolean isBoilerSide){
-		//boolean isBoilerSide = false;
-		double leg1Speed = 0.7;
-		double leg2Speed = 0.7;
-		double leg3Speed = 0.5;
-		
-		double boilerAngle = 0;
-		double rotationAngle = 0;
-		double distanceLeg1 = 0;
-		double distanceLeg2 = 0;
-		double distanceLeg3 = 0;
-		double leftSpeed = 0;
-		double rightSpeed = 0;
 
-		
-		if (isBoilerSide){
-			System.out.println("BOILER SIDE Auto!!");
-		} else {
-			System.out.println("FEEDER SIDE Auto!!");
-		}
 
-		
-		
-//		double boilerSideLeg1 = 117.4 - 14 - 9 + 2 +2; // these were james at the last penfield practice
-		double boilerSideLeg1 = 117.4 - 14 - 9 + 2 + 2 + 3;
-//		double boilerSideLeg2 = 44 - 14 + 18 + 3 - 12; // these were james at the last penfield practice
-//		double boilerSideLeg2 = 44 - 14 + 18 + 3 - 18;
-		double boilerSideLeg2 = 44 - 14 + 18 + 3 - 18 +5 -3 ;
-//		double feederSideLeg1 = 104 - 14 - 9 + 4; //these were James's settings at last penfield practice
-		double feederSideLeg1 = 104 - 14 - 9 - 5; //14 is half the robot length but need to subtract the 15.5/tan(60)
-//		double feederSideLeg2 = 52 - 14 + 18 + 3; // these were Jame's settings at last penfied practice
-		double feederSideLeg2 = 52 - 14 + 18 + 6; // 19 = 15.5/sin(60) which is the left bumber membership
-		
-		double feederSideLeg3 = 0;
-		double boilerSideLeg3 = 0;
-		
-		
-		//from Carl's latest drawing
-		feederSideLeg1 = 95.181 - 14.0 - 10.0 + 10 -4.0; // 14 = half the length of the robot.
-		feederSideLeg3 = 35;  //stop 30 inches from the pin to take a picture 
-		feederSideLeg2 = 69.036 - 14.0 + 15.0 - 3.0 - 2.0 - feederSideLeg3;
-		
-		boilerSideLeg1 = 108.8 - 14.0;
-//		boilerSideLeg3 = 41.799 - 14.0 - 3.0;
-//		boilerSideLeg3 = 41.799 - 14.0 - 5.0;  // mpk - changed on 4/10 8:03pm
-		boilerSideLeg3 = 41.799 - 14.0 - 5.0 -5;  // mpk - changed on 4/10 8:20pm, to increase dist for camera shot
-		boilerSideLeg2 = 1;
-
-		if (!isBoilerSide){	
-			rotationAngle = (isBlueAlliance ? -60 : 60);
-		} else {			
-			rotationAngle = (isBlueAlliance ? 60 : -60);
-		}
-
-		
-		distanceLeg1 = (isBoilerSide ? boilerSideLeg1 : feederSideLeg1);
-		distanceLeg2 = (isBoilerSide ? boilerSideLeg2 : feederSideLeg2);
-		distanceLeg3 = (isBoilerSide ? boilerSideLeg3 : feederSideLeg3);
-		
-		
-		if (Enums.AUTO_FROM_CORNER){
-			distanceLeg1 = 73;
-			distanceLeg2 = 60;
-			distanceLeg3 = 25;						
-		}
-				
-		
-
-					
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.LOW_SPEED,"Low speed transmission",0,0,0,0)); //make sure we are in low speed
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"Drive Forward an inch",0.2,0.3,0.3,0)); //drive an inch at low speed to make sure encoders are zeroing
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward 1",0,leg1Speed,leg1Speed,distanceLeg1));
-
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn 60",0,0,0,rotationAngle));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"wait to settle 1",0.5,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward 2",0,leg2Speed,leg2Speed,distanceLeg2));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"wait to settle",0.5,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GET_ANGLE_CORRECTION,"Get Angle Correction",0.25,0,0,0));
-		
-		if (_shooterModeSelected != _autoGearNothing){
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Correct Angle",0,0,0,0));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward 3",0,leg3Speed,leg3Speed,distanceLeg3));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GEAR,"Place Gear",0,0,0,60));
-		}
-		
-		//If we are isBoilerSide then add the steps for the ball handling
-//		SmartDashboard.putBoolean("is Boiler Side", isBoilerSide);
-//		if (isBoilerSide){			
-//			boilerAngle = (isBlueAlliance ? -40   : 40   );
-//			leftSpeed   = (isBlueAlliance ? -0.77 : -0.92);
-//			rightSpeed  = (isBlueAlliance ? -0.92 : -0.77);
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn to boiler1",0,0,0,boilerAngle));			
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive to Boiler1",0,leftSpeed,rightSpeed,134)); //drive forward about 20 inch
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.LIFT,"Lift Bottom",0,0,0,0)); 
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.FEED,"Feed Balls",10,0,0,0)); 
-//		}
-		
-		//finish the autonomous
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
-		
-//note we set coastmode in teleop init, but setting it here is a good practice
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
-		
-		
 	}
 
-	
+
 	public boolean isExecuting(){
 		return _isExecuting;
 	}
@@ -436,13 +379,14 @@ public class Autonomous {
 
 	public void execute ()
 	{
-//		System.out.println("auto execute");
+		double encPos = 0; //moved from drivedistance because was initialized twice
+		//		System.out.println("auto execute");
 		if (_steps == null ){
 			_isExecuting = false;
 			return;
-			
+
 		}
-		
+
 		if (_steps.size() == 0){
 			System.out.println("trying to execute no steps in Autonomous 360");
 			_isExecuting = false;	
@@ -461,7 +405,7 @@ public class Autonomous {
 		else
 		{
 			_currentAutoStep = _steps.get(_currentStep);
-			
+
 			_isExecuting = true;
 			//switch (_steps.get(_currentStep))
 			switch (_currentAutoStep.stepType)
@@ -469,42 +413,59 @@ public class Autonomous {
 			case DRIVE:
 				drive(_currentAutoStep.stepTime,_currentAutoStep.leftSpeed,_currentAutoStep.rightSpeed);
 				break;
-				
-			case DRIVE_DISTANCE:
-				double encPos = 0;
-				if (Enums.IS_FINAL_ROBOT)					
-					//the final robot wheels are 5.375 in diameter (according to Pete, we should measure
-					// this makes each wheel revolution cover 7.5% more ground
-					encPos = Math.abs((_currentAutoStep.distance - 7.1002) /0.0045 )* 0.96; // was 0.9375 and slightly short
-				else
-					encPos = Math.abs((_currentAutoStep.distance - 7.1002) /0.0045 );
 
+			case DRIVE_DISTANCE:
+				if (_controls.getIsSlowMode())
+					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+				else
+					encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+
+//				if (_controls.getIsSlowMode())
+//					encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+//				else
+//					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
 				driveStraight(0,_currentAutoStep.leftSpeed,_currentAutoStep.rightSpeed,encPos);
+
+				break;
 				
+			case DRIVE_PROFILE:
+				if (Enums.IS_FINAL_ROBOT)					
+					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+				else {
+					//System.out.println("Slow mode in Auto: " +_controls.getIsSlowMode());
+					if (_controls.getIsSlowMode())
+						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+					else
+						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+
+//					if (_controls.getIsSlowMode())
+//						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+//					else
+//						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+
+				}
+
+				driveStraightProfile(0,_currentAutoStep.leftSpeed,_currentAutoStep.rightSpeed,encPos);
+
 				break;
 
 			case DRIVE_DEADRECON:
 
-				if (Enums.IS_FINAL_ROBOT)					
-					cTime = Math.abs(_currentAutoStep.distance/(59*_currentAutoStep.leftSpeed - 2.5));
-				else
-					cTime = Math.abs(_currentAutoStep.distance/(59*_currentAutoStep.leftSpeed - 2.5));
-
 				driveStraight(cTime,_currentAutoStep.leftSpeed,_currentAutoStep.rightSpeed,0);
 				break;
-				
+
 			case CALCANGLE:
 				if (!_angleHasBeenCalculated){
-					
+
 					if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
 						//this is where we calculate the rotation angle
 						//initial heading + 225 - current heading should be pretty close
 						_calculatedAngle = 180 - 30;//_initCompassHeading + 225 - _navx.getCompassHeading();
 					}	else{
 						_calculatedAngle = 180 + 30; //_initCompassHeading + 135.0 - _navx.getCompassHeading();
-						
+
 					}
-					
+
 					_angleHasBeenCalculated = true;
 				}
 				SmartDashboard.putNumber("Init Compass Heading", _initCompassHeading);
@@ -512,30 +473,18 @@ public class Autonomous {
 				//now just rotate the calculated distance
 				rotate(_calculatedAngle);
 				break;
-				
+
 			case GET_ANGLE_CORRECTION:
 				getVisionCorrection(_currentAutoStep.stepTime);
 				break;
 
-				
+
 			case ROTATE:
 				rotate(_currentAutoStep.distance);
 
 				break;
 
-				
-				
-			case GEAR: 
-				//if we have not requested an ejection, do so now
-				if (!_isEjecting){
-					_isEjecting = true;					
-				}					
-				
-				//wait until the gear is fully deployed, this will back up the robot too
-				
-			
-				break;
-				
+
 			case BRAKEMODE:
 				_controls.setBrakeMode();
 				_controls.getDrive().zeroEncoder();
@@ -557,7 +506,7 @@ public class Autonomous {
 				startNextStep();
 				break;
 
-				
+
 			case WAIT:
 				wait(_currentAutoStep.stepTime);
 				break;
@@ -573,39 +522,39 @@ public class Autonomous {
 		this.updateStatus();
 		_controls.updateStatus();
 	}
-	
+
 	private void getVisionCorrection(double time){
 		if (!Enums.VISION_CORRECTION_IN_AUTO){
 			startNextStep();
 			return;
 		}
-			
+
 		if (! _hasCaptured){
 			_hasCaptured = true;
 			if (Enums.CAMERA_USE_REDUCED_BRIGHTNESS)
 				_controls.getAutoTarget().setCameraForAuto();
-			
+
 			_visionData = _controls.getAutoTarget().captureImage();	
-			
+
 			if (Enums.CAMERA_USE_REDUCED_BRIGHTNESS)
 				_controls.getAutoTarget().setCameraDefaults();			
-							
+
 			if ( _visionData != null)
 			{
 				if (_visionData.getResult()){
 					_controls.getDrive().set(0, 0, 0, 0);
 					double correctionOffset = 0.0;
-					
+
 					AutonomousStep nextStep= _steps.get(_currentStep + 1);
 					SmartDashboard.putNumber("Facing Angle", _visionData.getFacingAngleInDeg());
 					System.out.println("Facing angle: " + _visionData.getFacingAngleInDeg());
 					if(Math.abs(_visionData.getFacingAngleInDeg()) < 60 && Math.abs(_visionData.getFacingAngleInDeg()) > 5){
-						
+
 						if (!Enums.AUTO_FROM_CORNER){
 							correctionOffset = (_visionData.getFacingAngleInDeg() > 0 ? 2.0 : -2.0);							
 						}
 						nextStep.distance = _visionData.getFacingAngleInDeg() - correctionOffset; // we seem to be off about 2 deg				
-						}
+					}
 					else{
 						System.out.println("Angle found but not in range for correction!");
 						startNextStep();
@@ -617,20 +566,22 @@ public class Autonomous {
 		else 
 			startNextStep();
 
-		
+
 	}
 
 	private void rotate( double distance){
 		//float deltaYaw;
-		double  speed =0.25;
-		double tolerance=0.5;
+		double  speed = 0.28;
+		double lowSpeed = 0.3;
+		double tolerance=0.50;
 		int direction=1;
 
+		
 		if (distance == 0){
 			startNextStep();
 			return;
 		}
-		
+
 		//deltaYaw = _initialYaw + _controls.getNavx().getYaw();
 		//SmartDashboard.putNumber("deltaYaw", deltaYaw);
 		// 
@@ -642,16 +593,20 @@ public class Autonomous {
 		if(Math.abs(_controls.getNavx().getYaw()) > Math.abs(distance)){
 			SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
 			speed=-speed/1.5;
+			speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
+			System.out.println("Offset: " + ((_controls.getNavx().getYaw()) - Math.abs(distance)) + " rotate speed: "+speed);
 			_controls.getDrive().set(speed, speed, -speed, -speed);
 			if(Math.abs(_controls.getNavx().getYaw())-Math.abs(distance)<=tolerance){
 				_controls.getDrive().set(0, 0, 0, 0);
 				startNextStep();
 			}
 		}
+		//System.out.println("Rotating: "+ distance + " speed "+speed);
+		
 	}
-	
 
-	
+
+
 
 	public void updateStatus(){
 
@@ -663,11 +618,12 @@ public class Autonomous {
 	}
 	public void drive (double time, double left, double right)
 	{
-	
+
 
 		if (_stepTimer.get() > time)
 		{
 			_controls.getDrive().set(0, 0, 0, 0);
+			SmartDashboard.putNumber("Encoder Value", _controls.getDrive().getAbsAvgEncoderValue());
 			startNextStep();
 		}
 		else
@@ -706,17 +662,21 @@ public class Autonomous {
 			if (_controls.getDrive().getAbsAvgEncoderValue() >= targetEncPosition)
 			{
 				_controls.getDrive().set(0, 0, 0, 0);
+				System.out.println("Target encoder position" + targetEncPosition);
+				System.out.println("Current encoder position" + _controls.getDrive().getAbsAvgEncoderValue());
 				startNextStep();
 			}
 			else
 			{
 				_controls.getDrive().set(-left, -left, -right, -right);
 			}
-			
+
 		} else {
 			if (_stepTimer.get() >= time)
 			{
 				_controls.getDrive().set(0, 0, 0, 0);
+				System.out.println("Target encoder position" + targetEncPosition);
+				System.out.println("Current encoder position" + _controls.getDrive().getAbsAvgEncoderValue());
 				startNextStep();
 			}
 			else
@@ -725,7 +685,86 @@ public class Autonomous {
 			}
 		}
 	}
-	
+
+	public void driveStraightProfile (double time, double left, double right,double targetEncPosition)
+	{
+		double remainingDistance = 0;
+		double remainingPercent = 0;
+		remainingDistance = targetEncPosition - _controls.getDrive().getAbsAvgEncoderValue();
+		remainingPercent = remainingDistance/targetEncPosition;
+		double leftsign = (left >= 0) ? 1.0 : -1.0;
+		double rightsign = (right >= 0) ? 1.0 : -1.0;
+		 
+		
+	if (remainingDistance <= 6000) {
+		left =  (Math.abs(left) > 0.30) ?  0.30 * leftsign : left ;  //only brake if setpoint is greater than setpoint
+		right = (Math.abs(right) > 0.30) ? 0.30 * rightsign : right;
+	}
+//	else if (remainingDistance <= 4000){
+//		left = 0.35 * leftsign;
+//		right = 0.35 * rightsign;
+//	}else if (remainingDistance <= 5000){
+//		left = 0.40 * leftsign;
+//		right = 0.40 * rightsign;
+//	}else if (remainingDistance <= 6000){
+//		left = 0.45 * leftsign;
+//		right = 0.45 * rightsign;
+//	}else if (remainingDistance <= 7000){
+//		left = 0.50 * leftsign;
+//		right = 0.50 * rightsign;
+//	}	
+		
+		float deltaYaw;
+
+		//deltaYaw = _initialYaw - _controls.getNavx().getYaw();
+		deltaYaw = _navx.getYaw();
+		double offsetLimit = 0.05;
+		double offset=0;
+
+		SmartDashboard.putNumber("currentYaw", _initialYaw);
+		SmartDashboard.putNumber("deltaYaw", deltaYaw);
+		if (left == right){
+			offset = Math.abs(deltaYaw);
+			if(offset > offsetLimit){
+				offset = offsetLimit;
+			}
+			if(deltaYaw < 0){
+				left = left * (1+offset);
+				right = right * (1-offset);
+			}else{
+				left = left * (1-offset);
+				right = right * (1+offset);
+			}
+		}
+
+		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
+		if (targetEncPosition > 0){
+			if (_controls.getDrive().getAbsAvgEncoderValue() >= targetEncPosition)
+			{
+				_controls.getDrive().set(0, 0, 0, 0);
+				System.out.println("Target encoder position" + targetEncPosition);
+				System.out.println("Current encoder position" + _controls.getDrive().getAbsAvgEncoderValue());
+				startNextStep();
+			}
+			else
+			{
+				_controls.getDrive().set(-left, -left, -right, -right);
+			}
+
+		} else {
+			if (_stepTimer.get() >= time)
+			{
+				_controls.getDrive().set(0, 0, 0, 0);
+				System.out.println("Target encoder position" + targetEncPosition);
+				System.out.println("Current encoder position" + _controls.getDrive().getAbsAvgEncoderValue());
+				startNextStep();
+			}
+			else
+			{
+				_controls.getDrive().set(-left, -left, -right, -right);
+			}
+		}
+	}
 	public void drive (double time, double leftX, double leftY, double rightX, double rightY)
 	{
 		if (_stepTimer.get() > time)

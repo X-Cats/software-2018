@@ -25,9 +25,9 @@ public class Enums {
 	 * so if the right side is going 5% farther than the left when the speeds are the same
 	 * the right = right + -0.05 * right
 	*/
-	public static final double SPEED_CALIBRATION = 0.0;  
+	//not used public static final double SPEED_CALIBRATION = 0.0;  
 	
-	public static final boolean IS_FINAL_ROBOT = true;
+	public static final boolean IS_FINAL_ROBOT = false;
 	public static final String  DRIVE_CONTROLLER_TYPE = "Talon"; // choices are "Jaguar" or "Talon"
 	public static final boolean HAS_MECHANUM_WHEELS = false;
 	public static final boolean USE_PID = false;    	// This is if the drive train is using PID control
@@ -45,7 +45,7 @@ public class Enums {
 	public static final double  ROBOT_LENGTH_EXTENDED = 40; // length of robot with shooter down
 
 	//vision constants
-	public static final boolean VISION_SYSTEM_ENABLED = false;
+	public static final boolean VISION_SYSTEM_ENABLED = true;
 	public static final int CAMERA_FOV_HORIZONTAL = 61;  // Horizontal field of view for MSoft Lifecam
 	public static final boolean CAMERA_USE_REDUCED_BRIGHTNESS = false; //reduces brightness during acquisition for vision processing
 //	public static final int PIXEL_PER_DEGREE = 14;   // commented out to allow for various resolutions
@@ -66,9 +66,12 @@ public class Enums {
 	//before we put the encoders on drive because the cable was not long enough to reach the "Front" motor
 	//public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 2, 3, 4, 5, 6}; //these are the CAN bus ids of the motors
 	public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 3, 4, 6}; //these are the CAN bus ids of the motors
-		
+	
+	public static final double SPEED_CONTROLLER_ZERO_TIME = 0.140;//delay time to allow encoders to zero
+	
 	//This is for the use of the compressor
 	public static final int     PCM_SHIFTER_FORWARD = 4, PCM_SHIFTER_REVERSE=5;  //this is used to shift the gear ration on the drive train from low to high (SHIFTER)
+	public static final int PCM_ARMS_IN = 1, PCM_ARMS_OUT = 0; //values for acquisition arms solenoids
 	public static final double  SHIFTER_DELAY_TIME = 0.25;  // this time is used for the "slack speed" inbetween gear shifts
 	public static final double  SHIFTER_DELAY_SPEED = 0.4;  // this is the speed for the "slack" during shifting
 		
@@ -88,7 +91,13 @@ public class Enums {
 	public static final int ELEVATOR_MASTER_CAN_ID = 32;//can id for elevatorMaster
 	public static final int ELEVATOR_FOLLOWER_CAN_ID = 32;//can id for elevatorFollower
 	public static final double ELEVATOR_SPEED = 0.5;//speed for elevator motor, currently test value
-	
+	public static final int ELEVATOR_SWITCH_SET_POINT = 0;//encoder value for elevator switch position, currently at test value
+	public static final int ELEVATOR_SCALE_SET_POINT = 0;//encoder value for elevator scale position, currently at test value
+
+	//Climber
+	public static final int CLIMBER_CAN_ID = 56;//can id for climber motor
+	public static final double CLIMBER_SPEED = 0.5;//speed for climber motor, gurrently at test value
+
 	//Autonomous uses the chooser object to select mode
 	public static final int AUTONOMOUS_TIME = 15;
 	public static final int AUTO_SWITCH_ANALOG = 0;

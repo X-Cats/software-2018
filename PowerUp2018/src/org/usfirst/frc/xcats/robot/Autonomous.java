@@ -279,7 +279,7 @@ public class Autonomous {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,.4,0.4,segmentK));
 			}else if(_gameData.charAt(1) == 'R'){
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentB));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-45));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
 			}else if(_gameData.charAt(0) == 'R'){
@@ -571,7 +571,7 @@ public class Autonomous {
 
 	private void rotate( double distance){
 		//float deltaYaw;
-		double  speed = 0.28;
+		double  speed = 0.35;
 		double lowSpeed = 0.3;
 		double tolerance=0.50;
 		int direction=1;

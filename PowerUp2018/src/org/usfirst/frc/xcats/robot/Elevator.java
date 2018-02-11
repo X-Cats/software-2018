@@ -2,6 +2,8 @@ package org.usfirst.frc.xcats.robot;
 
 import org.usfirst.frc.xcats.robot.XCatsSpeedController.SCType;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,6 +29,8 @@ public class Elevator {
 		_elevatorMaster = new XCatsSpeedController("Elevator Master", Enums.ELEVATOR_MASTER_CAN_ID, true, SCType.TALON, _bottom, null);
 		_elevatorFollower = new XCatsSpeedController("Elevator Follower", Enums.ELEVATOR_FOLLOWER_CAN_ID, true, SCType.TALON, null, null);
 		_elevatorFollower.setFollower(Enums.ELEVATOR_MASTER_CAN_ID);
+		this._elevatorMaster.setFeedbackDevice(FeedbackDevice.CTRE_MagEncoder_Absolute);
+		this.zeroEncoder();
 
 		_setPoint = 0;
 		
@@ -39,7 +43,7 @@ public class Elevator {
 	}
 
 	public void lower() {
-		_elevatorMaster.set(-Enums.ELEVATOR_SPEED_DOWN);
+		_elevatorMaster.set(Enums.ELEVATOR_SPEED_DOWN);
 	}
 
 	public void stop() {
@@ -102,15 +106,15 @@ public class Elevator {
 
 		SmartDashboard.putNumber("Elevator Encoder Value", _elevatorMaster.getEncPosition());
 
-		if(_bottom.get())
-			this.zeroEncoder();
+//		if(!_bottom.get())
+//			this.zeroEncoder();
 
 		
 
-		if(_targetLimit.get() || this._elevatorMaster.getEncPosition() == _targetEncoder) {
-			this._elevatorMaster.set(0);
-			this._elevatorMoving = false;
-		}
+//		if(!_targetLimit.get() || this._elevatorMaster.getEncPosition() == _targetEncoder) {
+//			this._elevatorMaster.set(0);
+//			this._elevatorMoving = false;
+//		}
 
 
 	}

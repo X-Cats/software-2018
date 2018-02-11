@@ -3,58 +3,116 @@ package org.usfirst.frc.xcats.robot;
 import org.usfirst.frc.xcats.robot.XCatsSpeedController.SCType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Elevator {
-	
+
 	private XCatsSpeedController _elevatorMaster;
 	private XCatsSpeedController _elevatorFollower;
 	private DigitalInput _switchLimit;
 	private DigitalInput _scaleLimit;
 	private DigitalInput _bottom;
-	private DigitalInput _top;
-	
+
+	private int _setPoint;
+	private int _targetEncoder;
+	private boolean _elevatorMoving;
+	private DigitalInput _targetLimit;
+
 	public Elevator() {
 		_bottom = new DigitalInput(Enums.ELEVATOR_BOTTOM_LIMIT);
 		_switchLimit = new DigitalInput(Enums.ELEVATOR_SWITCH_LIMIT);
 		_scaleLimit = new DigitalInput(Enums.ELEVATOR_SCALE_LIMIT);
-		_top = new DigitalInput(Enums.ELEVATOR_TOP_LIMIT);
-		
-		_elevatorMaster = new XCatsSpeedController("Elevator Master", Enums.ELEVATOR_MASTER_CAN_ID, true, SCType.TALON, _bottom, _top);
+
+		_elevatorMaster = new XCatsSpeedController("Elevator Master", Enums.ELEVATOR_MASTER_CAN_ID, true, SCType.TALON, _bottom, null);
 		_elevatorFollower = new XCatsSpeedController("Elevator Follower", Enums.ELEVATOR_FOLLOWER_CAN_ID, true, SCType.TALON, null, null);
 		_elevatorFollower.setFollower(Enums.ELEVATOR_MASTER_CAN_ID);
+
+		_setPoint = 0;
+		
+		_elevatorMoving = false;
+		_targetLimit = _switchLimit;
 	}
-	
+
 	public void raise() {
-		_elevatorMaster.set(Enums.ELEVATOR_SPEED);
+		_elevatorMaster.set(Enums.ELEVATOR_SPEED_UP);
 	}
-	
+
 	public void lower() {
-		_elevatorMaster.set(-Enums.ELEVATOR_SPEED);
+		_elevatorMaster.set(-Enums.ELEVATOR_SPEED_DOWN);
 	}
-	
+
 	public void stop() {
 		_elevatorMaster.set(0);
 	}
-	
+
 	public void goToSwitch() {
-		
+		int deltaEncoder;
+
+		_setPoint = Enums.ELEVATOR_SWITCH_SET_POINT;
+		_targetLimit = this._switchLimit;
+		if(!_elevatorMoving) {
+			deltaEncoder = (int) (this.getEncoder() - this._setPoint);
+			if(deltaEncoder > 0) {
+				this._elevatorMaster.set(Enums.ELEVATOR_SPEED_DOWN);
+				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
+			}else if(deltaEncoder < 0) {
+				this._elevatorMaster.set(Enums.ELEVATOR_SPEED_UP);
+				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
+			}else {
+				_targetEncoder = (int) this.getEncoder();
+			}
+		}
 	}
-	
+
 	public void goToScale() {
+		int deltaEncoder;
+		_setPoint = Enums.ELEVATOR_SCALE_SET_POINT;
+		_targetLimit = this._scaleLimit;
 		
+		if(!_elevatorMoving) {
+			deltaEncoder = (int) (this.getEncoder() - this._setPoint);
+			if(deltaEncoder > 0) {
+				this._elevatorMaster.set(Enums.ELEVATOR_SPEED_DOWN);
+				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
+			}else if(deltaEncoder < 0) {
+				this._elevatorMaster.set(Enums.ELEVATOR_SPEED_UP);
+				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
+			}else {
+				_targetEncoder = (int) this.getEncoder();
+			}
+		}
 	}
-	
-	public void raiseLinkage() {
-		
+
+	public void zeroEncoder() {
+		_elevatorMaster.zeroEncoder();
 	}
-	
-	public void lowerLinkage() {
-		
+
+	public double getEncoder() {
+		return _elevatorMaster.getEncPosition();
 	}
-	
-	public void stopLinkage() {
+
+	public void updateStatus() {
+
+		int deltaEncoder;
+
+		SmartDashboard.putBoolean("Bottom Limit", _bottom.get());
+		SmartDashboard.putBoolean("Switch Limit", _switchLimit.get());
+		SmartDashboard.putBoolean("Scale Limit", _scaleLimit.get());
+
+		SmartDashboard.putNumber("Elevator Encoder Value", _elevatorMaster.getEncPosition());
+
+		if(_bottom.get())
+			this.zeroEncoder();
+
 		
+
+		if(_targetLimit.get() || this._elevatorMaster.getEncPosition() == _targetEncoder) {
+			this._elevatorMaster.set(0);
+			this._elevatorMoving = false;
+		}
+
+
 	}
 
 }

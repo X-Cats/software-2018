@@ -374,9 +374,9 @@ public class RobotControls {
 		}
 		
 		//buttons to raise elevator
-		if(_operatorJS.getPOV() == 360)//up on POV stick
+		if(_operatorJS.getRawButton(2))//up on POV stick
 			_elevator.raise();
-		else if(_operatorJS.getPOV() == 180)//down on POV stick
+		else if(_operatorJS.getRawButton(3))//down on POV stick
 			_elevator.lower();
 		else
 			_elevator.stop();
@@ -409,11 +409,11 @@ public class RobotControls {
 
 		//buttons for 4-bar linkage
 		if(_operatorJS.getPOV() == 90) //right on pov stick
-			_elevator.raiseLinkage();
+			_acquisition.raiseLinkage();
 		else if(_operatorJS.getPOV() == 270) //left on pov stick
-			_elevator.lowerLinkage();
+			_acquisition.lowerLinkage();
 		else
-			_elevator.stop();
+			_acquisition.stopLinkage();
 
 			
 	
@@ -474,6 +474,8 @@ public class RobotControls {
 		
 		_drive.updateStatus();
 		_autoTarget.updateStatus();
+		
+		_elevator.updateStatus();
 		
 		SmartDashboard.putNumber("Encoder Value", _drive.getAbsAvgEncoderValue());
 		

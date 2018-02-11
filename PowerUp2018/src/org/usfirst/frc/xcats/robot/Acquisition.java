@@ -42,5 +42,17 @@ public class Acquisition {
 	public void armsOut() {
 		_armsSolenoid.set(DoubleSolenoid.Value.kReverse);	
 	}
+	
+	public void raiseLinkage() {
+		
+	}
+	
+	public void lowerLinkage() {
+		
+	}
+	
+	public void stopLinkage() {
+		
+	}
 
 }

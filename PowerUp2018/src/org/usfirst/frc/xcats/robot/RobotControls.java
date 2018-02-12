@@ -368,10 +368,14 @@ public class RobotControls {
 	
 	public void operate ()
 	{
+
+
 		//if we are executing commands then exit response to operator
 		if (_commandAuto != null){
 			return;
 		}
+
+		//these need to be rethought
 		
 		//buttons to raise elevator
 		if(_operatorJS.getRawButton(2))//up on POV stick

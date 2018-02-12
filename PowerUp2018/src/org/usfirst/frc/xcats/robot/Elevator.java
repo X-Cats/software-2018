@@ -22,6 +22,7 @@ public class Elevator {
 	private DigitalInput _targetLimit;
 
 	public Elevator() {
+		//these need to be changed to reflect their actual positions
 		_bottom = new DigitalInput(Enums.ELEVATOR_BOTTOM_LIMIT);
 		_switchLimit = new DigitalInput(Enums.ELEVATOR_SWITCH_LIMIT);
 		_scaleLimit = new DigitalInput(Enums.ELEVATOR_SCALE_LIMIT);

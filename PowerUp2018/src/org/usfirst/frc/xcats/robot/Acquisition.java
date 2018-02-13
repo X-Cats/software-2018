@@ -1,6 +1,8 @@
 package org.usfirst.frc.xcats.robot;
 
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.usfirst.frc.xcats.robot.XCatsSpeedController.SCType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -20,9 +22,10 @@ public class Acquisition {
 		_rightAcquisition.setInverted(true);
 		
 		_armsSolenoid = new DoubleSolenoid(Enums.PCM_CAN_ID, Enums.PCM_ARMS_IN, Enums.PCM_ARMS_OUT);
+		_armsSolenoid.set(DoubleSolenoid.Value.kForward);
 
-		this._linkage1 = new Relay(Enums.LINKAGE_ONE_CHANNEL);
-		this._linkage2 = new Relay(Enums.LINKAGE_TWO_CHANNEL);
+		this._linkage1 = new Relay(Enums.LINKAGE_ONE_CHANNEL, Relay.Direction.kBoth);
+		this._linkage2 = new Relay(Enums.LINKAGE_TWO_CHANNEL, Relay.Direction.kBoth);
 	}
 	
 	//intake cube
@@ -64,4 +67,34 @@ public class Acquisition {
 		this._linkage2.set(Relay.Value.kOff);
 	}
 
+	public void updateStatus() {
+	  String lk = "";
+		
+//		switch (this._linkage1.get())
+//		{
+//		case kForward :
+//			lk = "Forward";
+//			break;
+//		case kReverse :
+//			lk = "Reverse";
+//			break;
+//		case kOff:
+//			lk = "Off";
+//			break;
+//		case kOn:
+//			lk = "On";
+//			break;
+//		}
+		
+		lk = this._linkage1.get().name();
+		
+		String k = this._linkage2.get().name();
+		System.out.println("Linkage 2 Relay Value" + k);
+		
+		SmartDashboard.putString("Linkage 2 Relay Value", k);
+		
+		
+		SmartDashboard.putString("Linkage Relay Value", lk);
+		
+	}
 }

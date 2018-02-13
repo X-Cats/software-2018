@@ -96,19 +96,34 @@ public class Elevator {
 	public double getEncoder() {
 		return _elevatorMaster.getEncPosition();
 	}
-
+	
+	public boolean isAtBottom () {
+		return !_bottom.get();
+	}
+	public boolean isAtSwitch() {
+		return ! _switchLimit.get();
+	}
+	
+	public boolean isAtScale() {
+		return !_scaleLimit.get();
+	}
+	
+	public double scaleEncoder() {
+		return -this._elevatorMaster.getEncPosition();
+	}
+	
 	public void updateStatus() {
 
 		int deltaEncoder;
 
-		SmartDashboard.putBoolean("Bottom Limit", _bottom.get());
-		SmartDashboard.putBoolean("Switch Limit", _switchLimit.get());
-		SmartDashboard.putBoolean("Scale Limit", _scaleLimit.get());
+		SmartDashboard.putBoolean("Bottom Limit", isAtBottom());
+		SmartDashboard.putBoolean("Switch Limit", isAtSwitch());
+		SmartDashboard.putBoolean("Scale Limit", isAtScale());
 
-		SmartDashboard.putNumber("Elevator Encoder Value", _elevatorMaster.getEncPosition());
+		SmartDashboard.putNumber("Elevator Encoder Value", this.scaleEncoder());
 
-//		if(!_bottom.get())
-//			this.zeroEncoder();
+		if(isAtBottom())
+			this.zeroEncoder();
 
 		
 

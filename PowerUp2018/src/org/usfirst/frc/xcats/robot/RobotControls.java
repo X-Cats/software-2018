@@ -412,9 +412,9 @@ public class RobotControls {
 			_climber.stop();
 
 		//buttons for 4-bar linkage
-		if(_operatorJS.getPOV() == 90) //right on pov stick
+		if(_operatorJS.getRawButton(8)) //right on pov stick
 			_acquisition.raiseLinkage();
-		else if(_operatorJS.getPOV() == 270) //left on pov stick
+		else if(_operatorJS.getRawButton(7)) //left on pov stick
 			_acquisition.lowerLinkage();
 		else
 			_acquisition.stopLinkage();
@@ -480,6 +480,7 @@ public class RobotControls {
 		_autoTarget.updateStatus();
 		
 		_elevator.updateStatus();
+		this._acquisition.updateStatus();
 		
 		SmartDashboard.putNumber("Encoder Value", _drive.getAbsAvgEncoderValue());
 		

@@ -95,6 +95,8 @@ public class Acquisition {
 		
 		
 		SmartDashboard.putString("Linkage Relay Value", lk);
+
+		SmartDashboard.putString("Arms Solenoid Value", this._armsSolenoid.get().name());
 		
 	}
 }

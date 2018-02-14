@@ -392,9 +392,9 @@ public class RobotControls {
 			_acquisition.armsIn();
 		
 		//buttons for acquisition wheels
-		if(_operatorJS.getPOV(0) > 0 && this._operatorJS.getPOV(0) <90)
+		if(_operatorJS.getPOV(0) == 90)
 			_acquisition.release();
-		else if(_operatorJS.getPOV(0) <90 && this._operatorJS.getPOV(0) < 270)
+		else if(_operatorJS.getPOV(0) ==270)
 			_acquisition.intake();
 		else
 			_acquisition.stop();
@@ -404,12 +404,6 @@ public class RobotControls {
 			_elevator.goToSwitch();//currently not implemented
 		if(_operatorJS.getRawButton(4))
 			_elevator.goToScale();//currently not implemented
-
-		//buttons for climber
-		if(_operatorJS.getRawButton(8))
-			_climber.climb();
-		else
-			_climber.stop();
 
 		//buttons for 4-bar linkage
 		if(_operatorJS.getRawButton(8)) //right on pov stick

@@ -76,6 +76,11 @@ public class Acquisition {
 	public void moveToHome() {
 		if (!_movingHome) {
 			
+			this.armsIn();
+			_linqTimer.reset();
+			_linqTimer.start();
+			
+			
 			_movingHome = true;
 		}
 	
@@ -83,7 +88,16 @@ public class Acquisition {
 	public void updateStatus() {
 	  String lk = "";
 		
-
+	  if (_movingHome) {
+		  if (_linqTimer.get() >= Enums.LINQ_HOME_TIME) {
+			  _linqTimer.stop();
+			  this.stopLinkage();
+			  _movingHome = false;
+			  
+		  }else {
+			  this.raiseLinkage();
+		  }
+	  }
 		
 		lk = this._linkage1.get().name();
 		

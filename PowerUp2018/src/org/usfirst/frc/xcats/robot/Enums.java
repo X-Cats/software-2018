@@ -88,11 +88,13 @@ public class Enums {
 	public static final double ACQUISITION_SPEED = 0.5;//speed of acquisition motors, is currently test value
 	public static final int LINKAGE_ONE_CHANNEL = 0;
 	public static final int LINKAGE_TWO_CHANNEL = 1;
+	public static final double LINQ_HOME_TIME = 2.5;
 
 	//Elevator
 	public static final int ELEVATOR_MASTER_CAN_ID = 8;//can id for elevatorMaster
 	public static final int ELEVATOR_FOLLOWER_CAN_ID = 9;//can id for elevatorFollower
 	public static final int ELEVATOR_SWITCH_SET_POINT = 0;//encoder value for elevator switch position, currently at test value
+	public static final int ELEVATOR_BOTTOM_SET_POINT = 0;
 	public static final int ELEVATOR_SCALE_SET_POINT = 0;//encoder value for elevator scale position, currently at test value
 	public static final int ELEVATOR_BOTTOM_LIMIT = 4;
 	public static final int ELEVATOR_SWITCH_LIMIT = 2;

@@ -392,9 +392,9 @@ public class RobotControls {
 			_acquisition.armsIn();
 		
 		//buttons for acquisition wheels
-		if(_operatorJS.getRawButton(2))
+		if(_operatorJS.getPOV(0) > 0 && this._operatorJS.getPOV(0) <90)
 			_acquisition.release();
-		else if(_operatorJS.getRawButton(3))
+		else if(_operatorJS.getPOV(0) <90 && this._operatorJS.getPOV(0) < 270)
 			_acquisition.intake();
 		else
 			_acquisition.stop();
@@ -418,6 +418,13 @@ public class RobotControls {
 			_acquisition.lowerLinkage();
 		else
 			_acquisition.stopLinkage();
+		
+		//button for going home
+		if(_rightJS.getRawButton(3)) {
+			_elevator.goToBottom();
+			_acquisition.moveToHome();
+		}
+		
 
 			
 	

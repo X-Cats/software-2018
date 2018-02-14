@@ -1,6 +1,7 @@
 package org.usfirst.frc.xcats.robot;
 
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.xcats.robot.XCatsSpeedController.SCType;
@@ -14,6 +15,9 @@ public class Acquisition {
 	private DoubleSolenoid _armsSolenoid;
 	private Relay _linkage1;
 	private Relay _linkage2;
+	private boolean _movingHome = false;
+	private Timer _acqTimer = new Timer();
+	private Timer _linqTimer = new Timer();
 	
 	public Acquisition() {
 		_leftAcquisition = new XCatsSpeedController("Left Acquisition", Enums.LEFT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
@@ -44,11 +48,13 @@ public class Acquisition {
 	
 	//push secondary wheels for acquisition in
 	public void armsIn() {
+		System.out.println("arms in");
 		_armsSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	//pull secondary wheels for acquisition out
 	public void armsOut() {
+		System.out.println("arms out");
 		_armsSolenoid.set(DoubleSolenoid.Value.kReverse);	
 	}
 	
@@ -67,29 +73,21 @@ public class Acquisition {
 		this._linkage2.set(Relay.Value.kOff);
 	}
 
+	public void moveToHome() {
+		if (!_movingHome) {
+			
+			_movingHome = true;
+		}
+	
+	}
 	public void updateStatus() {
 	  String lk = "";
 		
-//		switch (this._linkage1.get())
-//		{
-//		case kForward :
-//			lk = "Forward";
-//			break;
-//		case kReverse :
-//			lk = "Reverse";
-//			break;
-//		case kOff:
-//			lk = "Off";
-//			break;
-//		case kOn:
-//			lk = "On";
-//			break;
-//		}
+
 		
 		lk = this._linkage1.get().name();
 		
 		String k = this._linkage2.get().name();
-		System.out.println("Linkage 2 Relay Value" + k);
 		
 		SmartDashboard.putString("Linkage 2 Relay Value", k);
 		

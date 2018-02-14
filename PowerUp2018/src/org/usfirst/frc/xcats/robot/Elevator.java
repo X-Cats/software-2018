@@ -20,6 +20,7 @@ public class Elevator {
 	private int _targetEncoder;
 	private boolean _elevatorMoving;
 	private DigitalInput _targetLimit;
+	private boolean _moveToHome = false;
 
 	public Elevator() {
 		//these need to be changed to reflect their actual positions
@@ -49,6 +50,27 @@ public class Elevator {
 
 	public void stop() {
 		_elevatorMaster.set(0);
+	}
+	
+	public void goToBottom() {
+		int deltaEncoder;
+		
+		_setPoint = Enums.ELEVATOR_BOTTOM_SET_POINT;
+		_targetLimit = this._bottom;
+		if(!_elevatorMoving) {
+			deltaEncoder = (int) (this.getEncoder() - this._setPoint);
+			if(deltaEncoder > 0) {
+				this._elevatorMaster.set(Enums.ELEVATOR_SPEED_DOWN);
+				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
+			}else if(deltaEncoder < 0) {
+				this._elevatorMaster.set(Enums.ELEVATOR_SPEED_UP);
+				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
+			}else {
+				_targetEncoder = (int) this.getEncoder();
+			}
+		}
+
+		
 	}
 
 	public void goToSwitch() {
@@ -112,6 +134,7 @@ public class Elevator {
 		return -this._elevatorMaster.getEncPosition();
 	}
 	
+	
 	public void updateStatus() {
 
 		int deltaEncoder;
@@ -124,13 +147,14 @@ public class Elevator {
 
 		if(isAtBottom())
 			this.zeroEncoder();
-
 		
 
-//		if(!_targetLimit.get() || this._elevatorMaster.getEncPosition() == _targetEncoder) {
-//			this._elevatorMaster.set(0);
-//			this._elevatorMoving = false;
-//		}
+		
+        //move elevator to setpoint
+		if(!_targetLimit.get() || this._elevatorMaster.getEncPosition() == _targetEncoder) {
+			this._elevatorMaster.set(0);
+			this._elevatorMoving = false;
+		}
 
 
 	}

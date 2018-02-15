@@ -368,16 +368,20 @@ public class RobotControls {
 	
 	public void operate ()
 	{
+
+
 		//if we are executing commands then exit response to operator
 		if (_commandAuto != null){
 			return;
 		}
+
+		//these need to be rethought
 		
 		//buttons to raise elevator
-		if(_operatorJS.getPOV() == 360)//up on POV stick
-			_elevator.raise();
-		else if(_operatorJS.getPOV() == 180)//down on POV stick
-			_elevator.lower();
+		if(_operatorJS.getRawAxis(1) > 0.1)
+			_elevator.raise(_operatorJS.getRawAxis(1));
+		else if(_operatorJS.getRawAxis(1) < -0.1)
+			_elevator.lower(_operatorJS.getRawAxis(1));
 		else
 			_elevator.stop();
 		
@@ -401,19 +405,20 @@ public class RobotControls {
 		if(_operatorJS.getRawButton(4))
 			_elevator.goToScale();//currently not implemented
 
-		//buttons for climber
-		if(_operatorJS.getRawButton(8))
-			_climber.climb();
-		else
-			_climber.stop();
-
 		//buttons for 4-bar linkage
-		if(_operatorJS.getPOV() == 90) //right on pov stick
-			_elevator.raiseLinkage();
-		else if(_operatorJS.getPOV() == 270) //left on pov stick
-			_elevator.lowerLinkage();
+		if(_operatorJS.getRawButton(7)) //right on pov stick
+			_acquisition.raiseLinkage();
+		else if(_operatorJS.getRawButton(8)) //left on pov stick
+			_acquisition.lowerLinkage();
 		else
-			_elevator.stop();
+			_acquisition.stopLinkage();
+		
+		//button for going home
+//		if(_rightJS.getRawButton(3)) {
+//			_elevator.goToBottom();
+//			_acquisition.moveToHome();
+//		}
+		
 
 			
 	
@@ -474,6 +479,9 @@ public class RobotControls {
 		
 		_drive.updateStatus();
 		_autoTarget.updateStatus();
+		
+		_elevator.updateStatus();
+		this._acquisition.updateStatus();
 		
 		SmartDashboard.putNumber("Encoder Value", _drive.getAbsAvgEncoderValue());
 		

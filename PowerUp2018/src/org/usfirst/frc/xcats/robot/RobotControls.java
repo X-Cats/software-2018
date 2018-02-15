@@ -378,10 +378,10 @@ public class RobotControls {
 		//these need to be rethought
 		
 		//buttons to raise elevator
-		if(_operatorJS.getRawButton(2))//up on POV stick
-			_elevator.raise();
-		else if(_operatorJS.getRawButton(3))//down on POV stick
-			_elevator.lower();
+		if(_operatorJS.getRawAxis(1) > 0.1)
+			_elevator.raise(_operatorJS.getRawAxis(1));
+		else if(_operatorJS.getRawAxis(1) < -0.1)
+			_elevator.lower(_operatorJS.getRawAxis(1));
 		else
 			_elevator.stop();
 		
@@ -392,9 +392,9 @@ public class RobotControls {
 			_acquisition.armsIn();
 		
 		//buttons for acquisition wheels
-		if(_operatorJS.getRawButton(9))
+		if(_operatorJS.getRawButton(2))
 			_acquisition.release();
-		else if(_operatorJS.getRawButton(10))
+		else if(_operatorJS.getRawButton(3))
 			_acquisition.intake();
 		else
 			_acquisition.stop();
@@ -406,9 +406,9 @@ public class RobotControls {
 			_elevator.goToScale();//currently not implemented
 
 		//buttons for 4-bar linkage
-		if(_operatorJS.getRawButton(8)) //right on pov stick
+		if(_operatorJS.getRawButton(7)) //right on pov stick
 			_acquisition.raiseLinkage();
-		else if(_operatorJS.getRawButton(7)) //left on pov stick
+		else if(_operatorJS.getRawButton(8)) //left on pov stick
 			_acquisition.lowerLinkage();
 		else
 			_acquisition.stopLinkage();

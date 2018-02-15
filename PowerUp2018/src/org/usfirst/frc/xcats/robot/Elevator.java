@@ -40,12 +40,12 @@ public class Elevator {
 		_targetLimit = _switchLimit;
 	}
 
-	public void raise() {
-		_elevatorMaster.set(Enums.ELEVATOR_SPEED_UP);
+	public void raise(double setPoint) {
+		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_UP);
 	}
 
-	public void lower() {
-		_elevatorMaster.set(Enums.ELEVATOR_SPEED_DOWN);
+	public void lower(double setPoint) {
+		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_DOWN);
 	}
 
 	public void stop() {

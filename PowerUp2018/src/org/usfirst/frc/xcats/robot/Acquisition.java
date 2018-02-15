@@ -22,8 +22,9 @@ public class Acquisition {
 	public Acquisition() {
 		_leftAcquisition = new XCatsSpeedController("Left Acquisition", Enums.LEFT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
 		_rightAcquisition = new XCatsSpeedController("Right Acquisition", Enums.RIGHT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
-		_rightAcquisition.setFollower(Enums.LEFT_ACQUISITION_CAN_ID);
-		_rightAcquisition.setInverted(true);
+//		_rightAcquisition.setInverted(true);
+//		_rightAcquisition.setFollower(Enums.LEFT_ACQUISITION_CAN_ID);
+
 		
 		_armsSolenoid = new DoubleSolenoid(Enums.PCM_CAN_ID, Enums.PCM_ARMS_IN, Enums.PCM_ARMS_OUT);
 		_armsSolenoid.set(DoubleSolenoid.Value.kForward);
@@ -35,15 +36,18 @@ public class Acquisition {
 	//intake cube
 	public void intake() {
 		_leftAcquisition.set(Enums.ACQUISITION_SPEED);
+		_rightAcquisition.set(-Enums.ACQUISITION_SPEED);
 	}
 	
 	//push out cube
 	public void release() {
 		_leftAcquisition.set(-Enums.ACQUISITION_SPEED);
+		_rightAcquisition.set(Enums.ACQUISITION_SPEED);
 	}
 	
 	public void stop() {
 		_leftAcquisition.set(0);
+		_rightAcquisition.set(0);
 	}
 	
 	//push secondary wheels for acquisition in

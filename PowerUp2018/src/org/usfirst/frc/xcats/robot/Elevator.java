@@ -135,6 +135,7 @@ public class Elevator {
 	}
 	
 	
+	
 	public void updateStatus() {
 
 		int deltaEncoder;
@@ -147,6 +148,7 @@ public class Elevator {
 
 		if(isAtBottom())
 			this.zeroEncoder();
+		
 		
 
 		

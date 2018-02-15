@@ -435,6 +435,12 @@ public class RobotControls {
 	public AutoTarget getAutoTarget(){
 		return _autoTarget;
 	}
+	public Acquisition getAcquisition() {
+		return this._acquisition;
+	}
+	public Elevator getElevator() {
+		return this._elevator;
+	}
 	
 
 	

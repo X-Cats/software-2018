@@ -153,9 +153,12 @@ public class Elevator {
 
 		
         //move elevator to setpoint
+		if(this._targetLimit == null) {
 		if(!_targetLimit.get() || this._elevatorMaster.getEncPosition() == _targetEncoder) {
 			this._elevatorMaster.set(0);
 			this._elevatorMoving = false;
+			this._targetLimit = null;
+		}
 		}
 
 

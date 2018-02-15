@@ -45,7 +45,7 @@ public class Elevator {
 	}
 
 	public void lower(double setPoint) {
-		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_DOWN);
+		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_DOWN * -1);
 	}
 
 	public void stop() {

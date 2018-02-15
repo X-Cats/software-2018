@@ -435,6 +435,7 @@ public class RobotControls {
 	public AutoTarget getAutoTarget(){
 		return _autoTarget;
 	}
+	
 
 	
 	public void updateStatus ()

@@ -63,18 +63,19 @@ public class Acquisition {
 	}
 	
 	public void raiseLinkage() {
-		this._linkage1.set(Relay.Value.kForward);
-		this._linkage2.set(Relay.Value.kForward);
-	}
-	
-	public void lowerLinkage() {
 		this._linkage1.set(Relay.Value.kReverse);
 		this._linkage2.set(Relay.Value.kReverse);
 	}
 	
+	public void lowerLinkage() {
+		
+		this._linkage1.set(Relay.Value.kForward);
+		this._linkage2.set(Relay.Value.kForward);
+	}
+	
 	public void stopLinkage() {
-		this._linkage1.set(Relay.Value.kOff);
-		this._linkage2.set(Relay.Value.kOff);
+		this._linkage1.set(Relay.Value.kOn);
+		this._linkage2.set(Relay.Value.kOn);
 	}
 
 	public void moveToHome() {

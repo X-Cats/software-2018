@@ -386,7 +386,7 @@ public class RobotControls {
 			_elevator.goToSwitch();
 		else if(_operatorJS.getRawButton(4))
 			_elevator.goToScale();
-		else
+		else if(!_elevator.getElevatorMoving())
 			_elevator.stop();
 		
 		//buttons for acquisition arms

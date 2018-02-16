@@ -41,10 +41,12 @@ public class Elevator {
 	}
 
 	public void raise(double setPoint) {
+		this.terminateMotion();
 		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_UP);
 	}
 
 	public void lower(double setPoint) {
+		this.terminateMotion();
 		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_DOWN * -1);
 	}
 
@@ -110,6 +112,11 @@ public class Elevator {
 			}
 		}
 	}
+	
+	public void terminateMotion() {
+		this._targetLimit = null;
+		this._elevatorMoving = false;
+	}
 
 	public void zeroEncoder() {
 		_elevatorMaster.zeroEncoder();
@@ -154,8 +161,7 @@ public class Elevator {
 		if(this._targetLimit == null) {
 		if(!_targetLimit.get() || this._elevatorMaster.getEncPosition() == _targetEncoder) {
 			this._elevatorMaster.set(0);
-			this._elevatorMoving = false;
-			this._targetLimit = null;
+			this.terminateMotion();
 		}
 		}
 

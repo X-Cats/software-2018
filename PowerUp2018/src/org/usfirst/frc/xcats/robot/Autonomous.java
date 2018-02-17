@@ -39,7 +39,8 @@ public class Autonomous {
 
 	private DigitalOutput _lightsColor = new DigitalOutput(Enums.LIGHTS_ALLIANCE_COLOR);//digial output for controlling color of lights
 
-
+	private Acquisition _acquisition;
+	private Elevator _elevator;
 
 	private final String _defaultAuto = "Do Nothing";
 	private final String _autoForwardOnly = "Go forward only and stop";
@@ -143,7 +144,8 @@ public class Autonomous {
 			setAuto();
 		}
 
-
+		this._acquisition = this._controls.getAcquisition();
+		this._elevator = this._controls.getElevator();
 		_navx = _controls.getNavx();
 		_navx.zeroYaw();
 		_initCompassHeading = _navx.getCompassHeading();
@@ -217,12 +219,14 @@ public class Autonomous {
 			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'R') {
 				//this is cross court going from left position to scale on the right
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.65,0.65,segmentA));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,segmentJ));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,-90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",1,0,0,0));
 			}else if(_gameData.charAt(1) == 'L'){
 				//this is going from leftmost position to scale on the left
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.5,0.5,segmentB));
@@ -279,7 +283,7 @@ public class Autonomous {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,.4,0.4,segmentK));
 			}else if(_gameData.charAt(1) == 'R'){
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentB));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-45));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
 			}else if(_gameData.charAt(0) == 'R'){
@@ -514,6 +518,14 @@ public class Autonomous {
 			case STOP:
 				stop();
 				break;
+				
+			case GOTO_SWITCH:
+				this.goToSwitch(_currentAutoStep.stepTime);
+				
+			case GOTO_SCALE:
+				this.goToScale(_currentAutoStep.stepTime);
+				
+				
 
 
 			}
@@ -571,7 +583,7 @@ public class Autonomous {
 
 	private void rotate( double distance){
 		//float deltaYaw;
-		double  speed = 0.28;
+		double  speed = 0.35;
 		double lowSpeed = 0.3;
 		double tolerance=0.50;
 		int direction=1;
@@ -787,8 +799,21 @@ public class Autonomous {
 
 
 
+	public void goToSwitch (double time) {
+		if (_stepTimer.get() > time)
+			startNextStep();
+		else {
+			_controls.getElevator().goToSwitch();
+		}
+	}
 
-
+	public void goToScale (double time) {
+		if (_stepTimer.get() > time || _controls.getElevator().isAtScale())
+			startNextStep();
+		else {
+			_controls.getElevator().goToScale();
+		}
+	}
 
 
 	public void wait (double time)

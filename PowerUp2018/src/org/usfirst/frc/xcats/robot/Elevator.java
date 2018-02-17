@@ -23,6 +23,7 @@ public class Elevator {
 	private boolean _moveToHome = false;
 
 	public Elevator() {
+		
 		//these need to be changed to reflect their actual positions
 		_bottom = new DigitalInput(Enums.ELEVATOR_BOTTOM_LIMIT);
 		_switchLimit = new DigitalInput(Enums.ELEVATOR_SWITCH_LIMIT);
@@ -37,41 +38,52 @@ public class Elevator {
 		_setPoint = 0;
 		
 		_elevatorMoving = false;
-		_targetLimit = _switchLimit;
+		_targetLimit = null;
 	}
 
 	public void raise(double setPoint) {
 		this.terminateMotion();
-		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_UP * -1);
+		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_UP);
+		System.out.println("Raise");
 	}
 
 	public void lower(double setPoint) {
 		this.terminateMotion();
-		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_DOWN);
+		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_DOWN * -1);
+		System.out.println("Lower");
 	}
 
 	public void stop() {
+		this.terminateMotion();
 		_elevatorMaster.set(0);
+
+
 	}
 	
 	
 	public void goToBottom() {
+				
 		int deltaEncoder;
-		
+
+		System.out.println("Check Bottom: "+ this.isAtBottom()+" "  + this.scaleEncoder() +" " +_targetEncoder );
+
 		_setPoint = Enums.ELEVATOR_BOTTOM_SET_POINT;
-		_targetLimit = this._bottom;
-		if(!_elevatorMoving) {
+		if(!this.isAtBottom() &&  Math.abs(this.scaleEncoder() - this._setPoint ) > Enums.ELEVATOR_ENCODER_SAFETY ) {
+			System.out.println("GOTO BOTTOM");	
+			_elevatorMoving = true;
+			_targetLimit = this._bottom;		
+			
 			deltaEncoder = (int) (this.scaleEncoder() - this._setPoint);
 			if(deltaEncoder > 0) {
-				this._elevatorMaster.set(Enums.ELEVATOR_SPEED_DOWN);
+				System.out.println("Going down");
+				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_DOWN);
 				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
 			}else if(deltaEncoder < 0) {
-				this._elevatorMaster.set(Enums.ELEVATOR_SPEED_UP);
+				System.out.println("Going up");
+				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_UP);
 				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
-			}else {
-				_targetEncoder = (int) this.scaleEncoder();
 			}
-		}
+		}		
 
 		
 	}
@@ -79,39 +91,52 @@ public class Elevator {
 	public void goToSwitch() {
 		int deltaEncoder;
 
+		System.out.println("Check Switch: "+ this.isAtSwitch()+" "  + this.scaleEncoder() +" " +_targetEncoder );
+
 		_setPoint = Enums.ELEVATOR_SWITCH_SET_POINT;
-		_targetLimit = this._switchLimit;
-		if(!_elevatorMoving) {
+		if(!this.isAtSwitch() &&  Math.abs(this.scaleEncoder() - this._setPoint ) > Enums.ELEVATOR_ENCODER_SAFETY ) {
+			System.out.println("GOTO SWITCH");	
+			_elevatorMoving = true;
+			_targetLimit = this._switchLimit;		
+			
 			deltaEncoder = (int) (this.scaleEncoder() - this._setPoint);
 			if(deltaEncoder > 0) {
-				this._elevatorMaster.set(-0.5);
+				System.out.println("Going down");
+				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_DOWN);
 				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
 			}else if(deltaEncoder < 0) {
-				this._elevatorMaster.set(0.7);
+				System.out.println("Going up");
+				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_UP);
 				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
-			}else {
-				_targetEncoder = (int) this.scaleEncoder();
 			}
 		}
 	}
 
 	public void goToScale() {
-		int deltaEncoder;
-		_setPoint = Enums.ELEVATOR_SCALE_SET_POINT;
-		_targetLimit = this._scaleLimit;
 		
-		if(!_elevatorMoving) {
+		int deltaEncoder;
+
+		System.out.println("Check Scale: "+ this.isAtScale()+" "  + this.scaleEncoder() +" " +_targetEncoder );
+
+		_setPoint = Enums.ELEVATOR_SCALE_SET_POINT;
+		if(!this.isAtScale() &&  Math.abs(this.scaleEncoder() - this._setPoint ) > Enums.ELEVATOR_ENCODER_SAFETY ) {
+			System.out.println("GOTO SCALE");	
+			_elevatorMoving = true;
+			_targetLimit = this._scaleLimit;		
+			
 			deltaEncoder = (int) (this.scaleEncoder() - this._setPoint);
 			if(deltaEncoder > 0) {
-				this._elevatorMaster.set(-0.5);
+				System.out.println("Going down");
+				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_DOWN);
 				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
 			}else if(deltaEncoder < 0) {
-				this._elevatorMaster.set(0.7);
+				System.out.println("Going up");
+				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_UP);
 				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
-			}else {
-				_targetEncoder = (int) this.scaleEncoder();
 			}
 		}
+		
+		
 	}
 	
 	public void terminateMotion() {
@@ -133,6 +158,9 @@ public class Elevator {
 	
 	public boolean isAtScale() {
 		return !_scaleLimit.get();
+	}
+	public boolean isAtTarget() {
+		return !_targetLimit.get();
 	}
 	
 	public double scaleEncoder() {
@@ -161,14 +189,16 @@ public class Elevator {
 		
 		
 
-		
-        //move elevator to setpoint
+
+		// move elevator to setpoint
 		if(this._targetLimit != null) {
-		if(!_targetLimit.get() || this._elevatorMaster.getEncPosition() == _targetEncoder) {
-			System.out.println("Triggered Stop Condition");
-			this._elevatorMaster.set(0);
-			this.terminateMotion();
-		}
+			if(this.isAtTarget() || Math.abs(this.scaleEncoder() - _targetEncoder) <= Enums.ELEVATOR_ENCODER_SAFETY) {
+				System.out.println("Stop Reached Limit: "+ this.isAtTarget() +" "  + this.scaleEncoder() +" " +_targetEncoder );
+				this._elevatorMaster.set(0);
+				this.terminateMotion();
+				_targetLimit = null;
+				_elevatorMoving = false;
+			}
 		}
 
 

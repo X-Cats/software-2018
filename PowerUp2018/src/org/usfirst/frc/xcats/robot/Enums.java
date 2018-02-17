@@ -89,6 +89,7 @@ public class Enums {
 	public static final int LINKAGE_ONE_CHANNEL = 0;
 	public static final int LINKAGE_TWO_CHANNEL = 1;
 	public static final double LINQ_HOME_TIME = 1.75;
+	public static final double RELEASE_TIMER = 1;//Time for cube release in auto
 
 	//Elevator
 	public static final int ELEVATOR_MASTER_CAN_ID = 8;//can id for elevatorMaster
@@ -102,7 +103,7 @@ public class Enums {
 	public static final int ELEVATOR_TOP_LIMIT = 0;
 	public static final double ELEVATOR_SPEED_UP = 1.0;
 	public static final double ELEVATOR_SPEED_DOWN = -0.7;
-	public static final int ELEVATOR_ENCODER_SAFETY = 1000;
+	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
 
 	//Climber
 	public static final int CLIMBER_CAN_ID = 56;//can id for climber motor

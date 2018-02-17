@@ -18,6 +18,8 @@ public class Acquisition {
 	private boolean _movingHome = false;
 	private Timer _acqTimer = new Timer();
 	private Timer _linqTimer = new Timer();
+	private Timer _cubeOut = new Timer();
+	private Boolean _cubeEjecting = false;
 	
 	public Acquisition() {
 		_leftAcquisition = new XCatsSpeedController("Left Acquisition", Enums.LEFT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
@@ -35,15 +37,27 @@ public class Acquisition {
 	
 	//intake cube
 	public void intake() {
-		_leftAcquisition.set(Enums.ACQUISITION_SPEED);
-		_rightAcquisition.set(-Enums.ACQUISITION_SPEED);
+		_leftAcquisition.set(-Enums.ACQUISITION_SPEED);
+		_rightAcquisition.set(Enums.ACQUISITION_SPEED);
 	}
 	
 	//push out cube
 	public void release() {
-		_leftAcquisition.set(-Enums.ACQUISITION_SPEED);
-		_rightAcquisition.set(Enums.ACQUISITION_SPEED);
+		_leftAcquisition.set(Enums.ACQUISITION_SPEED);
+		_rightAcquisition.set(-Enums.ACQUISITION_SPEED);
 	}
+	
+	public void cubeOut() {
+		if (!_cubeEjecting) {
+			this._cubeOut.reset();
+			this._cubeOut.start();
+			
+			this.release();
+			
+			this._cubeEjecting = true;
+		}
+	}
+	
 	
 	public void stop() {
 		_leftAcquisition.set(0);
@@ -101,6 +115,17 @@ public class Acquisition {
 			  
 		  }else {
 			  this.raiseLinkage();
+		  }
+	  }
+	  
+	  if(_cubeEjecting) {
+		  if (_cubeOut.get() >= Enums.RELEASE_TIMER) {
+			  this._cubeOut.stop();
+			  this.stop();
+			  _cubeEjecting = false;
+			  
+		  }else {
+			  this.release();
 		  }
 	  }
 		

@@ -11,6 +11,7 @@ public class Teleop {
 	}
 	public void init(){
 		_controls.setCoastMode();
+		_controls.getElevator().terminateMotion();
 	}
 
 	public void execute ()

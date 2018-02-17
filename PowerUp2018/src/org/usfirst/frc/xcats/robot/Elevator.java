@@ -42,12 +42,12 @@ public class Elevator {
 
 	public void raise(double setPoint) {
 		this.terminateMotion();
-		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_UP);
+		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_UP * -1);
 	}
 
 	public void lower(double setPoint) {
 		this.terminateMotion();
-		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_DOWN * -1);
+		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_DOWN);
 	}
 
 	public void stop() {

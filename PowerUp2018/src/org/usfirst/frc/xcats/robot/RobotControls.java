@@ -390,10 +390,8 @@ public class RobotControls {
 			_elevator.stop();
 		
 		//buttons for acquisition arms
-		if(_operatorJS.getRawButton(6))
-			_acquisition.armsOut();
-		else if(_operatorJS.getRawButton(5))
-			_acquisition.armsIn();
+		if(_operatorJS.getRawButtonPressed(5))
+			this._acquisition.toggleArms();
 		
 		//buttons for acquisition wheels
 		if(_operatorJS.getRawButton(2))
@@ -410,15 +408,15 @@ public class RobotControls {
 			_elevator.goToScale();
 
 		//buttons for 4-bar linkage
-		if(_operatorJS.getRawButton(7)) //right on pov stick
+		if(_operatorJS.getRawButton(8)) //right on pov stick
 			_acquisition.raiseLinkage();
-		else if(_operatorJS.getRawButton(8)) //left on pov stick
+		else if(_operatorJS.getRawButton(7)) //left on pov stick
 			_acquisition.lowerLinkage();
 		else
 			_acquisition.stopLinkage();
 		
 		//button for going home
-		if(_rightJS.getRawButton(3)) {
+		if(_operatorJS.getRawButton(6)) {
 			_elevator.goToBottom();
 			_acquisition.moveToHome();
 		}

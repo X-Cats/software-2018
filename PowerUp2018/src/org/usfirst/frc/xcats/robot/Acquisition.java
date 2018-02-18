@@ -76,6 +76,13 @@ public class Acquisition {
 		_armsSolenoid.set(DoubleSolenoid.Value.kReverse);	
 	}
 	
+	public void toggleArms() {
+		if(this._armsSolenoid.get() == DoubleSolenoid.Value.kReverse)
+			this._armsSolenoid.set(DoubleSolenoid.Value.kForward);
+		else
+			this._armsSolenoid.set(DoubleSolenoid.Value.kReverse);
+	}
+	
 	public void raiseLinkage() {
 		this._linkage1.set(Relay.Value.kReverse);
 		this._linkage2.set(Relay.Value.kReverse);

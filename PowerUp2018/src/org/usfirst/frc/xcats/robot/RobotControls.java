@@ -390,10 +390,8 @@ public class RobotControls {
 			_elevator.stop();
 		
 		//buttons for acquisition arms
-		if(_operatorJS.getRawButton(6))
-			_acquisition.armsOut();
-		else if(_operatorJS.getRawButton(5))
-			_acquisition.armsIn();
+		if(_operatorJS.getRawButtonPressed(5))
+			this._acquisition.toggleArms();
 		
 		//buttons for acquisition wheels
 		if(_operatorJS.getRawButton(2))

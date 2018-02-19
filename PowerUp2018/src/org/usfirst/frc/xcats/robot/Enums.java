@@ -40,6 +40,7 @@ public class Enums {
 	public static final boolean USE_2SC_TANK = true;     //when true, then the robot drive is 2 motor controllers and the rest are followers
 	public static final double BROWNOUT_VOLTAGE_THRESHOLD = 7.5;
 	public static final double BROWNOUT_VOLTAGE_REDUCTIONFACTOR = 0.5;
+	public static final double ENGAME_TIME = 30;
 	
 	public static final double  ROBOT_LENGTH_COMPACT = 30.0; //length of robot with shooter in home position
 	public static final double  ROBOT_LENGTH_EXTENDED = 40; // length of robot with shooter down
@@ -96,14 +97,18 @@ public class Enums {
 	public static final int ELEVATOR_FOLLOWER_CAN_ID = 9;//can id for elevatorFollower
 	public static final int ELEVATOR_SWITCH_SET_POINT = 18000;//encoder value for elevator switch position
 	public static final int ELEVATOR_BOTTOM_SET_POINT = 0;
-	public static final int ELEVATOR_SCALE_SET_POINT = 133000;//encoder value for elevator scale position, currently at test value
+	public static final int ELEVATOR_SCALE_SET_POINT = 133000;//encoder value for elevator scale position
 	public static final int ELEVATOR_BOTTOM_LIMIT = 4;
 	public static final int ELEVATOR_SWITCH_LIMIT = 2;
 	public static final int ELEVATOR_SCALE_LIMIT = 0;
 	public static final int ELEVATOR_TOP_LIMIT = 0;
 	public static final double ELEVATOR_SPEED_UP = 1.0;
-	public static final double ELEVATOR_SPEED_DOWN = -0.7;
+	public static final double ELEVATOR_SPEED_DOWN = -0.5;
 	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
+	public static final double ELEVATOR_SPEED_ENDGAME = -1.0;
+	public static final double ELEVATOR_HEIGHT_PCT_THROTTLER = 0.5; //This is the percent the elevator is raised, that will limit the speed to prevent tipping
+	public static final double ELEVATOR_HEIGHT_THROTTLE_FACTOR = 0.35;  //This factor is multiplied by the joy stick speeds to limit the speed when the elevator is up
+	
 
 	//Climber
 	public static final int CLIMBER_CAN_ID = 56;//can id for climber motor

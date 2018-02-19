@@ -279,7 +279,11 @@ public class RobotControls {
 					
 				} else{
 					_driveStraight = false;
-					_drive.set(_leftJS, _rightJS);
+					if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
+						_drive.set(_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR,_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR);
+					}
+					else						
+						_drive.set(_leftJS, _rightJS);
 				}
 			}
 			else {
@@ -394,9 +398,9 @@ public class RobotControls {
 			this._acquisition.toggleArms();
 		
 		//buttons for acquisition wheels
-		if(_operatorJS.getRawButton(2))
+		if(_operatorJS.getRawButton(3))
 			_acquisition.release();
-		else if(_operatorJS.getRawButton(3))
+		else if(_operatorJS.getRawButton(2 ))
 			_acquisition.intake();
 		else
 			_acquisition.stop();
@@ -422,7 +426,11 @@ public class RobotControls {
 		}
 		
 
-			
+		//button for endgame
+		if(_operatorJS.getRawButton(10)) {
+			_elevator.prepareForClimb();
+			this._acquisition.raiseLinkage();
+		}
 	
 		
 		

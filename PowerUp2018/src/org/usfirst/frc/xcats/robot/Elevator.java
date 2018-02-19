@@ -5,6 +5,7 @@ import org.usfirst.frc.xcats.robot.XCatsSpeedController.SCType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -16,6 +17,7 @@ public class Elevator {
 	private DigitalInput _switchLimit;
 	private DigitalInput _scaleLimit;
 	private DigitalInput _bottom;
+	private DoubleSolenoid _climberSolenoid;
 
 	private int _setPoint;
 	private int _targetEncoder;
@@ -25,6 +27,9 @@ public class Elevator {
 	private double _elevatorDownSpeed = Enums.ELEVATOR_SPEED_DOWN;
 	
 	public Elevator() {
+		_climberSolenoid = new DoubleSolenoid(Enums.PCM_CAN_ID, Enums.PCM_CLIMB_IN, Enums.PCM_CLIMB_OUT);
+		_climberSolenoid.set(DoubleSolenoid.Value.kReverse);
+		
 		
 		_bottom = new DigitalInput(Enums.ELEVATOR_BOTTOM_LIMIT);
 		_switchLimit = new DigitalInput(Enums.ELEVATOR_SWITCH_LIMIT);
@@ -44,6 +49,7 @@ public class Elevator {
 	
 	public void init() {
 		this._elevatorDownSpeed = Enums.ELEVATOR_SPEED_DOWN;
+		this._climberSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 
 	public void raise(double setPoint) {
@@ -63,7 +69,13 @@ public class Elevator {
 		_elevatorMaster.set(0);
 
 
-	}
+	} 
+//	//used in auto to bring elevator down if it is not
+//	public void bringElevatorDown() {
+//		if(!this.isAtBottom()) {
+//			this._elevatorMaster.set( _elevatorDownSpeed);
+//		}
+		
 	
 	
 	public void goToBottom() {
@@ -175,6 +187,8 @@ public class Elevator {
 		return -this._elevatorMaster.getEncPosition();
 	}
 	
+	
+	
 	public boolean getElevatorMoving() {
 		return this._elevatorMoving;
 	}
@@ -182,7 +196,8 @@ public class Elevator {
 	public void prepareForClimb() {
 		//if(DriverStation.getInstance().getMatchTime() <= Enums.ENGAME_TIME) {
 		_elevatorDownSpeed = Enums.ELEVATOR_SPEED_ENDGAME;
-		//add trigger solenoid that releases solenoid
+		_climberSolenoid.set(DoubleSolenoid.Value.kForward);
+		
 		//}
 	}
 	

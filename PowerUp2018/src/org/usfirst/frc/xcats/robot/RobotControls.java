@@ -431,6 +431,7 @@ public class RobotControls {
 			_elevator.prepareForClimb();
 			this._acquisition.raiseLinkage();
 		}
+		
 	
 		
 		
@@ -452,7 +453,6 @@ public class RobotControls {
 		return this._elevator;
 	}
 	
-
 	
 	public void updateStatus ()
 	{

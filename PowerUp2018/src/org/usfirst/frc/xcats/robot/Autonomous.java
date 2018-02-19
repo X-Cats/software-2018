@@ -199,20 +199,26 @@ public class Autonomous {
 
 		//these segments are from our drawing in one note.
 		double segmentA = 235; //was 235
-		double segmentB = 300; //was 285
+		double segmentB = 260; //was 285
 		double segmentC = 8; //was 21
 		double segmentD = 6; //was 34
 		double segmentE = 152; //was 129
 		double segmentF = 106; //was 112
-		double segmentG = 45; // was 45
-		double segmentH = 66; //was 60
-		double segmentI = 50; //was 50
+		double segmentG = 66; // was 66 (base of triangle if we are C and we go to the left side of the switch
+		double segmentI = 54; //was 54 (base of triangle if we are C and we goto the right side of the switch
+		double segmentN = 75;//was 83 (height of both triangles for center auto)
+		double segmentH = Math.sqrt((Math.pow(segmentI, 2)) + (Math.pow(segmentN, 2))); //(hypotenuse of triangle if we are C and we go to the right side of the switch)
 		double segmentJ = 195; //was 207
 		double segmentK = 65; //was 85
 		double segmentL = 54; //was 54 //added because we had to change center auto distances
-
-
-
+		double segmentM = Math.sqrt((Math.pow(segmentG, 2)) + (Math.pow(segmentN, 2))); //was 106 (hypotenuse of triangle if we are C and we go to the left side of the switch)
+		double segmentO = (95 - segmentN)/2;//distance we have to drive forward before and after we drive for Center
+		double angleA = 90 - (Math.atan(segmentN/segmentG)); //angle to rotate when we start if we go to the left side of the switch for C
+		double angleB = 90 - (Math.atan(segmentG/segmentN)); //angle to rotate when we start if we go to the left side of the switch for C
+		double angleC = 90 - (Math.atan(segmentN/segmentI));  //angle to rotate when we start if we go to the right side of the switch for C
+		double angleD = 90 - (Math.atan(segmentI/segmentN)); //angle to rotate when we start if we go to the right side of the switch for C
+	
+		System.out.println(angleC);
 		switch (_autoSelected) {
 		case _autoL1: 
 
@@ -266,20 +272,33 @@ public class Autonomous {
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0));
 			if (_gameData.charAt(0) == 'L') {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,1.0,1.0,segmentG));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,1.0,1.0,segmentH));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,1.0,1.0,segmentI));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.5,.5,segmentO));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,.5,-angleA));//halfspeed
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,1.0,1.0,segmentM));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second rotation",0,0,0,angleB));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Third Leg",0,0.5,0.5,segmentO));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,1.0,1.0,segmentG));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,1.0,1.0,segmentH));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,1.0,1.0,segmentI));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 			}else {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.7,0.7,segmentG));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentL));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentI));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.5,.5,segmentO));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,angleC));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,1.0,1.0,segmentH));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second rotation",0,0,0,-angleD));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Third Leg",0,0.5,0.5,segmentO));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.7,0.7,segmentG));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentL));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentI));
+//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 			}
 			break;
 
@@ -297,9 +316,9 @@ public class Autonomous {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,.4,0.4,segmentK));
 			}else if(_gameData.charAt(1) == 'R'){//going to right scale
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.8,0.8,segmentB));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",5,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0.5,-45));//rotation speed is .5
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0.5,-45));//rotation speed is .5
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
@@ -549,13 +568,16 @@ public class Autonomous {
 				break;
 
 			case GOTO_SCALE:
-				this.goToScale(_currentAutoStep.stepTime);
+				this.goToScale(_currentAutoStep.stepTime,_currentAutoStep.rightSpeed);
 				break;
 
 			case CUBEOUT:
 				this.cubeOut(_currentAutoStep.stepTime);
 				break;
 
+			case ELEVATORTOBOTTOM:
+				this.goToBottom();
+				break;
 
 
 
@@ -670,6 +692,8 @@ public class Autonomous {
 			SmartDashboard.putNumber("Step Count", _steps.size());
 			SmartDashboard.putString("Current Command", this._currentStep + " " + _currentAutoStep.name  + "\n " + _currentAutoStep.stepTime);			
 		}
+		
+		
 
 	}
 	public void drive (double time, double left, double right)
@@ -851,8 +875,8 @@ public class Autonomous {
 		}
 	}
 
-	public void goToScale (double time) {
-		if (_stepTimer.get() > time || _controls.getElevator().isAtScale())
+	public void goToScale (double time,double encoderValue) {
+		if (_stepTimer.get() > time || _controls.getElevator().isAtScale() ||_controls.getElevator().scaleEncoder() >= encoderValue && encoderValue !=0)
 			startNextStep();
 		else {
 			_controls.getElevator().goToScale();
@@ -865,6 +889,14 @@ public class Autonomous {
 		}else {
 			_controls.getAcquisition().cubeOut();
 		}
+	}
+	
+	public void goToBottom () {
+		if(_controls.getElevator().isAtBottom()) {
+			startNextStep();
+			}else {
+				_controls.getElevator().goToBottom();;
+			}
 	}
 
 

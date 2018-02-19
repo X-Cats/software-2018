@@ -73,6 +73,7 @@ public class Enums {
 	//This is for the use of the compressor
 	public static final int     PCM_SHIFTER_FORWARD = 4, PCM_SHIFTER_REVERSE=5;  //this is used to shift the gear ration on the drive train from low to high (SHIFTER)
 	public static final int PCM_ARMS_IN = 0, PCM_ARMS_OUT = 1; //values for acquisition arms solenoids
+	public static final int PCM_CLIMB_IN = 6,PCM_CLIMB_OUT = 7; //value for  climber soleinoids
 	public static final double  SHIFTER_DELAY_TIME = 0.25;  // this time is used for the "slack speed" inbetween gear shifts
 	public static final double  SHIFTER_DELAY_SPEED = 0.4;  // this is the speed for the "slack" during shifting
 		

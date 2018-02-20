@@ -306,7 +306,7 @@ public class Autonomous {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0.5,-45));//rotation speed is .5
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 			}else if(_gameData.charAt(0) == 'R'){
@@ -546,8 +546,9 @@ public class Autonomous {
 				wait(_currentAutoStep.stepTime);
 				break;
 				
-			case WAITFORSCALE:
-				
+			case WAIT_FOR_SCALE:
+				this.waitForScale();
+				break;
 
 			case STOP:
 				stop();

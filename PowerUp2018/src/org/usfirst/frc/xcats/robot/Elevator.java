@@ -193,6 +193,10 @@ public class Elevator {
 		return this._elevatorMoving;
 	}
 	
+	public double getTargetEncoder() {
+		return this._targetEncoder;
+	}
+	
 	public void prepareForClimb() {
 		//if(DriverStation.getInstance().getMatchTime() <= Enums.ENGAME_TIME) {
 		_elevatorDownSpeed = Enums.ELEVATOR_SPEED_ENDGAME;

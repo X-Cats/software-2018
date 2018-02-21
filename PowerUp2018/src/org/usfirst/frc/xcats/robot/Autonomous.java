@@ -268,6 +268,7 @@ public class Autonomous {
 
 		case _autoCenter: 
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0));
+			_steps.add(new AutonomousStep(AutonomousStep.stepTypes.LOW_SPEED, "Low Speed",0,0,0,0));
 			if (_gameData.charAt(0) == 'L') {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.5,.5,segmentO));
@@ -451,10 +452,17 @@ public class Autonomous {
 				break;
 
 			case DRIVE_DISTANCE:
-				if (_controls.getIsSlowMode())
-					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
-				else
-					encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+				if(Enums.IS_FINAL_ROBOT) {
+					if (_controls.getIsSlowMode())
+						encPos = Math.abs((_currentAutoStep.distance - 1.9029236202) /0.0051668741);//was 0.0051668741
+					else
+						encPos = Math.abs((_currentAutoStep.distance + 3.1365268239) /0.00582985076625);//was 0.0052878465
+				} else {
+					if (_controls.getIsSlowMode())
+						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+					else
+						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+				}
 
 				//				if (_controls.getIsSlowMode())
 				//					encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
@@ -465,14 +473,18 @@ public class Autonomous {
 				break;
 
 			case DRIVE_PROFILE:
-				if (Enums.IS_FINAL_ROBOT)					
-					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
-				else {
+				if (Enums.IS_FINAL_ROBOT)	{				
+					if (_controls.getIsSlowMode())
+						encPos = Math.abs((_currentAutoStep.distance - 1.9029236202) /0.0051668741);//was 0.0051668741
+					else
+						encPos = Math.abs((_currentAutoStep.distance + 3.1365268239) /0.00582985076625);//was 0.0052878465
+				}else {
 					//System.out.println("Slow mode in Auto: " +_controls.getIsSlowMode());
 					if (_controls.getIsSlowMode())
 						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
 					else
 						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+					
 
 					//					if (_controls.getIsSlowMode())
 					//						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
@@ -963,7 +975,7 @@ public class Autonomous {
 	}
 
 	public void waitForScale() {
-		if(this._controls.getElevator().isAtTarget() || Math.abs(this._controls.getElevator().scaleEncoder() - this._controls.getElevator().getTargetEncoder()) <= Enums.ELEVATOR_ENCODER_SAFETY)
+		if((this._controls.getElevator().isAtTarget() || Math.abs(this._controls.getElevator().scaleEncoder() - this._controls.getElevator().getTargetEncoder()) <= Enums.ELEVATOR_ENCODER_SAFETY) || this._controls.getElevator().getTargetLimit() == null)
 			this.startNextStep();
 	}
 

@@ -27,7 +27,7 @@ public class Enums {
 	*/
 	//not used public static final double SPEED_CALIBRATION = 0.0;  
 	
-	public static final boolean IS_FINAL_ROBOT = false;
+	public static final boolean IS_FINAL_ROBOT = true;
 	public static final String  DRIVE_CONTROLLER_TYPE = "Talon"; // choices are "Jaguar" or "Talon"
 	public static final boolean HAS_MECHANUM_WHEELS = false;
 	public static final boolean USE_PID = false;    	// This is if the drive train is using PID control
@@ -46,7 +46,7 @@ public class Enums {
 	public static final double  ROBOT_LENGTH_EXTENDED = 40; // length of robot with shooter down
 
 	//vision constants
-	public static final boolean VISION_SYSTEM_ENABLED = true;
+	public static final boolean VISION_SYSTEM_ENABLED = false;
 	public static final int CAMERA_FOV_HORIZONTAL = 61;  // Horizontal field of view for MSoft Lifecam
 	public static final boolean CAMERA_USE_REDUCED_BRIGHTNESS = false; //reduces brightness during acquisition for vision processing
 //	public static final int PIXEL_PER_DEGREE = 14;   // commented out to allow for various resolutions
@@ -87,7 +87,7 @@ public class Enums {
 	//Acquisition
 	public static final int LEFT_ACQUISITION_CAN_ID = 30;//can id for left acquisition motor
 	public static final int RIGHT_ACQUISITION_CAN_ID = 31;//can id for right acquisition motor
-	public static final double ACQUISITION_SPEED = 0.5;//speed of acquisition motors, is currently test value
+	public static final double ACQUISITION_SPEED = 0.6;//speed of acquisition motors, is currently test value
 	public static final int LINKAGE_ONE_CHANNEL = 0;
 	public static final int LINKAGE_TWO_CHANNEL = 1;
 	public static final double LINQ_HOME_TIME = 1.75;
@@ -104,7 +104,7 @@ public class Enums {
 	public static final int ELEVATOR_SCALE_LIMIT = 0;
 	public static final int ELEVATOR_TOP_LIMIT = 0;
 	public static final double ELEVATOR_SPEED_UP = 1.0;
-	public static final double ELEVATOR_SPEED_DOWN = -0.5;
+	public static final double ELEVATOR_SPEED_DOWN = -0.3;
 	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
 	public static final double ELEVATOR_SPEED_ENDGAME = -1.0;
 	public static final double ELEVATOR_HEIGHT_PCT_THROTTLER = 0.5; //This is the percent the elevator is raised, that will limit the speed to prevent tipping

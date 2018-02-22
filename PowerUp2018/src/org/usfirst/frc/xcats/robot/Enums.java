@@ -104,7 +104,7 @@ public class Enums {
 	public static final int ELEVATOR_SCALE_LIMIT = 0;
 	public static final int ELEVATOR_TOP_LIMIT = 0;
 	public static final double ELEVATOR_SPEED_UP = 1.0;
-	public static final double ELEVATOR_SPEED_DOWN = -0.3;
+	public static final double ELEVATOR_SPEED_DOWN = -0.5;
 	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
 	public static final double ELEVATOR_SPEED_ENDGAME = -1.0;
 	public static final double ELEVATOR_HEIGHT_PCT_THROTTLER = 0.5; //This is the percent the elevator is raised, that will limit the speed to prevent tipping

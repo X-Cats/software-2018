@@ -53,14 +53,20 @@ public class Elevator {
 	}
 
 	public void raise(double setPoint) {
+		SmartDashboard.putNumber("Elevator set Point up", setPoint);
+		double speed = setPoint * Enums.ELEVATOR_SPEED_UP;
 		this.terminateMotion();
-		_elevatorMaster.set(setPoint * Enums.ELEVATOR_SPEED_UP);
+		SmartDashboard.putNumber("Elevator speed up", speed);
+		_elevatorMaster.set(speed);
 		//System.out.println("Raise");
 	}
 
 	public void lower(double setPoint) {
+		SmartDashboard.putNumber("Elevator set point down", setPoint);
+		double speed = setPoint * _elevatorDownSpeed * -1;
 		this.terminateMotion();
-		_elevatorMaster.set(setPoint * _elevatorDownSpeed * -1);
+		SmartDashboard.putNumber("Elevator speed down", speed);
+		_elevatorMaster.set(speed);
 		//System.out.println("Lower");
 	}
 

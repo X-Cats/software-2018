@@ -382,9 +382,9 @@ public class RobotControls {
 		//these need to be rethought
 		
 		//buttons to move elevator
-		if(_operatorJS.getRawAxis(1) > 0.1)
-			_elevator.raise(-_operatorJS.getRawAxis(1));
-		else if(_operatorJS.getRawAxis(1) < -0.1)
+		if(_operatorJS.getRawAxis(1) < -0.1)
+			_elevator.raise(1.0);
+		else if(_operatorJS.getRawAxis(1) > 0.1)
 			_elevator.lower(-_operatorJS.getRawAxis(1));
 		else if(_operatorJS.getRawButton(1))
 			_elevator.goToSwitch();
@@ -487,6 +487,8 @@ public class RobotControls {
 			else if (Math.abs(_drive.get(Enums.FRONT_LEFT)) > Enums.SHIFTER_DELAY_SPEED)
 				_drive.set( directionLeft * Enums.SHIFTER_DELAY_SPEED,  directionRight * Enums.SHIFTER_DELAY_SPEED);			
 		}
+		
+		SmartDashboard.putNumber("Joystick Value", _operatorJS.getRawAxis(1));
 		
 //		SmartDashboard.putNumber("LeftSpeed", _drive.get(Enums.FRONT_LEFT));
 //		SmartDashboard.putNumber("Direction", directionLeft);

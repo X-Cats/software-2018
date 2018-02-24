@@ -14,7 +14,6 @@ public class Acquisition {
 	private XCatsSpeedController _rightAcquisition;
 	private DoubleSolenoid _armsSolenoid;
 	private Relay _linkage1;
-	private Relay _linkage2;
 	private boolean _movingHome = false;
 	private Timer _acqTimer = new Timer();
 	private Timer _linqTimer = new Timer();
@@ -32,8 +31,6 @@ public class Acquisition {
 		_armsSolenoid.set(DoubleSolenoid.Value.kForward);
 
 		this._linkage1 = new Relay(Enums.LINKAGE_ONE_CHANNEL, Relay.Direction.kBoth);
-		if(!Enums.IS_FINAL_ROBOT)
-			this._linkage2 = new Relay(Enums.LINKAGE_TWO_CHANNEL, Relay.Direction.kBoth);
 	}
 
 	//intake cube
@@ -86,21 +83,15 @@ public class Acquisition {
 
 	public void raiseLinkage() {
 		this._linkage1.set(Relay.Value.kReverse);
-		if(!Enums.IS_FINAL_ROBOT)
-			this._linkage2.set(Relay.Value.kReverse);
 	}
 
 	public void lowerLinkage() {
 
 		this._linkage1.set(Relay.Value.kForward);
-		if(!Enums.IS_FINAL_ROBOT)
-			this._linkage2.set(Relay.Value.kForward);
 	}
 
 	public void stopLinkage() {
 		this._linkage1.set(Relay.Value.kOn);
-		if(!Enums.IS_FINAL_ROBOT)
-			this._linkage2.set(Relay.Value.kOn);
 	}
 
 	public void moveToHome() {
@@ -142,11 +133,7 @@ public class Acquisition {
 
 		lk = this._linkage1.get().name();
 
-		if(!Enums.IS_FINAL_ROBOT) {
-			String k = this._linkage2.get().name();
 
-			SmartDashboard.putString("Linkage 2 Relay Value", k);
-		}
 
 		SmartDashboard.putString("Linkage Relay Value", lk);
 

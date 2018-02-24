@@ -19,6 +19,7 @@ public class Acquisition {
 	private Timer _linqTimer = new Timer();
 	private Timer _cubeOut = new Timer();
 	private Boolean _cubeEjecting = false;
+	private boolean _armsOpen = false;
 
 	public Acquisition() {
 		_leftAcquisition = new XCatsSpeedController("Left Acquisition", Enums.LEFT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
@@ -66,19 +67,24 @@ public class Acquisition {
 	public void armsIn() {
 		System.out.println("arms in");
 		_armsSolenoid.set(DoubleSolenoid.Value.kForward);
+		this._armsOpen = false;
 	}
 
 	//pull secondary wheels for acquisition out
 	public void armsOut() {
 		System.out.println("arms out");
-		_armsSolenoid.set(DoubleSolenoid.Value.kReverse);	
+		_armsSolenoid.set(DoubleSolenoid.Value.kReverse);
+		this._armsOpen = true;
 	}
 
 	public void toggleArms() {
-		if(this._armsSolenoid.get() == DoubleSolenoid.Value.kReverse)
+		if(this._armsSolenoid.get() == DoubleSolenoid.Value.kReverse) {
 			this._armsSolenoid.set(DoubleSolenoid.Value.kForward);
-		else
+			this._armsOpen = false;
+		}else {
 			this._armsSolenoid.set(DoubleSolenoid.Value.kReverse);
+			this._armsOpen = true;
+		}
 	}
 
 	public void raiseLinkage() {
@@ -138,6 +144,8 @@ public class Acquisition {
 		SmartDashboard.putString("Linkage Relay Value", lk);
 
 		SmartDashboard.putString("Arms Solenoid Value", this._armsSolenoid.get().name());
+			
+		SmartDashboard.putBoolean("Arms Open", this._armsOpen);
 
 	}
 }

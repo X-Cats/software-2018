@@ -193,7 +193,6 @@ public class Autonomous {
 		}else
 			_lightsColor.set(true);//sets lights to match alliance color
 
-		SmartDashboard.putBoolean("Alliance Color", blueAlliance);
 		SmartDashboard.putString("AutoSelected", _autoSelected);
 		//			_autoSelected= _auto2;	
 
@@ -771,7 +770,7 @@ public class Autonomous {
 		if (_stepTimer.get() > time)
 		{
 			_controls.getDrive().set(0, 0, 0, 0);
-			SmartDashboard.putNumber("Encoder Value", _controls.getDrive().getAbsAvgEncoderValue());
+			//SmartDashboard.putNumber("Encoder Value", _controls.getDrive().getAbsAvgEncoderValue());
 			startNextStep();
 		}
 		else
@@ -789,8 +788,8 @@ public class Autonomous {
 		double offsetLimit = 0.05;
 		double offset=0;
 
-		SmartDashboard.putNumber("currentYaw", _initialYaw);
-		SmartDashboard.putNumber("deltaYaw", deltaYaw);
+//		SmartDashboard.putNumber("currentYaw", _initialYaw);
+//		SmartDashboard.putNumber("deltaYaw", deltaYaw);
 		if (left == right){
 			offset = Math.abs(deltaYaw);
 			if(offset > offsetLimit){
@@ -869,8 +868,8 @@ public class Autonomous {
 		double offsetLimit = 0.05;
 		double offset=0;
 
-		SmartDashboard.putNumber("currentYaw", _initialYaw);
-		SmartDashboard.putNumber("deltaYaw", deltaYaw);
+//		SmartDashboard.putNumber("currentYaw", _initialYaw);
+//		SmartDashboard.putNumber("deltaYaw", deltaYaw);
 		if (left == right){
 			offset = Math.abs(deltaYaw);
 			if(offset > offsetLimit){
@@ -990,7 +989,7 @@ public class Autonomous {
 	{
 		System.out.println("Step "+_currentStep + " "+ _stepTimer.get() + " s  --"+   _currentAutoStep.name  + "-- is completed. EncPos= "+_controls.getDrive().getAbsAvgEncoderValue());
 		_navx.zeroYaw();
-		SmartDashboard.putNumber("Starting Yaw", _controls.getNavx().getYaw() );
+//		SmartDashboard.putNumber("Starting Yaw", _controls.getNavx().getYaw() );
 		_currentStep++;
 		_stepTimer.reset();
 		_angleHasBeenCalculated=false;

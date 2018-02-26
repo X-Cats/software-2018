@@ -40,12 +40,13 @@ public class Enums {
 	public static final boolean USE_2SC_TANK = true;     //when true, then the robot drive is 2 motor controllers and the rest are followers
 	public static final double BROWNOUT_VOLTAGE_THRESHOLD = 7.5;
 	public static final double BROWNOUT_VOLTAGE_REDUCTIONFACTOR = 0.5;
+	public static final double ENGAME_TIME = 30;
 	
 	public static final double  ROBOT_LENGTH_COMPACT = 30.0; //length of robot with shooter in home position
 	public static final double  ROBOT_LENGTH_EXTENDED = 40; // length of robot with shooter down
 
 	//vision constants
-	public static final boolean VISION_SYSTEM_ENABLED = true;
+	public static final boolean VISION_SYSTEM_ENABLED = false;
 	public static final int CAMERA_FOV_HORIZONTAL = 61;  // Horizontal field of view for MSoft Lifecam
 	public static final boolean CAMERA_USE_REDUCED_BRIGHTNESS = false; //reduces brightness during acquisition for vision processing
 //	public static final int PIXEL_PER_DEGREE = 14;   // commented out to allow for various resolutions
@@ -72,6 +73,7 @@ public class Enums {
 	//This is for the use of the compressor
 	public static final int     PCM_SHIFTER_FORWARD = 4, PCM_SHIFTER_REVERSE=5;  //this is used to shift the gear ration on the drive train from low to high (SHIFTER)
 	public static final int PCM_ARMS_IN = 0, PCM_ARMS_OUT = 1; //values for acquisition arms solenoids
+	public static final int PCM_CLIMB_IN = 6,PCM_CLIMB_OUT = 7; //value for  climber soleinoids
 	public static final double  SHIFTER_DELAY_TIME = 0.25;  // this time is used for the "slack speed" inbetween gear shifts
 	public static final double  SHIFTER_DELAY_SPEED = 0.4;  // this is the speed for the "slack" during shifting
 		
@@ -85,7 +87,7 @@ public class Enums {
 	//Acquisition
 	public static final int LEFT_ACQUISITION_CAN_ID = 30;//can id for left acquisition motor
 	public static final int RIGHT_ACQUISITION_CAN_ID = 31;//can id for right acquisition motor
-	public static final double ACQUISITION_SPEED = 0.5;//speed of acquisition motors, is currently test value
+	public static final double ACQUISITION_SPEED = 0.6;//speed of acquisition motors, is currently test value
 	public static final int LINKAGE_ONE_CHANNEL = 0;
 	public static final int LINKAGE_TWO_CHANNEL = 1;
 	public static final double LINQ_HOME_TIME = 1.75;
@@ -96,14 +98,18 @@ public class Enums {
 	public static final int ELEVATOR_FOLLOWER_CAN_ID = 9;//can id for elevatorFollower
 	public static final int ELEVATOR_SWITCH_SET_POINT = 18000;//encoder value for elevator switch position
 	public static final int ELEVATOR_BOTTOM_SET_POINT = 0;
-	public static final int ELEVATOR_SCALE_SET_POINT = 133000;//encoder value for elevator scale position, currently at test value
+	public static final int ELEVATOR_SCALE_SET_POINT = 133000;//encoder value for elevator scale position
 	public static final int ELEVATOR_BOTTOM_LIMIT = 4;
 	public static final int ELEVATOR_SWITCH_LIMIT = 2;
 	public static final int ELEVATOR_SCALE_LIMIT = 0;
 	public static final int ELEVATOR_TOP_LIMIT = 0;
 	public static final double ELEVATOR_SPEED_UP = 1.0;
-	public static final double ELEVATOR_SPEED_DOWN = -0.7;
+	public static final double ELEVATOR_SPEED_DOWN = -0.5;
 	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
+	public static final double ELEVATOR_SPEED_ENDGAME = -1.0;
+	public static final double ELEVATOR_HEIGHT_PCT_THROTTLER = 0.5; //This is the percent the elevator is raised, that will limit the speed to prevent tipping
+	public static final double ELEVATOR_HEIGHT_THROTTLE_FACTOR = 0.35;  //This factor is multiplied by the joy stick speeds to limit the speed when the elevator is up
+	
 
 	//Climber
 	public static final int CLIMBER_CAN_ID = 56;//can id for climber motor

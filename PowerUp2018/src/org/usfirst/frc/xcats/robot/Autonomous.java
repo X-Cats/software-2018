@@ -193,25 +193,29 @@ public class Autonomous {
 		}else
 			_lightsColor.set(true);//sets lights to match alliance color
 
-		SmartDashboard.putBoolean("Alliance Color", blueAlliance);
 		SmartDashboard.putString("AutoSelected", _autoSelected);
 		//			_autoSelected= _auto2;	
 
 		//these segments are from our drawing in one note.
 		double segmentA = 235; //was 235
-		double segmentB = 311; //was 285
+		double segmentB = 260; //was 285
 		double segmentC = 8; //was 21
 		double segmentD = 6; //was 34
-		double segmentE = 152; //was 129
+		double segmentE = 140; //was 129
 		double segmentF = 106; //was 112
-		double segmentG = 45; // was 45
-		double segmentH = 60; //was 60
-		double segmentI = 50; //was 50
+		double segmentG = 66; // was 66 (base of triangle if we are C and we go to the left side of the switch
+		double segmentI = 54; //was 54 (base of triangle if we are C and we goto the right side of the switch
+		double segmentN = 75;//was 83 (height of both triangles for center auto)
+		double segmentH = Math.sqrt((Math.pow(segmentI, 2)) + (Math.pow(segmentN, 2))); //(hypotenuse of triangle if we are C and we go to the right side of the switch)
 		double segmentJ = 195; //was 207
 		double segmentK = 65; //was 85
-
-
-
+		double segmentL = 54; //was 54 //added because we had to change center auto distances
+		double segmentM = Math.sqrt((Math.pow(segmentG, 2)) + (Math.pow(segmentN, 2))); //was 106 (hypotenuse of triangle if we are C and we go to the left side of the switch)
+		double segmentO = (95 - segmentN)/2;//distance we have to drive forward before and after we drive for Center
+		double angleA = 90 - (Math.toDegrees(Math.atan(segmentN/segmentG))); //angle to rotate when we start if we go to the left side of the switch for C
+		double angleC = 90 - (Math.toDegrees(Math.atan(segmentN/segmentI)));  //angle to rotate when we start if we go to the right side of the switch for C
+	
+		System.out.println(angleC);
 		switch (_autoSelected) {
 		case _autoL1: 
 
@@ -256,33 +260,40 @@ public class Autonomous {
 		case _autoL2: 
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.7,0.7,segmentF));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,1.0,1.0,segmentF));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 
 			break;
 
 		case _autoCenter: 
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0));
+			_steps.add(new AutonomousStep(AutonomousStep.stepTypes.LOW_SPEED, "Low Speed",0,0,0,0));
 			if (_gameData.charAt(0) == 'L') {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.7,0.7,segmentG));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentH));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentI));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.5,.5,segmentO));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,.5,-angleA));//halfspeed
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,1.0,1.0,segmentM));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second rotation",0,0,0,angleA));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Third Leg",0,0.5,0.5,segmentO));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+
 			}else {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.7,0.7,segmentG));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentH));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,.7,0.7,segmentI));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"First Leg",0,.5,.5,segmentO));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,angleC));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Second Leg",0,1.0,1.0,segmentH));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second rotation",0,0,0,-angleC));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Third Leg",0,0.5,0.5,segmentO));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 			}
+			
 			break;
 
 		case _autoR1: 
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
-			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'L') {
+			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'L') {//Cross court
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentA));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
@@ -290,16 +301,22 @@ public class Autonomous {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,.4,0.4,segmentK));
-			}else if(_gameData.charAt(1) == 'R'){
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentB));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-45));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+			}else if(_gameData.charAt(1) == 'R'){//going to right scale
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,-35));//rotation speed is .5
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 			}else if(_gameData.charAt(0) == 'R'){
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentE));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",1,0,0,-90));//1 second max
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+			}else {
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
 			}
 
 			//note we set coastmode in teleop init, but setting it here is a good practice
@@ -310,7 +327,9 @@ public class Autonomous {
 
 		case _autoR2: 
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.7,0.7,segmentF));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentF));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 
 			break;
 
@@ -432,10 +451,17 @@ public class Autonomous {
 				break;
 
 			case DRIVE_DISTANCE:
-				if (_controls.getIsSlowMode())
-					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
-				else
-					encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+				if(Enums.IS_FINAL_ROBOT) {
+					if (_controls.getIsSlowMode())
+						encPos = Math.abs((_currentAutoStep.distance - 1.9029236202) /0.0051668741);//was 0.0051668741
+					else
+						encPos = Math.abs((_currentAutoStep.distance + 3.1365268239) /0.00582985076625);//was 0.0052878465
+				} else {
+					if (_controls.getIsSlowMode())
+						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
+					else
+						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+				}
 
 				//				if (_controls.getIsSlowMode())
 				//					encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
@@ -446,14 +472,18 @@ public class Autonomous {
 				break;
 
 			case DRIVE_PROFILE:
-				if (Enums.IS_FINAL_ROBOT)					
-					encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
-				else {
+				if (Enums.IS_FINAL_ROBOT)	{				
+					if (_controls.getIsSlowMode())
+						encPos = Math.abs((_currentAutoStep.distance - 1.9029236202) /0.0051668741);//was 0.0051668741
+					else
+						encPos = Math.abs((_currentAutoStep.distance + 3.1365268239) /0.00582985076625);//was 0.0052878465
+				}else {
 					//System.out.println("Slow mode in Auto: " +_controls.getIsSlowMode());
 					if (_controls.getIsSlowMode())
 						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
 					else
 						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
+					
 
 					//					if (_controls.getIsSlowMode())
 					//						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
@@ -497,7 +527,7 @@ public class Autonomous {
 
 
 			case ROTATE:
-				rotate(_currentAutoStep.distance, _currentAutoStep.rightSpeed, _currentAutoStep.stepTime);
+				rotate(_currentAutoStep.distance, _currentAutoStep.stepTime);
 
 				break;
 
@@ -527,6 +557,10 @@ public class Autonomous {
 			case WAIT:
 				wait(_currentAutoStep.stepTime);
 				break;
+				
+			case WAIT_FOR_SCALE:
+				this.waitForScale();
+				break;
 
 			case STOP:
 				stop();
@@ -537,13 +571,13 @@ public class Autonomous {
 				break;
 
 			case GOTO_SCALE:
-				this.goToScale(_currentAutoStep.stepTime);
+				this.goToScale(_currentAutoStep.stepTime,_currentAutoStep.rightSpeed);
 				break;
 
 			case CUBEOUT:
 				this.cubeOut(_currentAutoStep.stepTime);
 				break;
-
+				
 
 
 
@@ -600,55 +634,122 @@ public class Autonomous {
 
 	}
 	private void rotate(double distance) {
-		rotate(distance,0,0);
+		rotate(distance,0);
 	}
 
-	private void rotate( double distance, double speed,double time){
-		//float deltaYaw;
-		//	double  speed = 0.3;
-		if (speed == 0) {
-			speed = .3;
-		}
-		double lowSpeed = 0.3;
-		double tolerance=0.50;
-		int direction=1;
+	private void rotate( double distance, double time){
+		double deltaYaw =0.0;
+		double speed;
+		
+		
+		
+		double lowSpeed = 0.2;
+		double maxSpeed = 0.4;
+		
+		double tolerance=0.50; // be within this angle to stop
 
 
 		if (distance == 0){
 			startNextStep();
 			return;
 		}
+
 		if (_stepTimer.get() >= time && time> 0)
+		{
+			_controls.getDrive().set(0, 0, 0, 0);
 			startNextStep();
+		}
 		else {
 
+			// deltaYaw = current angle - setpoint ; the sign here will be corrective... to go 90 then the direction = -1, to go -90 the direction = 1
+			deltaYaw = _controls.getNavx().getYaw() - distance ;
 
 
+			if(Math.abs(deltaYaw) > tolerance){
+				//SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
 
-			//deltaYaw = _initialYaw + _controls.getNavx().getYaw();
-			//SmartDashboard.putNumber("deltaYaw", deltaYaw);
-			// 
-			direction = (distance > 0 ? -1 : 1);
-			speed = direction * speed;	
-			_controls.getDrive().set(speed, speed, -speed, -speed);
+				// deltaYaw / distance = 100% of change use the nominal rate
+						
+				 //= 0.5 + -90/90 * (0.8 - 0.5);
+				
+				
+				speed =  lowSpeed + Math.abs(deltaYaw / distance) * ( maxSpeed - lowSpeed );
+				speed = (deltaYaw > 0) ? speed : -speed;
+						
 
+				//however, we want to set a lower floor on the speed because the motor stalls
+//				speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
 
-			if(Math.abs(_controls.getNavx().getYaw()) > Math.abs(distance)){
-				SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
-				speed=-speed/1.5;
-				speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
-				System.out.println("Offset: " + ((_controls.getNavx().getYaw()) - Math.abs(distance)) + " rotate speed: "+speed);
+				System.out.println("Offset: " + deltaYaw + " rotate speed: "+speed);
+				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
+				
 				_controls.getDrive().set(speed, speed, -speed, -speed);
-				if(Math.abs(_controls.getNavx().getYaw())-Math.abs(distance)<=tolerance){
-					_controls.getDrive().set(0, 0, 0, 0);
-					startNextStep();
-				}
+				
 			}
-			//System.out.println("Rotating: "+ distance + " speed "+speed);
+			else {
+				System.out.println("Rotation condition met: " + deltaYaw + "  tolerance " +tolerance);
+				_controls.getDrive().set(0, 0, 0, 0);
+				startNextStep();
+			}
 
 		}
+		//System.out.println("Rotating: "+ distance + " speed "+speed);
+
 	}
 
+	
+//	private void rotate( double distance, double speed,double time){
+//		double deltaYaw;
+//		//	double  speed = 0.3;
+//		if (speed == 0) {
+//			speed = .3;
+//		}
+//		double lowSpeed = 0.3;
+//		double tolerance=0.50;
+//		int direction=1;
+//
+//
+//		if (distance == 0){
+//			startNextStep();
+//			return;
+//		}
+//		
+//		if (_stepTimer.get() >= time && time> 0)
+//			startNextStep();
+//		else {
+//
+//
+//
+//
+//			//deltaYaw = _initialYaw + _controls.getNavx().getYaw();
+//			//SmartDashboard.putNumber("deltaYaw", deltaYaw);
+//			// 
+//			direction = (distance > 0 ? -1 : 1);
+//			speed = direction * speed;	
+//			_controls.getDrive().set(speed, speed, -speed, -speed);
+//
+//
+//			deltaYaw = _controls.getNavx().getYaw() - distance ;
+//					
+//			if(Math.abs(_controls.getNavx().getYaw()) > Math.abs(distance)){
+//				SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
+//				
+//				speed=-speed/1.5;
+//				
+//				//speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
+//				
+//				System.out.println("Offset: " + (Math.abs(_controls.getNavx().getYaw()) - Math.abs(distance)) * direction + " rotate speed: "+speed);
+//				SmartDashboard.putNumber("Rotate Offset", (Math.abs(_controls.getNavx().getYaw()) - Math.abs(distance))*direction);
+//				_controls.getDrive().set(speed, speed, -speed, -speed);
+//				if(Math.abs(_controls.getNavx().getYaw())-Math.abs(distance)<=tolerance){
+//					_controls.getDrive().set(0, 0, 0, 0);
+//					startNextStep();
+//				}
+//			}
+//			//System.out.println("Rotating: "+ distance + " speed "+speed);
+//
+//		}
+//	}
 
 
 
@@ -658,6 +759,8 @@ public class Autonomous {
 			SmartDashboard.putNumber("Step Count", _steps.size());
 			SmartDashboard.putString("Current Command", this._currentStep + " " + _currentAutoStep.name  + "\n " + _currentAutoStep.stepTime);			
 		}
+		
+		
 
 	}
 	public void drive (double time, double left, double right)
@@ -667,7 +770,7 @@ public class Autonomous {
 		if (_stepTimer.get() > time)
 		{
 			_controls.getDrive().set(0, 0, 0, 0);
-			SmartDashboard.putNumber("Encoder Value", _controls.getDrive().getAbsAvgEncoderValue());
+			//SmartDashboard.putNumber("Encoder Value", _controls.getDrive().getAbsAvgEncoderValue());
 			startNextStep();
 		}
 		else
@@ -685,8 +788,8 @@ public class Autonomous {
 		double offsetLimit = 0.05;
 		double offset=0;
 
-		SmartDashboard.putNumber("currentYaw", _initialYaw);
-		SmartDashboard.putNumber("deltaYaw", deltaYaw);
+//		SmartDashboard.putNumber("currentYaw", _initialYaw);
+//		SmartDashboard.putNumber("deltaYaw", deltaYaw);
 		if (left == right){
 			offset = Math.abs(deltaYaw);
 			if(offset > offsetLimit){
@@ -765,8 +868,8 @@ public class Autonomous {
 		double offsetLimit = 0.05;
 		double offset=0;
 
-		SmartDashboard.putNumber("currentYaw", _initialYaw);
-		SmartDashboard.putNumber("deltaYaw", deltaYaw);
+//		SmartDashboard.putNumber("currentYaw", _initialYaw);
+//		SmartDashboard.putNumber("deltaYaw", deltaYaw);
 		if (left == right){
 			offset = Math.abs(deltaYaw);
 			if(offset > offsetLimit){
@@ -839,8 +942,8 @@ public class Autonomous {
 		}
 	}
 
-	public void goToScale (double time) {
-		if (_stepTimer.get() > time || _controls.getElevator().isAtScale())
+	public void goToScale (double time,double encoderValue) {
+		if (_stepTimer.get() > time || _controls.getElevator().isAtScale() ||_controls.getElevator().scaleEncoder() >= encoderValue && encoderValue !=0)
 			startNextStep();
 		else {
 			_controls.getElevator().goToScale();
@@ -854,6 +957,14 @@ public class Autonomous {
 			_controls.getAcquisition().cubeOut();
 		}
 	}
+	
+	public void goToBottom () {
+		if(_controls.getElevator().isAtBottom()) {
+			startNextStep();
+			}else {
+				_controls.getElevator().goToBottom();;
+			}
+	}
 
 
 	public void wait (double time)
@@ -862,6 +973,10 @@ public class Autonomous {
 			startNextStep();
 	}
 
+	public void waitForScale() {
+		if((this._controls.getElevator().isAtTarget() || Math.abs(this._controls.getElevator().scaleEncoder() - this._controls.getElevator().getTargetEncoder()) <= Enums.ELEVATOR_ENCODER_SAFETY) || this._controls.getElevator().getTargetLimit() == null)
+			this.startNextStep();
+	}
 
 
 	public void stop ()
@@ -874,7 +989,7 @@ public class Autonomous {
 	{
 		System.out.println("Step "+_currentStep + " "+ _stepTimer.get() + " s  --"+   _currentAutoStep.name  + "-- is completed. EncPos= "+_controls.getDrive().getAbsAvgEncoderValue());
 		_navx.zeroYaw();
-		SmartDashboard.putNumber("Starting Yaw", _controls.getNavx().getYaw() );
+//		SmartDashboard.putNumber("Starting Yaw", _controls.getNavx().getYaw() );
 		_currentStep++;
 		_stepTimer.reset();
 		_angleHasBeenCalculated=false;

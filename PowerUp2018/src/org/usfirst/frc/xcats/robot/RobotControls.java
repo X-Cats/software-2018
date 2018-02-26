@@ -309,7 +309,11 @@ public class RobotControls {
 					
 				} else{
 					_driveStraight = false;
-					_drive.set(_leftJS, _rightJS);
+					if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
+						_drive.set(_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR,_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR);
+					}
+					else						
+						_drive.set(_leftJS, _rightJS);
 				}
 			}
 			else {
@@ -408,10 +412,10 @@ public class RobotControls {
 		//these need to be rethought
 		
 		//buttons to move elevator
-		if(_operatorJS.getRawAxis(1) > 0.1)
-			_elevator.raise(_operatorJS.getRawAxis(1));
-		else if(_operatorJS.getRawAxis(1) < -0.1)
-			_elevator.lower(_operatorJS.getRawAxis(1));
+		if(_operatorJS.getRawAxis(1) < -0.1)
+			_elevator.raise(1.0);
+		else if(_operatorJS.getRawAxis(1) > 0.1)
+			_elevator.lower(-_operatorJS.getRawAxis(1));
 		else if(_operatorJS.getRawButton(1))
 			_elevator.goToSwitch();
 		else if(_operatorJS.getRawButton(4))
@@ -428,9 +432,9 @@ public class RobotControls {
 			this._acquisition.toggleArms();
 		
 		//buttons for acquisition wheels
-		if(_operatorJS.getRawButton(2))
+		if(_operatorJS.getRawButton(3))
 			_acquisition.release();
-		else if(_operatorJS.getRawButton(3))
+		else if(_operatorJS.getRawButton(2 ))
 			_acquisition.intake();
 		else
 			_acquisition.stop();
@@ -456,7 +460,13 @@ public class RobotControls {
 		}
 		
 
-			
+
+		//button for endgame
+		if(_operatorJS.getRawButton(10)) {
+			_elevator.prepareForClimb();
+			this._acquisition.raiseLinkage();
+		}
+
 	}
 
 
@@ -475,7 +485,6 @@ public class RobotControls {
 		return this._elevator;
 	}
 	
-
 	
 	public void updateStatus ()
 	{
@@ -510,6 +519,8 @@ public class RobotControls {
 			else if (Math.abs(_drive.get(Enums.FRONT_LEFT)) > Enums.SHIFTER_DELAY_SPEED)
 				_drive.set( directionLeft * Enums.SHIFTER_DELAY_SPEED,  directionRight * Enums.SHIFTER_DELAY_SPEED);			
 		}
+		
+		SmartDashboard.putNumber("Joystick Value", _operatorJS.getRawAxis(1));
 		
 //		SmartDashboard.putNumber("LeftSpeed", _drive.get(Enums.FRONT_LEFT));
 //		SmartDashboard.putNumber("Direction", directionLeft);

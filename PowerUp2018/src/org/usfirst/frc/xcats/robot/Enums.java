@@ -71,7 +71,7 @@ public class Enums {
 	
 	//This is for the use of the compressor
 	public static final int     PCM_SHIFTER_FORWARD = 4, PCM_SHIFTER_REVERSE=5;  //this is used to shift the gear ration on the drive train from low to high (SHIFTER)
-	public static final int PCM_ARMS_IN = 1, PCM_ARMS_OUT = 0; //values for acquisition arms solenoids
+	public static final int PCM_ARMS_IN = 0, PCM_ARMS_OUT = 1; //values for acquisition arms solenoids
 	public static final double  SHIFTER_DELAY_TIME = 0.25;  // this time is used for the "slack speed" inbetween gear shifts
 	public static final double  SHIFTER_DELAY_SPEED = 0.4;  // this is the speed for the "slack" during shifting
 		
@@ -86,13 +86,24 @@ public class Enums {
 	public static final int LEFT_ACQUISITION_CAN_ID = 30;//can id for left acquisition motor
 	public static final int RIGHT_ACQUISITION_CAN_ID = 31;//can id for right acquisition motor
 	public static final double ACQUISITION_SPEED = 0.5;//speed of acquisition motors, is currently test value
-	
+	public static final int LINKAGE_ONE_CHANNEL = 0;
+	public static final int LINKAGE_TWO_CHANNEL = 1;
+	public static final double LINQ_HOME_TIME = 1.75;
+	public static final double RELEASE_TIMER = 1;//Time for cube release in auto
+
 	//Elevator
-	public static final int ELEVATOR_MASTER_CAN_ID = 32;//can id for elevatorMaster
-	public static final int ELEVATOR_FOLLOWER_CAN_ID = 32;//can id for elevatorFollower
-	public static final double ELEVATOR_SPEED = 0.5;//speed for elevator motor, currently test value
-	public static final int ELEVATOR_SWITCH_SET_POINT = 0;//encoder value for elevator switch position, currently at test value
-	public static final int ELEVATOR_SCALE_SET_POINT = 0;//encoder value for elevator scale position, currently at test value
+	public static final int ELEVATOR_MASTER_CAN_ID = 8;//can id for elevatorMaster
+	public static final int ELEVATOR_FOLLOWER_CAN_ID = 9;//can id for elevatorFollower
+	public static final int ELEVATOR_SWITCH_SET_POINT = 18000;//encoder value for elevator switch position
+	public static final int ELEVATOR_BOTTOM_SET_POINT = 0;
+	public static final int ELEVATOR_SCALE_SET_POINT = 133000;//encoder value for elevator scale position, currently at test value
+	public static final int ELEVATOR_BOTTOM_LIMIT = 4;
+	public static final int ELEVATOR_SWITCH_LIMIT = 2;
+	public static final int ELEVATOR_SCALE_LIMIT = 0;
+	public static final int ELEVATOR_TOP_LIMIT = 0;
+	public static final double ELEVATOR_SPEED_UP = 1.0;
+	public static final double ELEVATOR_SPEED_DOWN = -0.7;
+	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
 
 	//Climber
 	public static final int CLIMBER_CAN_ID = 56;//can id for climber motor

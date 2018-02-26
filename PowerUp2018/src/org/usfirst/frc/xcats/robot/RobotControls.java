@@ -4,6 +4,7 @@ package org.usfirst.frc.xcats.robot;
 import java.util.ArrayList;
 
 import com.ctre.CANTalon;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -11,8 +12,10 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -63,11 +66,20 @@ public class RobotControls {
 	private Autonomous _commandAuto;
 	private AutoTarget _autoTarget;
 	private boolean _autoMode=false; 
+    private AHRS _ahrs;
+    private double last_world_linear_accel_x;
+    private double last_world_linear_accel_y;
+    private double last_world_linear_accel_z;
+    private double max_world_linear_accel_x;
+    private double max_world_linear_accel_y;
+    private double max_world_linear_accel_z;
+
+    final static double kCollisionThreshold_DeltaG = 0.5f;
+    final static double kBumpThreshold_DeltaG = 2.5f;
 	
 	private Elevator _elevator;
 	private Acquisition _acquisition;
 	private Climber _climber;
-
 	public RobotControls ()
 	{
 
@@ -111,6 +123,24 @@ public class RobotControls {
 			_navx.resetStatus();
 			_navx.zeroYaw();			
 		}
+    	
+        try {
+    		/***********************************************************************
+    		 * AHRS == Altitude and Heading Reference System
+    		 * navX-MXP:
+    		 * - Communication via RoboRIO MXP (SPI, I2C, TTL UART) and USB.            
+    		 * - See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface.
+    		 * 
+    		 * navX-Micro:
+    		 * - Communication via I2C (RoboRIO MXP or Onboard) and USB.
+    		 * - See http://navx-micro.kauailabs.com/guidance/selecting-an-interface.
+    		 * 
+    		 * Multiple navX-model devices on a single robot are supported.
+    		 ************************************************************************/
+              _ahrs = new AHRS(SPI.Port.kMXP); 
+          } catch (RuntimeException ex ) {
+              DriverStation.reportError("Error instantiating navX MXP AHRS:  " + ex.getMessage(), true);
+          }
 		
 
 		
@@ -390,6 +420,10 @@ public class RobotControls {
 			_elevator.stop();
 		
 		//buttons for acquisition arms
+		
+		if (_leftJS.getRawButtonReleased(9)) 
+			resetCollisionData();
+
 		if(_operatorJS.getRawButtonPressed(5))
 			this._acquisition.toggleArms();
 		
@@ -423,9 +457,6 @@ public class RobotControls {
 		
 
 			
-	
-		
-		
 	}
 
 
@@ -501,6 +532,71 @@ public class RobotControls {
 			_navx.updateStatus();
 			
 		}
+
+		detectCollision();
 		
-	}
+	}    
+    
+    private void resetCollisionData() {
+
+        last_world_linear_accel_x = 0;
+        last_world_linear_accel_y = 0;
+        last_world_linear_accel_z = 0;
+        max_world_linear_accel_x = 0;
+        max_world_linear_accel_y = 0;
+        max_world_linear_accel_z = 0;		
+	}    
+    
+    private void detectCollision() {
+
+        boolean collisionDetected = false;
+        boolean bumpDetected = false;
+        double[] jerkXYZ = {0,0,0};
+        double[] maxAccelXYZ = {0,0,0};
+        
+        double curr_world_linear_accel_x = _ahrs.getWorldLinearAccelX();
+        double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
+        last_world_linear_accel_x = curr_world_linear_accel_x;
+        double curr_world_linear_accel_y = _ahrs.getWorldLinearAccelY();
+        double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
+        last_world_linear_accel_y = curr_world_linear_accel_y;
+        double curr_world_linear_accel_z = _ahrs.getWorldLinearAccelZ();
+        double currentJerkZ = curr_world_linear_accel_z - last_world_linear_accel_z;
+        last_world_linear_accel_z = curr_world_linear_accel_z;
+        
+        if ( ( Math.abs(currentJerkX) > kCollisionThreshold_DeltaG ) ||
+             ( Math.abs(currentJerkY) > kCollisionThreshold_DeltaG) ) {
+            collisionDetected = true;
+            jerkXYZ[0] = Math.abs(currentJerkX);
+            jerkXYZ[1] = Math.abs(currentJerkY);
+            jerkXYZ[2] = Math.abs(currentJerkZ);
+        }
+        // bump detection may only be accurate if in LowSpeed - can we test for this here?
+        if ( Math.abs(currentJerkZ) > kBumpThreshold_DeltaG ) {
+               bumpDetected = true;
+               jerkXYZ[0] = Math.abs(currentJerkX);
+               jerkXYZ[1] = Math.abs(currentJerkY);
+               jerkXYZ[2] = Math.abs(currentJerkZ);
+           }
+        
+        if ( ( Math.abs(curr_world_linear_accel_x) > Math.abs(max_world_linear_accel_x) )) {
+        	max_world_linear_accel_x = curr_world_linear_accel_x;
+        }
+        if ( ( Math.abs(curr_world_linear_accel_y) > Math.abs(max_world_linear_accel_y) )) {
+        	max_world_linear_accel_y = curr_world_linear_accel_y;
+        }
+        if ( ( Math.abs(curr_world_linear_accel_z) > Math.abs(max_world_linear_accel_z) )) {
+        	max_world_linear_accel_z = curr_world_linear_accel_z;
+        }
+    	maxAccelXYZ[0] = Math.abs(max_world_linear_accel_x);
+    	maxAccelXYZ[1] = Math.abs(max_world_linear_accel_y);
+    	maxAccelXYZ[2] = Math.abs(max_world_linear_accel_z);
+//        SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
+        SmartDashboard.putBoolean("BumpDetected", bumpDetected);
+//        SmartDashboard.putNumberArray("Collision jerk values X, Y, Z", 
+//        		jerkXYZ);
+        SmartDashboard.putNumberArray("Max accel values X, Y, Z", 
+        		maxAccelXYZ);
+    }
+    
 }

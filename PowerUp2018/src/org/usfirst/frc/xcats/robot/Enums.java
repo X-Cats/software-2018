@@ -124,5 +124,6 @@ public class Enums {
 	public static final int GEAR_LIGHTS_CHANNEL = 5;//output for controlling the lights while ejecting the gear
 	public static final int WINCH_LIGHTS_CHANNEL = 4;//output for controlling lights while climbing
 	public static final int LIGHTS_ALLIANCE_COLOR = 3;//output for controlling lights to match alliance color
+	public static final int LED_LIGHT_BAR = 1;
 	
 }

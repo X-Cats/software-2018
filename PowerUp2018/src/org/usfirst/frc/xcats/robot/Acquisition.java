@@ -116,7 +116,7 @@ public class Acquisition {
 		String lk = "";
 
 		if (_movingHome) {
-			if (_linqTimer.get() >= Enums.LINQ_HOME_TIME) {
+			if (_linqTimer.get() >= Enums.LINQ_UP_TIMER) {
 				_linqTimer.stop();
 				this.stopLinkage();
 				_movingHome = false;

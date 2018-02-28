@@ -671,6 +671,14 @@ public class Autonomous {
 				this.cubeIn(_currentAutoStep.stepTime);
 				break;
 
+			case FOUR_BAR_UP:
+                this.fourBarUp(this._currentAutoStep.stepTime);
+                break;
+
+            case FOUR_BAR_DOWN:
+                this.fourBarDown(this._currentAutoStep.stepTime);
+                break;
+
 
 
 			}
@@ -1057,6 +1065,20 @@ public class Autonomous {
 			this._controls.getAcquisition().cubeIn();
 		}
 	}
+
+	public void fourBarDown(double time){
+	    if(_stepTimer.get() > time)
+	        startNextStep();
+	    else
+	        this._controls.getAcquisition().autoLowerLinkage();
+    }
+
+    public void fourBarUp(double time){
+	    if(this._stepTimer.get() > time)
+	        this.startNextStep();
+	    else
+	        this._controls.getAcquisition().raiseLinkage();
+    }
 	
 	public void goToBottom () {
 		if(_controls.getElevator().isAtBottom()) {

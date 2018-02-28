@@ -433,7 +433,7 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
-		if(_scoringPreference == "Scale") {
+		if(_scoringPreference == this._scoringPreferenceScale) {
 			if(_gameData.charAt(1) == _notStartSide && _crossCourtSelected == _autoCrossCourtYes) {
 				this.addCrossCoutSteps();
 			}else if(_gameData.charAt(1) == _startSide) {
@@ -443,7 +443,7 @@ public class Autonomous {
 			}else {
 				this.addDriveForward();
 			}
-		}else if(_scoringPreference == "Switch") {
+		}else if(_scoringPreference == this._scoringPreferenceSwitch) {
 			if(_gameData.charAt(0) == _startSide) {
 				this.addSwitchSteps();
 			}else if(_gameData.charAt(1) == _notStartSide && _crossCourtSelected == _autoCrossCourtYes){

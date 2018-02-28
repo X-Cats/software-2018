@@ -679,6 +679,15 @@ public class Autonomous {
                 this.fourBarDown(this._currentAutoStep.stepTime);
                 break;
 
+			case AQUISITION_IN:
+				this._controls.getAcquisition().armsIn();
+				this.startNextStep();
+				break;
+
+			case AQUISITION_OUT:
+				this._controls.getAcquisition().armsOut();
+				startNextStep();
+				break;
 
 
 			}

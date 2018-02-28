@@ -71,6 +71,10 @@ public class Autonomous {
 	private String _crossCourtSelected;
 	private String _gameData;
 	private String _scoringPreference;
+	private char _startSide = 'L';
+	private char _notStartSide = 'R';
+	private double _angleMod1 = 1;
+	private double _angleMod2 = -1;
 	private SendableChooser _robotPosition;
 	private SendableChooser _crossCourt;
 	private SendableChooser _scoringPreferences;
@@ -207,7 +211,17 @@ public class Autonomous {
 
 		SmartDashboard.putString("AutoSelected", _autoSelected);
 		//			_autoSelected= _auto2;	
-		
+
+
+		if(_autoSelected == _autoL1) {
+			_angleMod1 = -1;
+			_angleMod2 = 1;
+		}
+
+		if(this._autoSelected == this._autoR1) {
+			_startSide = 'R';
+			_notStartSide = 'L';
+		}
 
 		//these segments are from our drawing in one note.
 		double segmentG = 66; // was 66 (base of triangle if we are C and we go to the left side of the switch
@@ -404,86 +418,87 @@ public class Autonomous {
 	
 	private void generateSideStartSteps() {
 		
-		double segmentA = 235; //was 235
-		double segmentB = 260; //was 285
-		double segmentC = 8; //was 21
-		double segmentD = 6; //was 34
-		double segmentE = 140; //was 129
+
+
+
 		double segmentF = 106; //was 112
 		double segmentG = 66; // was 66 (base of triangle if we are C and we go to the left side of the switch
 		double segmentI = 54; //was 54 (base of triangle if we are C and we goto the right side of the switch
 		double segmentN = 75;//was 83 (height of both triangles for center auto)
-		double segmentJ = 207; //was 207
-		double segmentK = 65; //was 85
+
 		double segmentL = 54; //was 54 //added because we had to change center auto distances
 		
-		double angleMod1 = 1;
-		double angleMod2 = -1;
-		
-		if(_autoSelected == _autoL1) {
-			angleMod1 = -1;
-			angleMod2 = 1;
-		}
-		
-		char startSide = 'L';
-		char notStartSide = 'R';
-		
-		if(this._autoSelected == this._autoR1) {
-			startSide = 'R';
-			notStartSide = 'L';
-		}
+
 		
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
 		if(_scoringPreference == "Scale") {
-			if(_gameData.charAt(1) == notStartSide && _crossCourtSelected == _autoCrossCourtYes) {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0.0,1.0,1.0,segmentA));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,angleMod2 * 90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,segmentJ));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,angleMod1 * 90));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",1,0,0,0));
-			}else if(_gameData.charAt(1) == startSide) {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,angleMod2 * 35));//rotation speed is .5
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
-			}else if(_gameData.charAt(0) == startSide) {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",1,0,0,angleMod2 * 90));//1 second max
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+			if(_gameData.charAt(1) == _notStartSide && _crossCourtSelected == _autoCrossCourtYes) {
+				this.addCrossCoutSteps();
+			}else if(_gameData.charAt(1) == _startSide) {
+				this.addScaleSteps();
+			}else if(_gameData.charAt(0) == _startSide) {
+				this.addSwitchSteps();
 			}else {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.7,0.7,segmentE));
+				this.addDriveForward();
 			}
 		}else if(_scoringPreference == "Switch") {
-			if(_gameData.charAt(0) == startSide) {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",1,0,0,angleMod2 * 90));//1 second max
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
-			}else if(_gameData.charAt(1) == startSide) {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,angleMod2 * 35));//rotation speed is .5
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+			if(_gameData.charAt(0) == _startSide) {
+				this.addSwitchSteps();
+			}else if(_gameData.charAt(1) == _notStartSide && _crossCourtSelected == _autoCrossCourtYes){
+				this.addCrossCoutSteps();
+			}else if(_gameData.charAt(1) == _startSide) {
+				this.addScaleSteps();
 			}else {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.7,0.7,segmentE));
+				this.addDriveForward();
 			}
 		}
 		
+	}
+
+	private void addScaleSteps(){
+		double segmentB = 260; //was 285
+		double segmentC = 8; //was 21
+
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 35));//rotation speed is .5
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
+	}
+
+	private void addSwitchSteps(){
+		double segmentD = 6; //was 34
+		double segmentE = 140; //was 129
+
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",1,0,0,_angleMod2 * 90));//1 second max
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+	}
+
+	private void addCrossCoutSteps(){
+		double segmentA = 235; //was 235
+		double segmentJ = 207; //was 207
+		double segmentK = 65; //was 85
+
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0.0,1.0,1.0,segmentA));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,_angleMod2 * 90));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,segmentJ));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,_angleMod1 * 90));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
+	}
+
+	private void addDriveForward(){
+		double segmentL = 100;
+
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.7,0.7,segmentL));
 	}
 
 

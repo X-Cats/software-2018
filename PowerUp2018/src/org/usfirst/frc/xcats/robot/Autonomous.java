@@ -417,19 +417,7 @@ public class Autonomous {
 	}
 	
 	private void generateSideStartSteps() {
-		
 
-
-
-		double segmentF = 106; //was 112
-		double segmentG = 66; // was 66 (base of triangle if we are C and we go to the left side of the switch
-		double segmentI = 54; //was 54 (base of triangle if we are C and we goto the right side of the switch
-		double segmentN = 75;//was 83 (height of both triangles for center auto)
-
-		double segmentL = 54; //was 54 //added because we had to change center auto distances
-		
-
-		
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
@@ -483,7 +471,8 @@ public class Autonomous {
 	private void addCrossCoutSteps(){
 		double segmentA = 235; //was 235
 		double segmentJ = 207; //was 207
-		double segmentK = 65; //was 85
+		double segmentK = 53; //was 85
+        double segmentM = 12;
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0.0,1.0,1.0,segmentA));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
@@ -493,6 +482,9 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,_angleMod1 * 90));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"Go To Scale",5,0,0,0));
+        _steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Fourth Leg",0,0.4,0.4,segmentM));
+        _steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 	}
 
 	private void addDriveForward(){

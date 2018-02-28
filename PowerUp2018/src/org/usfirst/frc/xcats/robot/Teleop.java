@@ -13,6 +13,7 @@ public class Teleop {
 		_controls.setCoastMode();
 		_controls.getElevator().terminateMotion();
 		_controls.getElevator().init();
+		_controls.setHighSpeed();
 	}
 
 	public void execute ()

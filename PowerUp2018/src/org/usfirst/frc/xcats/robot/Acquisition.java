@@ -114,7 +114,23 @@ public class Acquisition {
 	}
 
 	public void autoLowerLinkage() {
-		this._linkage1.set(Relay.Value.kForward);
+		if(!this._linqMovingDown) {
+			this._linqUp.stop();
+			this._linqUp.reset();
+			this._linqUp.start();
+			this.raiseLinkage();
+			this._linqMovingDown = true;
+		}
+	}
+
+	public void autoRaiseLinkage(){
+		if(!this._linqMovingUp) {
+			this._linqDown.stop();
+			this._linqDown.reset();
+			this._linqDown.start();
+			this.lowerLinkage();
+			this._linqMovingUp = true;
+		}
 	}
 	
 	public void stopLinkage() {
@@ -170,11 +186,20 @@ public class Acquisition {
 			}
 		}
 		
-//		if(_linqMovingUp) {
-//			if (_linqUp.get() >= Enums.LINQ_UP_TIMER) {
-////				this._l
-////			}
-//		}
+		if(_linqMovingUp) {
+			if (_linqUp.get() >= Enums.LINQ_UP_TIMER) {
+				this.stopLinkage();
+			}else{
+				this.raiseLinkage();
+			}
+		}
+
+		if(_linqMovingDown){
+			if(_linqDown.get() >= Enums.LINQ_DOWN_TIMER){
+				this.stopLinkage();
+			}else
+				this.lowerLinkage();
+		}
 		lk = this._linkage1.get().name();
 
 

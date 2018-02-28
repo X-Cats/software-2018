@@ -1077,14 +1077,14 @@ public class Autonomous {
 	    if(this._stepTimer.get() > time)
 	        this.startNextStep();
 	    else
-	        this._controls.getAcquisition().raiseLinkage();
+	        this._controls.getAcquisition().autoRaiseLinkage();
     }
 	
 	public void goToBottom () {
 		if(_controls.getElevator().isAtBottom()) {
 			startNextStep();
 			}else {
-				_controls.getElevator().goToBottom();;
+				_controls.getElevator().goToBottom();
 			}
 	}
 

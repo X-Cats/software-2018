@@ -413,7 +413,7 @@ public class Autonomous {
 		double segmentG = 66; // was 66 (base of triangle if we are C and we go to the left side of the switch
 		double segmentI = 54; //was 54 (base of triangle if we are C and we goto the right side of the switch
 		double segmentN = 75;//was 83 (height of both triangles for center auto)
-		double segmentJ = 195; //was 207
+		double segmentJ = 207; //was 207
 		double segmentK = 65; //was 85
 		double segmentL = 54; //was 54 //added because we had to change center auto distances
 		
@@ -438,7 +438,7 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
 		if(_scoringPreference == "Scale") {
 			if(_gameData.charAt(1) == notStartSide && _crossCourtSelected == _autoCrossCourtYes) {
-				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.65,0.65,segmentA));
+				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0.0,1.0,1.0,segmentA));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,angleMod2 * 90));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
@@ -660,6 +660,9 @@ public class Autonomous {
 				this.cubeOut(_currentAutoStep.stepTime);
 				break;
 				
+			case CUBE_IN:
+				this.cubeIn(_currentAutoStep.stepTime);
+				break;
 
 
 
@@ -725,7 +728,7 @@ public class Autonomous {
 		
 		
 		
-		double lowSpeed = 0.2;
+		double lowSpeed = 0.3;
 		double maxSpeed = 0.4;
 		
 		double tolerance=0.50; // be within this angle to stop
@@ -1037,6 +1040,14 @@ public class Autonomous {
 			startNextStep();
 		}else {
 			_controls.getAcquisition().cubeOut();
+		}
+	}
+	
+	public void cubeIn (double time) {
+		if (_stepTimer.get() > time) {
+			startNextStep();
+		}else {
+			this._controls.getAcquisition().cubeIn();
 		}
 	}
 	

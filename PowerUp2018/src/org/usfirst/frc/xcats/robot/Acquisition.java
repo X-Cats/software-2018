@@ -18,8 +18,14 @@ public class Acquisition {
 	private Timer _acqTimer = new Timer();
 	private Timer _linqTimer = new Timer();
 	private Timer _cubeOut = new Timer();
+	private Timer _cubeIn = new Timer();
+	private Timer _linqUp = new Timer();
+	private Timer _linqDown = new Timer();
 	private Boolean _cubeEjecting = false;
+	private Boolean _cubeIntake = false;
 	private boolean _armsOpen = false;
+	private boolean _linqMovingUp = false;
+	private boolean _linqMovingDown = false;
 
 	public Acquisition() {
 		_leftAcquisition = new XCatsSpeedController("Left Acquisition", Enums.LEFT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
@@ -54,6 +60,17 @@ public class Acquisition {
 			this.release();
 
 			this._cubeEjecting = true;
+		}
+	}
+	
+	public void cubeIn() {
+		if (!_cubeIntake) {
+			this._cubeIn.reset();
+			this._cubeIn.start();
+
+			this.intake();
+
+			this._cubeIntake = true;
 		}
 	}
 
@@ -96,6 +113,26 @@ public class Acquisition {
 		this._linkage1.set(Relay.Value.kForward);
 	}
 
+	public void autoLowerLinkage() {
+		if(!this._linqMovingDown) {
+			this._linqUp.stop();
+			this._linqUp.reset();
+			this._linqUp.start();
+			this.raiseLinkage();
+			this._linqMovingDown = true;
+		}
+	}
+
+	public void autoRaiseLinkage(){
+		if(!this._linqMovingUp) {
+			this._linqDown.stop();
+			this._linqDown.reset();
+			this._linqDown.start();
+			this.lowerLinkage();
+			this._linqMovingUp = true;
+		}
+	}
+	
 	public void stopLinkage() {
 		this._linkage1.set(Relay.Value.kOn);
 	}
@@ -116,7 +153,7 @@ public class Acquisition {
 		String lk = "";
 
 		if (_movingHome) {
-			if (_linqTimer.get() >= Enums.LINQ_HOME_TIME) {
+			if (_linqTimer.get() >= Enums.LINQ_UP_TIMER) {
 				_linqTimer.stop();
 				this.stopLinkage();
 				_movingHome = false;
@@ -137,6 +174,32 @@ public class Acquisition {
 			}
 		}
 
+
+		if(_cubeIntake) {
+			if (_cubeIn.get() >= Enums.INTAKE_TIMER) {
+				this._cubeIn.stop();
+				this.stop();
+				_cubeIntake = false;
+
+			}else {
+				this.intake();
+			}
+		}
+		
+		if(_linqMovingUp) {
+			if (_linqUp.get() >= Enums.LINQ_UP_TIMER) {
+				this.stopLinkage();
+			}else{
+				this.raiseLinkage();
+			}
+		}
+
+		if(_linqMovingDown){
+			if(_linqDown.get() >= Enums.LINQ_DOWN_TIMER){
+				this.stopLinkage();
+			}else
+				this.lowerLinkage();
+		}
 		lk = this._linkage1.get().name();
 
 

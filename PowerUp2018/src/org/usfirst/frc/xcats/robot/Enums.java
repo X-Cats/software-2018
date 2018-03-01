@@ -90,8 +90,11 @@ public class Enums {
 	public static final double ACQUISITION_SPEED = 0.6;//speed of acquisition motors, is currently test value
 	public static final int LINKAGE_ONE_CHANNEL = 0;
 	public static final int LINKAGE_TWO_CHANNEL = 1;
-	public static final double LINQ_HOME_TIME = 1.75;
+	public static final double LINQ_UP_TIMER = 1.75;
+	public static final double LINQ_DOWN_TIMER = 1.75;
 	public static final double RELEASE_TIMER = 1;//Time for cube release in auto
+	public static final double INTAKE_TIMER = 1.5;
+	
 
 	//Elevator
 	public static final int ELEVATOR_MASTER_CAN_ID = 8;//can id for elevatorMaster

@@ -752,7 +752,7 @@ public class Autonomous {
 		
 		
 		
-		double lowSpeed = 0.3;
+		double lowSpeed = 0.2;
 		double maxSpeed = 0.4;
 		
 		double tolerance=0.50; // be within this angle to stop

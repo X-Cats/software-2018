@@ -455,6 +455,7 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 35));//rotation speed is .5
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"cube out",Enums.RELEASE_TIMER,0,0,0));
 	}
 
 	private void addSwitchSteps(){

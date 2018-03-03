@@ -413,7 +413,7 @@ public class RobotControls {
 		
 		//buttons to move elevator
 		if(_operatorJS.getRawAxis(1) < -0.1)
-			_elevator.raise(1.0);
+			_elevator.raise(-_operatorJS.getRawAxis(1));
 		else if(_operatorJS.getRawAxis(1) > 0.1)
 			_elevator.lower(-_operatorJS.getRawAxis(1));
 		else if(_operatorJS.getRawButton(1))

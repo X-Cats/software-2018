@@ -459,7 +459,7 @@ public class Autonomous {
 
 	private void addSwitchSteps(){
 		double segmentD = 6; //was 34
-		double segmentE = 140; //was 129
+		double segmentE = 134; //was 129//was 140
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
@@ -564,8 +564,11 @@ public class Autonomous {
 				if (Enums.IS_FINAL_ROBOT)	{				
 					if (_controls.getIsSlowMode())
 						encPos = Math.abs((_currentAutoStep.distance - 1.9029236202) /0.0051668741);//was 0.0051668741
-					else
+					else {
 						encPos = Math.abs((_currentAutoStep.distance + 3.1365268239) /0.00582985076625);//was 0.0052878465
+						System.out.println("Final high gear speed equation");
+					}
+						
 				}else {
 					//System.out.println("Slow mode in Auto: " +_controls.getIsSlowMode());
 					if (_controls.getIsSlowMode())
@@ -945,9 +948,9 @@ public class Autonomous {
 	public void driveStraightProfile (double time, double left, double right,double targetEncPosition)
 	{
 		double remainingDistance = 0;
-		double remainingPercent = 0;
+		//double remainingPercent = 0;
 		remainingDistance = targetEncPosition - _controls.getDrive().getAbsAvgEncoderValue();
-		remainingPercent = remainingDistance/targetEncPosition;
+		//remainingPercent = remainingDistance/targetEncPosition;
 		double leftsign = (left >= 0) ? 1.0 : -1.0;
 		double rightsign = (right >= 0) ? 1.0 : -1.0;
 
@@ -1105,7 +1108,7 @@ public class Autonomous {
 	}
 
 	public void waitForScale() {
-		if((this._controls.getElevator().isAtTarget() || Math.abs(this._controls.getElevator().scaleEncoder() - this._controls.getElevator().getTargetEncoder()) <= Enums.ELEVATOR_ENCODER_SAFETY) || this._controls.getElevator().getTargetLimit() == null)
+		if((this._controls.getElevator().getTargetLimit() == null || this._controls.getElevator().isAtTarget() || Math.abs(this._controls.getElevator().scaleEncoder() - this._controls.getElevator().getTargetEncoder()) <= Enums.ELEVATOR_ENCODER_SAFETY))
 			this.startNextStep();
 	}
 

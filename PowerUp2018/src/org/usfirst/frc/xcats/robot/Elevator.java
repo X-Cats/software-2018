@@ -190,9 +190,6 @@ public class Elevator {
 	}
 
 	public double scaleEncoder() {
-		if(Enums.IS_FINAL_ROBOT) {
-			return this._elevatorMaster.getEncPosition();
-		}else
 			return -this._elevatorMaster.getEncPosition();
 	}
 	
@@ -234,8 +231,10 @@ public class Elevator {
 		if(isAtBottom())
 			this.zeroEncoder();
 
-
-
+		double elevatorPercent = this.heightPercent();
+		SmartDashboard.putNumber("Elevator Percent", elevatorPercent);
+		
+		SmartDashboard.putNumber("Elevator Encoder Position", this._elevatorMaster.getEncPosition());
 
 		// move elevator to setpoint
 		if(this._targetLimit != null) {

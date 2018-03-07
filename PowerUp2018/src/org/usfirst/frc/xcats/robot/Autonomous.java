@@ -448,6 +448,9 @@ public class Autonomous {
 	private void addScaleSteps(){
 		double segmentB = 260; //was 285
 		double segmentC = 8; //was 21
+		double segmentA = -36;//needs tuning
+		double segmentD = 48;
+		double segmentE = 24;
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
@@ -455,6 +458,20 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 35));//rotation speed is .5
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"back up", 0,.3,.3,-segmentC));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_BOTTOM,"goto bottom",1,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"back up 2",0,.7,.7,segmentA));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second Rotation", 2,0,0,_angleMod2 * 55));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.FOUR_BAR_DOWN,"Lower 4bar",Enums.LINQ_DOWN_TIMER,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"third leg",0,.7,.7,segmentD));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"third rotation", 4,0,0,_angleMod2 * 90));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"fourth leg",0.1,.4,.4,segmentE));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_OUT,"acquisition arms out",0,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBE_IN,"acquisition wheels in",Enums.INTAKE_TIMER,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_IN,"acquisition arms in",0,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"raise to switch",3,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"cube out", Enums.RELEASE_TIMER,0,0,0));
 	}
 
 	private void addSwitchSteps(){

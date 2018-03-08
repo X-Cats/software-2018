@@ -226,7 +226,8 @@ public class XCatsSpeedController{
 
 		if (_cutOffDirection * setPoint <= 0)
 		{
-			this._setPoint = setPoint;
+[]\
+this._setPoint = setPoint;
 			_cutOffDirection = 0;
 		}
 		else

@@ -95,7 +95,7 @@ public class RobotControls {
 		_drive.setMagneticEncoders(false);
 		_drive.zeroEncoder();
 		
-		_autoTarget = new AutoTarget(false);
+		//_autoTarget = new AutoTarget(false);
 		
 		//2018 mechanisms
 		_elevator = new Elevator();
@@ -529,7 +529,7 @@ public class RobotControls {
 //		SmartDashboard.putBoolean("DriverLeftButton", _leftJS.getRawButton(3));
 		
 		_drive.updateStatus();
-		_autoTarget.updateStatus();
+		//_autoTarget.updateStatus();
 		
 		_elevator.updateStatus();
 		this._acquisition.updateStatus();

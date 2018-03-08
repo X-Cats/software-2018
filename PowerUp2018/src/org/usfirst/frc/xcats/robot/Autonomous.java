@@ -152,6 +152,9 @@ public class Autonomous {
 
 			_crossCourtSelected = (String) _crossCourt.getSelected();
 			System.out.println("Cross Court Selected: " + _crossCourtSelected);
+			
+			_scoringPreference = (String) _scoringPreferences.getSelected();
+			System.out.println("Scoring Preference: " + _scoringPreference);
 
 
 			//build the steps for the selected autonomous
@@ -201,7 +204,6 @@ public class Autonomous {
 		_gameData = DriverStation.getInstance().getGameSpecificMessage();
 		SmartDashboard.putString("GameData", _gameData);
 		
-		_scoringPreference = (String) _scoringPreferences.getSelected();
 
 		if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
 			blueAlliance = true;
@@ -230,7 +232,7 @@ public class Autonomous {
 		
 		double segmentH = Math.sqrt((Math.pow(segmentI, 2)) + (Math.pow(segmentN, 2))); //(hypotenuse of triangle if we are C and we go to the right side of the switch)
 		double segmentM = Math.sqrt((Math.pow(segmentG, 2)) + (Math.pow(segmentN, 2))); //was 106 (hypotenuse of triangle if we are C and we go to the left side of the switch)
-		double segmentO = (95 - segmentN)/2;//distance we have to drive forward before and after we drive for Center
+		double segmentO = (105 - segmentN)/2;//distance we have to drive forward before and after we drive for Center//first number was 95
 		double angleA = 90 - (Math.toDegrees(Math.atan(segmentN/segmentG))); //angle to rotate when we start if we go to the left side of the switch for C
 		double angleC = 90 - (Math.toDegrees(Math.atan(segmentN/segmentI)));  //angle to rotate when we start if we go to the right side of the switch for C
 	
@@ -421,6 +423,7 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
+		//_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Delay for alliance",9.0,0,0,0));//added for 4253
 		if(_scoringPreference == this._scoringPreferenceScale) {
 			if(_gameData.charAt(1) == _notStartSide && _crossCourtSelected == _autoCrossCourtYes) {
 				this.addCrossCoutSteps();
@@ -452,9 +455,10 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 35));//rotation speed is .5
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 45));//rotation speed is .5
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_OUT,"Acquisition arms out",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"cube out",Enums.RELEASE_TIMER,0,0,0));
 	}
 
@@ -615,7 +619,7 @@ public class Autonomous {
 				break;
 
 			case GET_ANGLE_CORRECTION:
-				getVisionCorrection(_currentAutoStep.stepTime);
+				//getVisionCorrection(_currentAutoStep.stepTime);
 				break;
 
 

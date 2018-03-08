@@ -46,6 +46,7 @@ public class RobotControls {
 	private XCatsDrive _drive;
 	private Timer _shiftTimer;
 	private boolean _shifting=false;
+	private int _reversedDrive = 1;
 
 	private boolean _slowMode = false;
 	private boolean _liftMode = false;
@@ -64,7 +65,6 @@ public class RobotControls {
 	private PowerDistributionPanel _pdp;
 		
 	private Autonomous _commandAuto;
-	private AutoTarget _autoTarget;
 	private boolean _autoMode=false; 
     private AHRS _ahrs;
     private double last_world_linear_accel_x;
@@ -274,6 +274,8 @@ public class RobotControls {
 		_drive.zeroEncoder();
 		
 	}
+
+
 	public void drive ()
 	{
 
@@ -310,10 +312,10 @@ public class RobotControls {
 				} else{
 					_driveStraight = false;
 					if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
-						_drive.set(_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR,_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR);
+						_drive.set(_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive,_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive);
 					}
 					else						
-						_drive.set(_leftJS, _rightJS);
+						_drive.set(_leftJS.getY() * this._reversedDrive, _rightJS.getY() * this._reversedDrive);
 				}
 			}
 			else {
@@ -344,31 +346,7 @@ public class RobotControls {
 //			}
 //		}
 		
-		//image capture
-		if (Enums.VISION_SYSTEM_ENABLED){
-			if(Enums.TWO_JOYSTICKS){
-				//button 1 is the "trigger" button
-				if (_leftJS.getRawButton(1)){
-					
-					if (Enums.CAMERA_USE_REDUCED_BRIGHTNESS)
-						_autoTarget.setCameraForAuto();
-					
-					_visionData = _autoTarget.captureImage();
-					SmartDashboard.putBoolean("Vision Processing", _visionData.getResult());
-					SmartDashboard.putNumber("Vision FACING Angle", _visionData.getFacingAngleInDeg());
-					SmartDashboard.putNumber("Vision ZONE", _visionData.getZone());
-					SmartDashboard.putNumber("Vision DISTANCE", _visionData.getDistanceInInches());
-					
-					if (Enums.CAMERA_USE_REDUCED_BRIGHTNESS)
-						_autoTarget.setCameraDefaults();
-									
-				}
-			}else{
-				if(_driveJS.getRawButton(7)){
-					_visionData = _autoTarget.captureImage();
-				}
-			}
-		}
+
 
 	}
 
@@ -458,7 +436,15 @@ public class RobotControls {
 			_elevator.goToBottom();
 			_acquisition.moveToHome();
 		}
-		
+
+		//button to toggle swap drive
+        if(_leftJS.getRawButtonReleased(1)) {
+            if(this._reversedDrive == 1) {
+                this._reversedDrive = -1;
+            }else{
+                this._reversedDrive = 1;
+            }
+        }
 
 
 		//button for endgame
@@ -474,9 +460,6 @@ public class RobotControls {
 	public XCatsDrive getDrive()
 	{
 		return _drive;
-	}
-	public AutoTarget getAutoTarget(){
-		return _autoTarget;
 	}
 	public Acquisition getAcquisition() {
 		return this._acquisition;

@@ -47,6 +47,7 @@ public class RobotControls {
 	private Timer _shiftTimer;
 	private boolean _shifting=false;
 	private int _reversedDrive = 1;
+	private boolean _swappedDrive = false;
 
 	private boolean _slowMode = false;
 	private boolean _liftMode = false;
@@ -305,6 +306,13 @@ public class RobotControls {
 					
 				} else{
 					_driveStraight = false;
+					if(_swappedDrive) {
+						if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
+							_drive.set(_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive,_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive);
+						}
+						else						
+							_drive.set(_rightJS.getY() * this._reversedDrive, _leftJS.getY() * this._reversedDrive);
+					}
 					if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
 						_drive.set(_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive,_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive);
 					}
@@ -434,8 +442,10 @@ public class RobotControls {
 		//button to toggle swap drive
         if(_leftJS.getRawButtonReleased(1)) {
             if(this._reversedDrive == 1) {
+            	this._swappedDrive = true;
                 this._reversedDrive = -1;
             }else{
+            	this._swappedDrive = false;
                 this._reversedDrive = 1;
             }
         }

@@ -705,51 +705,7 @@ public class Autonomous {
 		_controls.updateStatus();
 	}
 
-	private void getVisionCorrection(double time){
-		if (!Enums.VISION_CORRECTION_IN_AUTO){
-			startNextStep();
-			return;
-		}
 
-		if (! _hasCaptured){
-			_hasCaptured = true;
-			if (Enums.CAMERA_USE_REDUCED_BRIGHTNESS)
-				_controls.getAutoTarget().setCameraForAuto();
-
-			_visionData = _controls.getAutoTarget().captureImage();	
-
-			if (Enums.CAMERA_USE_REDUCED_BRIGHTNESS)
-				_controls.getAutoTarget().setCameraDefaults();			
-
-			if ( _visionData != null)
-			{
-				if (_visionData.getResult()){
-					_controls.getDrive().set(0, 0, 0, 0);
-					double correctionOffset = 0.0;
-
-					AutonomousStep nextStep= _steps.get(_currentStep + 1);
-					SmartDashboard.putNumber("Facing Angle", _visionData.getFacingAngleInDeg());
-					System.out.println("Facing angle: " + _visionData.getFacingAngleInDeg());
-					if(Math.abs(_visionData.getFacingAngleInDeg()) < 60 && Math.abs(_visionData.getFacingAngleInDeg()) > 5){
-
-						if (!Enums.AUTO_FROM_CORNER){
-							correctionOffset = (_visionData.getFacingAngleInDeg() > 0 ? 2.0 : -2.0);							
-						}
-						nextStep.distance = _visionData.getFacingAngleInDeg() - correctionOffset; // we seem to be off about 2 deg				
-					}
-					else{
-						System.out.println("Angle found but not in range for correction!");
-						startNextStep();
-					}
-				}
-				startNextStep();
-			}
-		}
-		else 
-			startNextStep();
-
-
-	}
 	private void rotate(double distance) {
 		rotate(distance,0);
 	}

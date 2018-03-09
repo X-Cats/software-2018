@@ -83,7 +83,7 @@ public class LightBar {
 
 	public void setGiveMeCubeEvent() {
 		debugPrint("***Tell Human to feed Cube to Robot***");
-		setEventPattern(SolidGreen, 1000); // show for 1 sec
+		setEventPattern(SolidYellow, 1000); // show for 1 sec
 	}
 	
 	/* 

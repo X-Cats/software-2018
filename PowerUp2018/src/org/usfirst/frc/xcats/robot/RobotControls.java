@@ -59,7 +59,6 @@ public class RobotControls {
 	private boolean _driveStraight=false;
 	private float _initialYaw=0;
 	
-	private VisionData _visionData;
 	
 	private Compressor _compressor;
 	private PowerDistributionPanel _pdp;
@@ -160,8 +159,8 @@ public class RobotControls {
 				
 		try
 		{
-//			CameraServer camera = CameraServer.getInstance();
-//			camera.startAutomaticCapture(0);
+			CameraServer camera = CameraServer.getInstance();
+			camera.startAutomaticCapture(0);
 		}
 		catch (Exception e)
 		{
@@ -229,13 +228,6 @@ public class RobotControls {
 
 		if (_commandAuto != null)
 			return;
-		
-		if (_visionData != null){
-			SmartDashboard.putBoolean("Vision Processing", _visionData.result);
-			SmartDashboard.putNumber("Vision FACING Angle", _visionData.facing_angle_in_deg);
-			SmartDashboard.putNumber("Vision ZONE", _visionData.zone);
-			SmartDashboard.putNumber("Vision DISTANCE", _visionData.distance_in_inches);			
-		}
 		
 		
 		System.out.println("Prepping commands for vision system response!");

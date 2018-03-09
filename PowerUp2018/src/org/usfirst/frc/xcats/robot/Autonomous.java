@@ -26,7 +26,6 @@ public class Autonomous {
 	private float _initCompassHeading=0;
 	private boolean _angleHasBeenCalculated = false;
 	private double _calculatedAngle = 0;
-	private VisionData _visionData ;
 	private boolean _hasCaptured=false;
 
 	private double _totalAutoTime = Enums.AUTONOMOUS_TIME;

@@ -473,14 +473,14 @@ public class Autonomous {
 	}
 
 	private void addCrossCoutSteps(){
-		double segmentA = 235; //was 235
+		double segmentA = 210; //was 235
 		double segmentJ = 207; //was 207
 		double segmentK = 53; //was 85
         double segmentM = 12;
 
+        _steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0.0,1.0,1.0,segmentA));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,_angleMod2 * 90));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 90));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,segmentJ));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,_angleMod1 * 90));
@@ -570,7 +570,7 @@ public class Autonomous {
 						encPos = Math.abs((_currentAutoStep.distance - 1.9029236202) /0.0051668741);//was 0.0051668741
 					else {
 						encPos = Math.abs((_currentAutoStep.distance + 3.1365268239) /0.00582985076625);//was 0.0052878465
-						System.out.println("Final high gear speed equation");
+						
 					}
 						
 				}else {
@@ -738,7 +738,7 @@ public class Autonomous {
 
 
 			if(Math.abs(deltaYaw) > tolerance){
-				//SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
+				SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
 
 				// deltaYaw / distance = 100% of change use the nominal rate
 						
@@ -753,7 +753,7 @@ public class Autonomous {
 //				speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
 
 				System.out.println("Offset: " + deltaYaw + " rotate speed: "+speed);
-//				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
+				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
 				
 				_controls.getDrive().set(speed, speed, -speed, -speed);
 				

@@ -27,7 +27,7 @@ public class Enums {
 	*/
 	//not used public static final double SPEED_CALIBRATION = 0.0;  
 	
-	public static final boolean IS_FINAL_ROBOT = true;
+	public static final boolean IS_FINAL_ROBOT = false;
 	public static final String  DRIVE_CONTROLLER_TYPE = "Talon"; // choices are "Jaguar" or "Talon"
 	public static final boolean HAS_MECHANUM_WHEELS = false;
 	public static final boolean USE_PID = false;    	// This is if the drive train is using PID control
@@ -107,7 +107,7 @@ public class Enums {
 	public static final int ELEVATOR_SCALE_LIMIT = 0;
 	public static final int ELEVATOR_TOP_LIMIT = 0;
 	public static final double ELEVATOR_SPEED_UP = 1.0;
-	public static final double ELEVATOR_SPEED_DOWN = -0.5;
+	public static final double ELEVATOR_SPEED_DOWN = -0.7;
 	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
 	public static final double ELEVATOR_SPEED_ENDGAME = -1.0;
 	public static final double ELEVATOR_HEIGHT_PCT_THROTTLER = 0.5; //This is the percent the elevator is raised, that will limit the speed to prevent tipping

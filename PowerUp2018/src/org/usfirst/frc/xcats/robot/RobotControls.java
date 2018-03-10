@@ -80,7 +80,7 @@ public class RobotControls {
 	private Elevator _elevator;
 	private Acquisition _acquisition;
 	private Climber _climber;
-	private LightBar _lightBar;
+	//private LightBar _lightBar;
 	public RobotControls ()
 	{
 
@@ -102,7 +102,7 @@ public class RobotControls {
 		_elevator = new Elevator();
 		_acquisition = new Acquisition();
 		_climber = new Climber();
-		_lightBar = new LightBar();
+		//_lightBar = new LightBar();
 
 		//_autoTarget.setCameraForAuto();
 
@@ -165,6 +165,7 @@ public class RobotControls {
 			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
 //			camera.startAutomaticCapture(0);
 			camera.setResolution(320, 240);
+			camera.setFPS(15);
 		}
 		catch (Exception e)
 		{
@@ -452,9 +453,9 @@ public class RobotControls {
 			}
 		}
 
-		//buttons for activating lights
-		if(_rightJS.getRawButton(2))
-			this._lightBar.setGiveMeCubeEvent();
+//		//buttons for activating lights
+//		if(_rightJS.getRawButton(2))
+//			this._lightBar.setGiveMeCubeEvent();
 
 		//button for endgame
 		if(_operatorJS.getRawButton(10)) {

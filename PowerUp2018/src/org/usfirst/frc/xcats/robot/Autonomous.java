@@ -201,7 +201,7 @@ public class Autonomous {
 
 		boolean blueAlliance = false;
 		_gameData = DriverStation.getInstance().getGameSpecificMessage();
-		SmartDashboard.putString("GameData", _gameData);
+		
 		
 
 		if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
@@ -753,7 +753,7 @@ public class Autonomous {
 //				speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
 
 				System.out.println("Offset: " + deltaYaw + " rotate speed: "+speed);
-				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
+//				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
 				
 				_controls.getDrive().set(speed, speed, -speed, -speed);
 				
@@ -876,7 +876,7 @@ public class Autonomous {
 			}
 		}
 
-		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
+//		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
 		if (targetEncPosition > 0){
 			if (_controls.getDrive().getAbsAvgEncoderValue() >= targetEncPosition)
 			{
@@ -956,7 +956,7 @@ public class Autonomous {
 			}
 		}
 
-		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
+//		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
 		if (targetEncPosition > 0){
 			if (_controls.getDrive().getAbsAvgEncoderValue() >= targetEncPosition)
 			{

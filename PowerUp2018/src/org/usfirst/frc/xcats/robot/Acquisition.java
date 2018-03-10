@@ -204,9 +204,9 @@ public class Acquisition {
 
 
 
-		SmartDashboard.putString("Linkage Relay Value", lk);
-
-		SmartDashboard.putString("Arms Solenoid Value", this._armsSolenoid.get().name());
+//		SmartDashboard.putString("Linkage Relay Value", lk);
+//
+//		SmartDashboard.putString("Arms Solenoid Value", this._armsSolenoid.get().name());
 			
 		SmartDashboard.putBoolean("Arms Open", this._armsOpen);
 

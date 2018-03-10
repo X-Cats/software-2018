@@ -162,8 +162,9 @@ public class RobotControls {
 
 		try
 		{
-			CameraServer camera = CameraServer.getInstance();
-			camera.startAutomaticCapture(0);
+			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
+//			camera.startAutomaticCapture(0);
+			camera.setResolution(320, 240);
 		}
 		catch (Exception e)
 		{
@@ -511,7 +512,6 @@ public class RobotControls {
 				_drive.set( directionLeft * Enums.SHIFTER_DELAY_SPEED,  directionRight * Enums.SHIFTER_DELAY_SPEED);			
 		}
 
-		SmartDashboard.putNumber("Joystick Value", _operatorJS.getRawAxis(1));
 
 		//		SmartDashboard.putNumber("LeftSpeed", _drive.get(Enums.FRONT_LEFT));
 		//		SmartDashboard.putNumber("Direction", directionLeft);
@@ -525,7 +525,7 @@ public class RobotControls {
 		_elevator.updateStatus();
 		this._acquisition.updateStatus();
 
-		SmartDashboard.putNumber("Encoder Value", _drive.getAbsAvgEncoderValue());
+//		SmartDashboard.putNumber("Encoder Value", _drive.getAbsAvgEncoderValue());
 
 		if (_commandAuto != null)
 			_commandAuto.updateStatus();
@@ -594,11 +594,11 @@ public class RobotControls {
 		maxAccelXYZ[1] = Math.abs(max_world_linear_accel_y);
 		maxAccelXYZ[2] = Math.abs(max_world_linear_accel_z);
 		//        SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
-		SmartDashboard.putBoolean("BumpDetected", bumpDetected);
+//		SmartDashboard.putBoolean("BumpDetected", bumpDetected);
 		//        SmartDashboard.putNumberArray("Collision jerk values X, Y, Z", 
 		//        		jerkXYZ);
-		SmartDashboard.putNumberArray("Max accel values X, Y, Z", 
-				maxAccelXYZ);
+//		SmartDashboard.putNumberArray("Max accel values X, Y, Z", 
+//				maxAccelXYZ);
 	}
 
 }

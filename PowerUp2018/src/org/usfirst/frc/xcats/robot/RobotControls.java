@@ -3,7 +3,7 @@ package org.usfirst.frc.xcats.robot;
 
 import java.util.ArrayList;
 
-import com.ctre.CANTalon;
+//import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.cscore.UsbCamera;
@@ -235,18 +235,18 @@ public class RobotControls {
 			return;
 
 
-		System.out.println("Prepping commands for vision system response!");
+	//	System.out.println("Prepping commands for vision system response!");
 
 
 		_autoMode = true;
 		ArrayList<AutonomousStep> steps;		
 		steps =  new ArrayList<AutonomousStep>();
 
-		steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward",0,.5,.5,12.0)); //assuming 99.64 inches
-		steps.add( new AutonomousStep(AutonomousStep.stepTypes.GEAR,"Place Gear",0,0,0,60));
-		steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));	
-
-		_commandAuto = new Autonomous(this,steps,5);
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"set brakemode",0,0,0,0));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward",0,.5,.5,4.0)); //assuming 99.64 inches
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"raise elevator to scale",0,0,0,0));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Reverse",0,.5,.5,6));
+		_commandAuto = new Autonomous(this,steps,10);
 		_commandAuto.execute();
 	}
 
@@ -460,7 +460,8 @@ public class RobotControls {
 		//button for endgame
 		if(_operatorJS.getRawButton(10)) {
 			_elevator.prepareForClimb();
-			this._acquisition.raiseLinkage();
+//			this._acquisition.raiseLinkage();
+			this.prepAuto();
 		}
 
 	}

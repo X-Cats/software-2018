@@ -57,6 +57,16 @@ public class XCatsSpeedController{
 
 
 	//this constructor is used with a controller that has a digital input that acts as a switch
+
+	/**
+	 *
+	 * @param name name of speed controller
+	 * @param channel can/pwm channel for speed contrtoller
+	 * @param useCan whether or not to use the can bus
+	 * @param sctype type fo speed controller
+	 * @param lowerLimit limit switch at bottom of range of motion
+	 * @param upperLimit limit switch at top of range of motion
+	 */
 	public XCatsSpeedController (String name, int channel, boolean useCan, SCType sctype,  DigitalInput lowerLimit, DigitalInput upperLimit)
 	{
 		try{

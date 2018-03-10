@@ -65,6 +65,9 @@ public class Elevator {
 
 	public void lower(double setPoint) {
 		double speed = setPoint * _elevatorDownSpeed * -1;
+		if(this.scaleEncoder()< Enums.ELEVATOR_SWITCH_SET_POINT) {
+			speed = -0.5 * setPoint;
+		}
 		this.terminateMotion();
 		if(this.isAtBottom() && speed < 0) {
 			this.stop();

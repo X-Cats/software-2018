@@ -53,19 +53,26 @@ public class Elevator {
 	}
 
 	public void raise(double setPoint) {
-		SmartDashboard.putNumber("Elevator set Point up", setPoint);
 		double speed = setPoint * Enums.ELEVATOR_SPEED_UP;
 		this.terminateMotion();
-		SmartDashboard.putNumber("Elevator speed up", speed);
+		if(this.isAtBottom() && speed < 0) {
+			this.stop();
+			return;
+		}
 		_elevatorMaster.set(speed);
 		//System.out.println("Raise");
 	}
 
 	public void lower(double setPoint) {
-		SmartDashboard.putNumber("Elevator set point down", setPoint);
 		double speed = setPoint * _elevatorDownSpeed * -1;
+		if(this.scaleEncoder()< Enums.ELEVATOR_SWITCH_SET_POINT) {
+			speed = -0.5 * setPoint;
+		}
 		this.terminateMotion();
-		SmartDashboard.putNumber("Elevator speed down", speed);
+		if(this.isAtBottom() && speed < 0) {
+			this.stop();
+			return;
+		}
 		_elevatorMaster.set(speed);
 		//System.out.println("Lower");
 	}
@@ -190,9 +197,6 @@ public class Elevator {
 	}
 
 	public double scaleEncoder() {
-		if(Enums.IS_FINAL_ROBOT) {
-			return this._elevatorMaster.getEncPosition();
-		}else
 			return -this._elevatorMaster.getEncPosition();
 	}
 	
@@ -231,11 +235,16 @@ public class Elevator {
 		SmartDashboard.putNumber("Elevator Encoder Value", this.scaleEncoder());
 		SmartDashboard.putNumber("Elevator Target Encoder Value", this._targetEncoder);
 
-		if(isAtBottom())
+		if(isAtBottom()) {
 			this.zeroEncoder();
+		}
+		
+		
 
-
-
+		double elevatorPercent = this.heightPercent();
+		SmartDashboard.putNumber("Elevator Percent", elevatorPercent);
+		
+		SmartDashboard.putNumber("Elevator Encoder Position", this._elevatorMaster.getEncPosition());
 
 		// move elevator to setpoint
 		if(this._targetLimit != null) {

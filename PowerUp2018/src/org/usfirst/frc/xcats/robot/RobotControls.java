@@ -80,7 +80,7 @@ public class RobotControls {
 	private Elevator _elevator;
 	private Acquisition _acquisition;
 	private Climber _climber;
-	//private LightBar _lightBar;
+	private LightBar _lightBar;
 	public RobotControls ()
 	{
 
@@ -102,7 +102,7 @@ public class RobotControls {
 		_elevator = new Elevator();
 		_acquisition = new Acquisition();
 		_climber = new Climber();
-		//_lightBar = new LightBar();
+		_lightBar = new LightBar();
 
 		//_autoTarget.setCameraForAuto();
 
@@ -150,7 +150,7 @@ public class RobotControls {
 		{
 			_leftJS = new Joystick(Enums.LEFT_DRIVE_JS);
 			_rightJS = new Joystick(Enums.RIGHT_DRIVE_JS);
-			_speedToggleButton = new XCatsJSButton(_rightJS,1);
+			_speedToggleButton = new XCatsJSButton(_leftJS,1);
 		}
 		else{
 
@@ -235,7 +235,7 @@ public class RobotControls {
 			return;
 
 
-	//	System.out.println("Prepping commands for vision system response!");
+		System.out.println("Prepping auto climb");
 
 
 		_autoMode = true;
@@ -243,9 +243,13 @@ public class RobotControls {
 		steps =  new ArrayList<AutonomousStep>();
 
 		steps.add(new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"set brakemode",0,0,0,0));
-		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward",0,.5,.5,4.0)); //assuming 99.64 inches
-		steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"raise elevator to scale",0,0,0,0));
-		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Reverse",0,.5,.5,6));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.LOW_SPEED,"low speed",0,0,0,0));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward",0,.5,.5,3)); //assuming 99.64 inches
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"raise elevator to scale",3,0,0,0));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"settle",0.5,0,0,0));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Reverse",0,-.5,-.5,-6));
+//		steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"wait to settle",1,0,0,0));
+//		steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_BOTTOM,"climb",5,0,0,0));
 		_commandAuto = new Autonomous(this,steps,10);
 		_commandAuto.execute();
 	}
@@ -296,9 +300,9 @@ public class RobotControls {
 
 		if (!_shifting){
 			if (Enums.TWO_JOYSTICKS){
-				if (_rightJS.getRawButton(11)){
+				if (_leftJS.getRawButton(11)){
 					if (_driveStraight){
-						driveStraight(0.4,0.4);
+						driveStraight(-0.7,-0.7);
 
 					}else{
 						_navx.zeroYaw();
@@ -308,7 +312,7 @@ public class RobotControls {
 
 				} else{
 					_driveStraight = false;
-					if(_swappedDrive) {
+					if(!_swappedDrive) {
 						if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
 							_drive.set(_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive,_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive);
 						}
@@ -390,6 +394,7 @@ public class RobotControls {
 		//if we are executing commands then exit response to operator
 		if (_commandAuto != null){
 			return;
+			
 		}
 
 		//these need to be rethought
@@ -434,7 +439,7 @@ public class RobotControls {
 		else if(_operatorJS.getRawButton(7)) //left on pov stick
 			_acquisition.lowerLinkage();
 		else
-			_acquisition.stopLinkage();
+			this._acquisition.stopLinkage();
 
 		//button for going home
 		if(_operatorJS.getRawButton(6)) {
@@ -443,7 +448,7 @@ public class RobotControls {
 		}
 
 		//button to toggle swap drive
-		if(_leftJS.getRawButtonReleased(1)) {
+		if(_rightJS.getRawButtonReleased(1)) {
 			if(this._reversedDrive == 1) {
 				this._swappedDrive = true;
 				this._reversedDrive = -1;
@@ -453,14 +458,20 @@ public class RobotControls {
 			}
 		}
 
-//		//buttons for activating lights
-//		if(_rightJS.getRawButton(2))
-//			this._lightBar.setGiveMeCubeEvent();
+		//buttons for activating lights
+		if(_rightJS.getRawButtonReleased(2) || _leftJS.getRawButtonReleased(2))
+			this._lightBar.setGiveMeCubeEvent();
 
 		//button for endgame
 		if(_operatorJS.getRawButton(10)) {
 			_elevator.prepareForClimb();
 //			this._acquisition.raiseLinkage();
+			
+			//this.prepAuto();
+		}
+		
+		if(_rightJS.getRawButton(6)) {
+			_elevator.prepareForClimb();
 			this.prepAuto();
 		}
 
@@ -528,9 +539,12 @@ public class RobotControls {
 		this._acquisition.updateStatus();
 
 //		SmartDashboard.putNumber("Encoder Value", _drive.getAbsAvgEncoderValue());
+		
+		this._lightBar.execute();
 
-		if (_commandAuto != null)
-			_commandAuto.updateStatus();
+		if (_commandAuto != null) {
+			_commandAuto.execute();
+		}
 
 		if (_navx != null){
 			_navx.updateStatus();

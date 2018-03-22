@@ -1,6 +1,7 @@
 package org.usfirst.frc.xcats.robot;
 
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 
 public class LightBar {
@@ -25,7 +26,7 @@ public class LightBar {
 			return --secs;
 		}
 	}*/
-	private PWM controller = new PWM(Enums.LED_LIGHT_BAR);
+	private Spark controller;
 	// constants for 5V LED operation
 	private static double NO_PATTERN = 0; // I think this is true.  Test it.
 	private static double SolidDarkRed = 0.59f;
@@ -38,7 +39,7 @@ public class LightBar {
 	private static double COLLISION = -0.07f; // Fixed Palette Pattern; Strobe, Gold
 
 	// Set true if you want to see light events on console, else false.
-	private static boolean debugToConsole = false;
+	private static boolean debugToConsole = true;
 	private long t0 = System.currentTimeMillis();
 	private long t1 = t0;
 	
@@ -59,7 +60,9 @@ public class LightBar {
 	private double previousPattern = NO_PATTERN;
 	
 	public LightBar() {
+		this.controller =  new Spark(Enums.LED_LIGHT_BAR);
 		setPattern(defaultPattern);
+		
 	}
 
 	public void setToRed() {
@@ -83,7 +86,7 @@ public class LightBar {
 
 	public void setGiveMeCubeEvent() {
 		debugPrint("***Tell Human to feed Cube to Robot***");
-		setEventPattern(SolidYellow, 1000); // show for 1 sec
+		setEventPattern(0.35, 5000); // show for 1 sec
 	}
 	
 	/* 
@@ -134,6 +137,7 @@ public class LightBar {
 				previousPattern = NO_PATTERN;
 			} else { 
 				controller.setSpeed(defaultPattern);
+				
 				debugPrint("<LIGHTS> Returning to default pattern: " + defaultPattern);
 			}
 		}
@@ -168,7 +172,7 @@ public class LightBar {
 	 */
 	private void setEventPattern(double pat, int ms) {
 		if (countdown == 0) { // i.e. if not currently in a timed event already
-			previousPattern = currentPattern;
+//			previousPattern = currentPattern;
 			currentPattern = pat;
 		} 
 		controller.setSpeed(pat);

@@ -36,7 +36,7 @@ public class Autonomous {
 	private boolean _isExecuting = false;
 	private boolean _cancelExecution = false;
 
-	private DigitalOutput _lightsColor = new DigitalOutput(Enums.LIGHTS_ALLIANCE_COLOR);//digial output for controlling color of lights
+	//private DigitalOutput _lightsColor = new DigitalOutput(Enums.LIGHTS_ALLIANCE_COLOR);//digial output for controlling color of lights
 
 	private Acquisition _acquisition;
 	private Elevator _elevator;
@@ -60,7 +60,7 @@ public class Autonomous {
 	private final String _autoCrossCourtYes = "Yes"; //override to score on opposite side of scale
 	private final String _autoCrossCourtNo = "No"; //don't override to score on opposite side of scale
 
-	
+
 	//sendable chooser for scoring preference
 	private final String _scoringPreferenceSwitch = "Switch";
 	private final String _scoringPreferenceScale = "Scale";
@@ -100,12 +100,12 @@ public class Autonomous {
 		_crossCourt.addDefault(_autoCrossCourtNo, _autoCrossCourtNo);
 		_crossCourt.addObject(_autoCrossCourtYes, _autoCrossCourtYes);
 		SmartDashboard.putData("Cross Court Choices", _crossCourt);	
-		
+
 		_scoringPreferences = new SendableChooser();
 		_scoringPreferences.addDefault(_scoringPreferenceSwitch, _scoringPreferenceSwitch);
 		_scoringPreferences.addObject(_scoringPreferenceScale, _scoringPreferenceScale);
 		SmartDashboard.putData("Scoring Preference", _scoringPreferences);	
-		
+
 
 
 		/**
@@ -151,7 +151,7 @@ public class Autonomous {
 
 			_crossCourtSelected = (String) _crossCourt.getSelected();
 			System.out.println("Cross Court Selected: " + _crossCourtSelected);
-			
+
 			_scoringPreference = (String) _scoringPreferences.getSelected();
 			System.out.println("Scoring Preference: " + _scoringPreference);
 
@@ -201,14 +201,14 @@ public class Autonomous {
 
 		boolean blueAlliance = false;
 		_gameData = DriverStation.getInstance().getGameSpecificMessage();
-		
-		
 
-		if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
-			blueAlliance = true;
-			_lightsColor.set(false);//sets lights to match alliance color
-		}else
-			_lightsColor.set(true);//sets lights to match alliance color
+
+
+		//		if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue){
+		//			blueAlliance = true;
+		//			_lightsColor.set(false);//sets lights to match alliance color
+		//		}else
+		//			_lightsColor.set(true);//sets lights to match alliance color
 
 		SmartDashboard.putString("AutoSelected", _autoSelected);
 		//			_autoSelected= _auto2;	
@@ -228,51 +228,51 @@ public class Autonomous {
 		double segmentG = 66; // was 66 (base of triangle if we are C and we go to the left side of the switch
 		double segmentI = 54; //was 54 (base of triangle if we are C and we goto the right side of the switch
 		double segmentN = 75;//was 83 (height of both triangles for center auto)
-		
+
 		double segmentH = Math.sqrt((Math.pow(segmentI, 2)) + (Math.pow(segmentN, 2))); //(hypotenuse of triangle if we are C and we go to the right side of the switch)
 		double segmentM = Math.sqrt((Math.pow(segmentG, 2)) + (Math.pow(segmentN, 2))); //was 106 (hypotenuse of triangle if we are C and we go to the left side of the switch)
 		double segmentO = (105 - segmentN)/2;//distance we have to drive forward before and after we drive for Center//first number was 95
 		double angleA = 90 - (Math.toDegrees(Math.atan(segmentN/segmentG))); //angle to rotate when we start if we go to the left side of the switch for C
 		double angleC = 90 - (Math.toDegrees(Math.atan(segmentN/segmentI)));  //angle to rotate when we start if we go to the right side of the switch for C
-	
+
 		System.out.println(angleC);
 		switch (_autoSelected) {
 		case _autoL1: 
-			
+
 			this.generateSideStartSteps();
 
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
-//			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'R') {
-//				//this is cross court going from left position to scale on the right
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.65,0.65,segmentA));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,angleMod2 * 90));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,segmentJ));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,angleMod1 * 90));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",1,0,0,0));
-//			}else if(_gameData.charAt(1) == 'L'){
-//				//this is going from leftmost position to scale on the left
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.5,0.5,segmentB));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",5,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0.5,angleMod2 * 45));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.4,0.4,segmentC));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
-//			}else if(_gameData.charAt(0) == 'L'){
-//				// this goes from leftmost position to switch
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.7,0.7,segmentE));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,angleMod2 * 90));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
-//			}
+			//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
+			//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
+			//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
+			//			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'R') {
+			//				//this is cross court going from left position to scale on the right
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.65,0.65,segmentA));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,angleMod2 * 90));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,segmentJ));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,angleMod1 * 90));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",1,0,0,0));
+			//			}else if(_gameData.charAt(1) == 'L'){
+			//				//this is going from leftmost position to scale on the left
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.5,0.5,segmentB));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",5,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0.5,angleMod2 * 45));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.4,0.4,segmentC));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+			//			}else if(_gameData.charAt(0) == 'L'){
+			//				// this goes from leftmost position to switch
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.7,0.7,segmentE));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,angleMod2 * 90));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+			//			}
 
 
 			//note we set coastmode in teleop init, but setting it here is a good practice
@@ -302,41 +302,41 @@ public class Autonomous {
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Third Leg",0,0.5,0.5,segmentO));
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 			}
-			
+
 			break;
 
 		case _autoR1: 
-			
+
 			this.generateSideStartSteps();
-			
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
-//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
-//			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'L') {//Cross court
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentA));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentJ));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,90));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,.4,0.4,segmentK));
-//			}else if(_gameData.charAt(1) == 'R'){//going to right scale
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,-35));//rotation speed is .5
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
-//			}else if(_gameData.charAt(0) == 'R'){
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",1,0,0,-90));//1 second max
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
-//			}else {
-//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
-//			}
+
+			//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
+			//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"high speed",0,0,0,0));
+			//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for shifter",0.1,0,0,0));
+			//			if(_crossCourtSelected == _autoCrossCourtYes && _gameData.charAt(1) == 'L') {//Cross court
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,.5,0.5,segmentA));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,-90));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentJ));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,90));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,.4,0.4,segmentK));
+			//			}else if(_gameData.charAt(1) == 'R'){//going to right scale
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"At Scale",0.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,-35));//rotation speed is .5
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+			//			}else if(_gameData.charAt(0) == 'R'){
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",1,0,0,-90));//1 second max
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+			//			}else {
+			//				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
+			//			}
 
 			//note we set coastmode in teleop init, but setting it here is a good practice
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
@@ -350,28 +350,28 @@ public class Autonomous {
 
 		case _autoRotator:
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.LOW_SPEED,"Low speed transmission",0,0,0,0)); //make sure we are in low speed
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive Forward1",0,.5,.5,30));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn 60",0,0,0,60));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive Forward2",0,.5,.5,30));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn 60",0,0,0,-60));
-			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive Forward3",0,.5,.5,30));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"Low speed transmission",0,0,0,0)); //make sure we are in low speed
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Drive Forward1",0,1,1,30));
+			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn 60",0,0,0,90));
+//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive Forward2",0,.5,.5,30));
+//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Turn 60",0,0,0,-90));
+//			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DEADRECON,"Drive Forward3",0,.5,.5,12));
 
 			break;
 
 		case _autoTestSpeed:
 			caseName="Speed Test";
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
-			
+
 			if(highSpeedTest)
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.HIGH_SPEED,"High Speed",0,0,0,0));
-			
+
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE,"Drive",calibrationRunTime,speedTest,speedTest,0));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
-			
+
 			if(highSpeedTest)
 				_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for robot to stop",5,0,0,0));
-			
+
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.COASTMODE,"Coast Mode",0,0,0,0)); //Set COAST mode for drive train
 			break;
 
@@ -416,7 +416,7 @@ public class Autonomous {
 
 
 	}
-	
+
 	private void generateSideStartSteps() {
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"Brake Mode",0,0,0,0)); //Set brake mode for drive train
@@ -428,6 +428,8 @@ public class Autonomous {
 				this.addCrossCoutSteps();
 			}else if(_gameData.charAt(1) == _startSide) {
 				this.addScaleSteps();
+				if(this._gameData.charAt(0) == _startSide)
+					this.add2Cube();
 			}else if(_gameData.charAt(0) == _startSide) {
 				this.addSwitchSteps();
 			}else {
@@ -444,12 +446,15 @@ public class Autonomous {
 				this.addDriveForward();
 			}
 		}
-		
+
 	}
 
 	private void addScaleSteps(){
 		double segmentB = 260; //was 285
 		double segmentC = 8; //was 21
+		double segmentD = 65;
+		double segmentE = 33;
+		double segmentF = 13;
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentB));
@@ -459,6 +464,18 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_OUT,"Acquisition arms out",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"cube out",Enums.RELEASE_TIMER,0,0,0));
+		//_steps.add(new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_IN,"arms in",0,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"back up",0,-.4,-0.4,segmentC));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_BOTTOM,"lower elevator",0,0,0,0));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.FOUR_BAR_DOWN,"Lower 4 bar",Enums.LINQ_DOWN_TIMER,0,0,0));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second Rotation",2,0,0,_angleMod2 * 90));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"fifth leg",0,0.8,0.8,segmentD));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"third rotation",2,0,0,_angleMod2 * 45));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"sixth leg",0,.5,.5,segmentE));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.CUBE_IN,"cube in",0.1,0,0,0));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"seventh leg",0,0.5,0.5,segmentF));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_IN,"arms in",0,0,0,0));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.FOUR_BAR_UP,"4 bar up",0.1,0,0,0));
 	}
 
 	private void addSwitchSteps(){
@@ -467,34 +484,43 @@ public class Autonomous {
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,1.0,1.0,segmentE));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"let robot settle",0.2,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",1,0,0,_angleMod2 * 90));//1 second max
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 	}
 
 	private void addCrossCoutSteps(){
-		double segmentA = 210; //was 235
-		double segmentJ = 207; //was 207
-		double segmentK = 53; //was 85
-        double segmentM = 12;
+		double segmentA = 200; //was 235
+		double segmentJ = 190; //was 207
+		double segmentK = 24; //was 85
+		double segmentM = 12;
 
-        _steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0.0,1.0,1.0,segmentA));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 90));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"let robot settle",0.2,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 85));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.5,0.5,segmentJ));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,_angleMod1 * 90));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.8,0.8,segmentJ));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"let robot settle",0.2,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,_angleMod1 * 88));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"Go To Scale",5,0,0,0));
-        _steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Fourth Leg",0,0.4,0.4,segmentM));
-        _steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Fourth Leg",0,0.4,0.4,segmentM));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_OUT,"arms out",0,0,0,0));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for arms",0.2,0,0,0));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 	}
 
 	private void addDriveForward(){
 		double segmentL = 100;
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0,0.7,0.7,segmentL));
+	}
+	
+	private void add2Cube() {
+		
 	}
 
 
@@ -570,16 +596,16 @@ public class Autonomous {
 						encPos = Math.abs((_currentAutoStep.distance - 1.9029236202) /0.0051668741);//was 0.0051668741
 					else {
 						encPos = Math.abs((_currentAutoStep.distance + 3.1365268239) /0.00582985076625);//was 0.0052878465
-						
+
 					}
-						
+
 				}else {
 					//System.out.println("Slow mode in Auto: " +_controls.getIsSlowMode());
 					if (_controls.getIsSlowMode())
 						encPos = Math.abs((_currentAutoStep.distance + 4.9437275823) /0.00533638);
 					else
 						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
-					
+
 
 					//					if (_controls.getIsSlowMode())
 					//						encPos = Math.abs((_currentAutoStep.distance + 1.1531168803) /0.0061007236);
@@ -653,7 +679,7 @@ public class Autonomous {
 			case WAIT:
 				wait(_currentAutoStep.stepTime);
 				break;
-				
+
 			case WAIT_FOR_SCALE:
 				this.waitForScale();
 				break;
@@ -670,21 +696,25 @@ public class Autonomous {
 				this.goToScale(_currentAutoStep.stepTime,_currentAutoStep.rightSpeed);
 				break;
 
+			case GOTO_BOTTOM:
+				this.goToBottom();
+				break;
+
 			case CUBEOUT:
 				this.cubeOut(_currentAutoStep.stepTime);
 				break;
-				
+
 			case CUBE_IN:
 				this.cubeIn(_currentAutoStep.stepTime);
 				break;
 
 			case FOUR_BAR_UP:
-                this.fourBarUp(this._currentAutoStep.stepTime);
-                break;
+				this.fourBarUp(this._currentAutoStep.stepTime);
+				break;
 
-            case FOUR_BAR_DOWN:
-                this.fourBarDown(this._currentAutoStep.stepTime);
-                break;
+			case FOUR_BAR_DOWN:
+				this.fourBarDown(this._currentAutoStep.stepTime);
+				break;
 
 			case AQUISITION_IN:
 				this._controls.getAcquisition().armsIn();
@@ -713,11 +743,18 @@ public class Autonomous {
 		double deltaYaw =0.0;
 		double speed;
 		
-		
-		
-		double lowSpeed = 0.2;
-		double maxSpeed = 0.4;
-		
+		double lowSpeed;
+		double maxSpeed;
+
+
+		if(this._controls.getIsSlowMode()) {
+			lowSpeed = 0.2;
+			maxSpeed = 0.4;
+		}else {
+			lowSpeed = 0.2;
+			maxSpeed = 0.4;
+		}
+
 		double tolerance=0.50; // be within this angle to stop
 
 
@@ -741,22 +778,22 @@ public class Autonomous {
 				SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
 
 				// deltaYaw / distance = 100% of change use the nominal rate
-						
-				 //= 0.5 + -90/90 * (0.8 - 0.5);
-				
-				
+
+				//= 0.5 + -90/90 * (0.8 - 0.5);
+
+
 				speed =  lowSpeed + Math.abs(deltaYaw / distance) * ( maxSpeed - lowSpeed );
 				speed = (deltaYaw > 0) ? speed : -speed;
-						
+
 
 				//however, we want to set a lower floor on the speed because the motor stalls
-//				speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
+				//				speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
 
 				System.out.println("Offset: " + deltaYaw + " rotate speed: "+speed);
 				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
-				
+
 				_controls.getDrive().set(speed, speed, -speed, -speed);
-				
+
 			}
 			else {
 				System.out.println("Rotation condition met: " + deltaYaw + "  tolerance " +tolerance);
@@ -769,59 +806,59 @@ public class Autonomous {
 
 	}
 
-	
-//	private void rotate( double distance, double speed,double time){
-//		double deltaYaw;
-//		//	double  speed = 0.3;
-//		if (speed == 0) {
-//			speed = .3;
-//		}
-//		double lowSpeed = 0.3;
-//		double tolerance=0.50;
-//		int direction=1;
-//
-//
-//		if (distance == 0){
-//			startNextStep();
-//			return;
-//		}
-//		
-//		if (_stepTimer.get() >= time && time> 0)
-//			startNextStep();
-//		else {
-//
-//
-//
-//
-//			//deltaYaw = _initialYaw + _controls.getNavx().getYaw();
-//			//SmartDashboard.putNumber("deltaYaw", deltaYaw);
-//			// 
-//			direction = (distance > 0 ? -1 : 1);
-//			speed = direction * speed;	
-//			_controls.getDrive().set(speed, speed, -speed, -speed);
-//
-//
-//			deltaYaw = _controls.getNavx().getYaw() - distance ;
-//					
-//			if(Math.abs(_controls.getNavx().getYaw()) > Math.abs(distance)){
-//				SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
-//				
-//				speed=-speed/1.5;
-//				
-//				//speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
-//				
-//				System.out.println("Offset: " + (Math.abs(_controls.getNavx().getYaw()) - Math.abs(distance)) * direction + " rotate speed: "+speed);
-//				SmartDashboard.putNumber("Rotate Offset", (Math.abs(_controls.getNavx().getYaw()) - Math.abs(distance))*direction);
-//				_controls.getDrive().set(speed, speed, -speed, -speed);
-//				if(Math.abs(_controls.getNavx().getYaw())-Math.abs(distance)<=tolerance){
-//					_controls.getDrive().set(0, 0, 0, 0);
-//					startNextStep();
-//				}
-//			}
-//			//System.out.println("Rotating: "+ distance + " speed "+speed);
-//
-//		}
-//	}
+
+	//	private void rotate( double distance, double speed,double time){
+	//		double deltaYaw;
+	//		//	double  speed = 0.3;
+	//		if (speed == 0) {
+	//			speed = .3;
+	//		}
+	//		double lowSpeed = 0.3;
+	//		double tolerance=0.50;
+	//		int direction=1;
+	//
+	//
+	//		if (distance == 0){
+	//			startNextStep();
+	//			return;
+	//		}
+	//		
+	//		if (_stepTimer.get() >= time && time> 0)
+	//			startNextStep();
+	//		else {
+	//
+	//
+	//
+	//
+	//			//deltaYaw = _initialYaw + _controls.getNavx().getYaw();
+	//			//SmartDashboard.putNumber("deltaYaw", deltaYaw);
+	//			// 
+	//			direction = (distance > 0 ? -1 : 1);
+	//			speed = direction * speed;	
+	//			_controls.getDrive().set(speed, speed, -speed, -speed);
+	//
+	//
+	//			deltaYaw = _controls.getNavx().getYaw() - distance ;
+	//					
+	//			if(Math.abs(_controls.getNavx().getYaw()) > Math.abs(distance)){
+	//				SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
+	//				
+	//				speed=-speed/1.5;
+	//				
+	//				//speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
+	//				
+	//				System.out.println("Offset: " + (Math.abs(_controls.getNavx().getYaw()) - Math.abs(distance)) * direction + " rotate speed: "+speed);
+	//				SmartDashboard.putNumber("Rotate Offset", (Math.abs(_controls.getNavx().getYaw()) - Math.abs(distance))*direction);
+	//				_controls.getDrive().set(speed, speed, -speed, -speed);
+	//				if(Math.abs(_controls.getNavx().getYaw())-Math.abs(distance)<=tolerance){
+	//					_controls.getDrive().set(0, 0, 0, 0);
+	//					startNextStep();
+	//				}
+	//			}
+	//			//System.out.println("Rotating: "+ distance + " speed "+speed);
+	//
+	//		}
+	//	}
 
 
 
@@ -831,8 +868,8 @@ public class Autonomous {
 			SmartDashboard.putNumber("Step Count", _steps.size());
 			SmartDashboard.putString("Current Command", this._currentStep + " " + _currentAutoStep.name  + "\n " + _currentAutoStep.stepTime);			
 		}
-		
-		
+
+
 
 	}
 	public void drive (double time, double left, double right)
@@ -860,8 +897,8 @@ public class Autonomous {
 		double offsetLimit = 0.05;
 		double offset=0;
 
-//		SmartDashboard.putNumber("currentYaw", _initialYaw);
-//		SmartDashboard.putNumber("deltaYaw", deltaYaw);
+		//		SmartDashboard.putNumber("currentYaw", _initialYaw);
+		//		SmartDashboard.putNumber("deltaYaw", deltaYaw);
 		if (left == right){
 			offset = Math.abs(deltaYaw);
 			if(offset > offsetLimit){
@@ -876,7 +913,7 @@ public class Autonomous {
 			}
 		}
 
-//		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
+		//		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
 		if (targetEncPosition > 0){
 			if (_controls.getDrive().getAbsAvgEncoderValue() >= targetEncPosition)
 			{
@@ -940,8 +977,8 @@ public class Autonomous {
 		double offsetLimit = 0.05;
 		double offset=0;
 
-//		SmartDashboard.putNumber("currentYaw", _initialYaw);
-//		SmartDashboard.putNumber("deltaYaw", deltaYaw);
+		//		SmartDashboard.putNumber("currentYaw", _initialYaw);
+		//		SmartDashboard.putNumber("deltaYaw", deltaYaw);
 		if (left == right){
 			offset = Math.abs(deltaYaw);
 			if(offset > offsetLimit){
@@ -956,7 +993,7 @@ public class Autonomous {
 			}
 		}
 
-//		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
+		//		SmartDashboard.putNumber("Auto Enc", _controls.getDrive().getAbsAvgEncoderValue());
 		if (targetEncPosition > 0){
 			if (_controls.getDrive().getAbsAvgEncoderValue() >= targetEncPosition)
 			{
@@ -1029,7 +1066,7 @@ public class Autonomous {
 			_controls.getAcquisition().cubeOut();
 		}
 	}
-	
+
 	public void cubeIn (double time) {
 		if (_stepTimer.get() > time) {
 			startNextStep();
@@ -1039,25 +1076,25 @@ public class Autonomous {
 	}
 
 	public void fourBarDown(double time){
-	    if(_stepTimer.get() > time)
-	        startNextStep();
-	    else
-	        this._controls.getAcquisition().autoLowerLinkage();
-    }
+		if(_stepTimer.get() > time)
+			startNextStep();
+		else
+			this._controls.getAcquisition().autoLowerLinkage();
+	}
 
-    public void fourBarUp(double time){
-	    if(this._stepTimer.get() > time)
-	        this.startNextStep();
-	    else
-	        this._controls.getAcquisition().autoRaiseLinkage();
-    }
-	
+	public void fourBarUp(double time){
+		if(this._stepTimer.get() > time)
+			this.startNextStep();
+		else
+			this._controls.getAcquisition().autoRaiseLinkage();
+	}
+
 	public void goToBottom () {
 		if(_controls.getElevator().isAtBottom()) {
 			startNextStep();
-			}else {
-				_controls.getElevator().goToBottom();
-			}
+		}else {
+			_controls.getElevator().goToBottom();
+		}
 	}
 
 
@@ -1083,7 +1120,7 @@ public class Autonomous {
 	{
 		System.out.println("Step "+_currentStep + " "+ _stepTimer.get() + " s  --"+   _currentAutoStep.name  + "-- is completed. EncPos= "+_controls.getDrive().getAbsAvgEncoderValue());
 		_navx.zeroYaw();
-//		SmartDashboard.putNumber("Starting Yaw", _controls.getNavx().getYaw() );
+		//		SmartDashboard.putNumber("Starting Yaw", _controls.getNavx().getYaw() );
 		_currentStep++;
 		_stepTimer.reset();
 		_angleHasBeenCalculated=false;

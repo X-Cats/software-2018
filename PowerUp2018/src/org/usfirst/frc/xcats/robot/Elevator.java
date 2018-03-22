@@ -66,7 +66,7 @@ public class Elevator {
 	public void lower(double setPoint) {
 		double speed = setPoint * _elevatorDownSpeed * -1;
 		if(this.scaleEncoder()< Enums.ELEVATOR_SWITCH_SET_POINT) {
-			speed = -0.5 * setPoint;
+			speed = 0.5 * setPoint;
 		}
 		this.terminateMotion();
 		if(this.isAtBottom() && speed < 0) {
@@ -146,7 +146,7 @@ public class Elevator {
 
 		int deltaEncoder;
 
-		System.out.println("Check Scale: "+ this.isAtScale()+" "  + this.scaleEncoder() +" " +_targetEncoder );
+		//System.out.println("Check Scale: "+ this.isAtScale()+" "  + this.scaleEncoder() +" " +_targetEncoder );
 
 		_setPoint = Enums.ELEVATOR_SCALE_SET_POINT;
 		if(!this.isAtScale() &&  Math.abs(this.scaleEncoder() - this._setPoint ) > Enums.ELEVATOR_ENCODER_SAFETY ) {
@@ -160,7 +160,7 @@ public class Elevator {
 				this._elevatorMaster.set( _elevatorDownSpeed);
 				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
 			}else if(deltaEncoder < 0) {
-				System.out.println("Going up");
+				//System.out.println("Going up");
 				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_UP);
 				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
 			}

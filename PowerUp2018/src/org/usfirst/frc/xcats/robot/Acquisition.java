@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.xcats.robot.XCatsSpeedController.SCType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Acquisition {
@@ -13,7 +14,7 @@ public class Acquisition {
 	private XCatsSpeedController _leftAcquisition;
 	private XCatsSpeedController _rightAcquisition;
 	private DoubleSolenoid _armsSolenoid;
-	private Relay _linkage1;
+	private XCatsSpeedController _linkage;
 	private boolean _movingHome = false;
 	private Timer _acqTimer = new Timer();
 	private Timer _linqTimer = new Timer();
@@ -26,6 +27,7 @@ public class Acquisition {
 	private boolean _armsOpen = false;
 	private boolean _linqMovingUp = false;
 	private boolean _linqMovingDown = false;
+	private DigitalInput _linkageBottom;
 
 	public Acquisition() {
 		_leftAcquisition = new XCatsSpeedController("Left Acquisition", Enums.LEFT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
@@ -37,19 +39,21 @@ public class Acquisition {
 		_armsSolenoid = new DoubleSolenoid(Enums.PCM_CAN_ID, Enums.PCM_ARMS_IN, Enums.PCM_ARMS_OUT);
 		_armsSolenoid.set(DoubleSolenoid.Value.kForward);
 
-		this._linkage1 = new Relay(Enums.LINKAGE_ONE_CHANNEL, Relay.Direction.kBoth);
+		this._linkage = new XCatsSpeedController("Four Bar Linkage", Enums.LINKAGE_CAN_ID,true,SCType.TALON,null,null);
+		
+		this._linkageBottom = new DigitalInput(Enums.LINKAGE_BOTTOM_LIMIT);
 	}
 
 	//intake cube
 	public void intake() {
-		_leftAcquisition.set(-Enums.ACQUISITION_SPEED);
-		_rightAcquisition.set(Enums.ACQUISITION_SPEED);
+		_leftAcquisition.set(-Enums.ACQUISITION_SPEED_IN);
+		_rightAcquisition.set(Enums.ACQUISITION_SPEED_IN);
 	}
 
 	//push out cube
 	public void release() {
-		_leftAcquisition.set(Enums.ACQUISITION_SPEED);
-		_rightAcquisition.set(-Enums.ACQUISITION_SPEED);
+		_leftAcquisition.set(Enums.ACQUISITION_SPEED_OUT);
+		_rightAcquisition.set(-Enums.ACQUISITION_SPEED_OUT);
 	}
 
 	public void cubeOut() {
@@ -105,36 +109,35 @@ public class Acquisition {
 	}
 
 	public void raiseLinkage() {
-		this._linkage1.set(Relay.Value.kReverse);
+		this._linkage.set(Enums.LINKAGE_SPEED_UP);
 	}
 
 	public void lowerLinkage() {
-
-		this._linkage1.set(Relay.Value.kForward);
+		if(this._linkageBottom.get())
+			this.stopLinkage();
+		else
+			this._linkage.set(Enums.LINKAGE_SPEED_DOWN);
 	}
 
 	public void autoLowerLinkage() {
 		if(!this._linqMovingDown) {
-			this._linqUp.stop();
-			this._linqUp.reset();
-			this._linqUp.start();
-			this.raiseLinkage();
+			this.lowerLinkage();
 			this._linqMovingDown = true;
 		}
 	}
 
 	public void autoRaiseLinkage(){
 		if(!this._linqMovingUp) {
-			this._linqDown.stop();
-			this._linqDown.reset();
-			this._linqDown.start();
-			this.lowerLinkage();
+			this._linqUp.stop();
+			this._linqUp.reset();
+			this._linqUp.start();
+			this.raiseLinkage();
 			this._linqMovingUp = true;
 		}
 	}
 	
 	public void stopLinkage() {
-		this._linkage1.set(Relay.Value.kOn);
+		this._linkage.set(0);
 	}
 
 	public void moveToHome() {
@@ -173,6 +176,9 @@ public class Acquisition {
 				this.release();
 			}
 		}
+		
+		SmartDashboard.putBoolean("Linkage Moving Up", this._linqMovingUp);
+		SmartDashboard.putBoolean("Linkage Moving Down", this._linqMovingDown);
 
 
 		if(_cubeIntake) {
@@ -189,18 +195,21 @@ public class Acquisition {
 		if(_linqMovingUp) {
 			if (_linqUp.get() >= Enums.LINQ_UP_TIMER) {
 				this.stopLinkage();
+				this._linqMovingUp = false;
 			}else{
 				this.raiseLinkage();
 			}
 		}
 
 		if(_linqMovingDown){
-			if(_linqDown.get() >= Enums.LINQ_DOWN_TIMER){
+			if(this._linkageBottom.get()){
 				this.stopLinkage();
+				this._linqMovingDown = false;
 			}else
 				this.lowerLinkage();
 		}
-		lk = this._linkage1.get().name();
+		
+		SmartDashboard.putBoolean("Four Bar Down", this._linkageBottom.get());
 
 
 

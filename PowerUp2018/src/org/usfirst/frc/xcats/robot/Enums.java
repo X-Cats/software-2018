@@ -27,7 +27,7 @@ public class Enums {
 	*/
 	//not used public static final double SPEED_CALIBRATION = 0.0;  
 	
-	public static final boolean IS_FINAL_ROBOT = false;
+	public static final boolean IS_FINAL_ROBOT = true;
 	public static final String  DRIVE_CONTROLLER_TYPE = "Talon"; // choices are "Jaguar" or "Talon"
 	public static final boolean HAS_MECHANUM_WHEELS = false;
 	public static final boolean USE_PID = false;    	// This is if the drive train is using PID control
@@ -87,13 +87,18 @@ public class Enums {
 	//Acquisition
 	public static final int LEFT_ACQUISITION_CAN_ID = 30;//can id for left acquisition motor
 	public static final int RIGHT_ACQUISITION_CAN_ID = 31;//can id for right acquisition motor
-	public static final double ACQUISITION_SPEED = 0.6;//speed of acquisition motors, is currently test value
+	public static final double ACQUISITION_SPEED_OUT = 0.3;//speed of acquisition motors, is currently test value
+	public static final double ACQUISITION_SPEED_IN = 0.5;
 	public static final int LINKAGE_ONE_CHANNEL = 0;
 	public static final int LINKAGE_TWO_CHANNEL = 1;
-	public static final double LINQ_UP_TIMER = 1.75;
+	public static final double LINQ_UP_TIMER = 1.25;
 	public static final double LINQ_DOWN_TIMER = 1.75;
 	public static final double RELEASE_TIMER = 1;//Time for cube release in auto
 	public static final double INTAKE_TIMER = 1.5;
+	public static final int LINKAGE_CAN_ID = 10;
+	public static final double LINKAGE_SPEED_UP = -1.0;
+	public static final double LINKAGE_SPEED_DOWN = 0.70;
+	public static final int LINKAGE_BOTTOM_LIMIT = 9;
 	
 
 	//Elevator
@@ -107,11 +112,11 @@ public class Enums {
 	public static final int ELEVATOR_SCALE_LIMIT = 0;
 	public static final int ELEVATOR_TOP_LIMIT = 0;
 	public static final double ELEVATOR_SPEED_UP = 1.0;
-	public static final double ELEVATOR_SPEED_DOWN = -0.7;
+	public static final double ELEVATOR_SPEED_DOWN = -.7;
 	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
 	public static final double ELEVATOR_SPEED_ENDGAME = -1.0;
 	public static final double ELEVATOR_HEIGHT_PCT_THROTTLER = 0.5; //This is the percent the elevator is raised, that will limit the speed to prevent tipping
-	public static final double ELEVATOR_HEIGHT_THROTTLE_FACTOR = .40;  //This factor is multiplied by the joy stick speeds to limit the speed when the elevator is up
+	public static final double ELEVATOR_HEIGHT_THROTTLE_FACTOR = .50;  //This factor is multiplied by the joy stick speeds to limit the speed when the elevator is up
 	
 
 	//Climber

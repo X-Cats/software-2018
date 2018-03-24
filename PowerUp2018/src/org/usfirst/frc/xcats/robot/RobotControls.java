@@ -165,7 +165,7 @@ public class RobotControls {
 			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
 //			camera.startAutomaticCapture(0);
 			camera.setResolution(320, 240);
-			camera.setFPS(15);
+			camera.setFPS(20);
 		}
 		catch (Exception e)
 		{
@@ -275,13 +275,14 @@ public class RobotControls {
 		_drive.zeroEncoder();
 
 	}
-
-
+	
+	
+	
 	public void drive ()
 	{
 		
-		int rightDirection;
-		int leftDirection;
+		int rightDirection = 1;
+		int leftDirection = 1;
 
 		//		SmartDashboard.putBoolean("isEjecting", _gear.isEjecting());
 		//		SmartDashboard.putBoolean("isShifting", _shifting);
@@ -314,29 +315,19 @@ public class RobotControls {
 					}
 
 				} else{
-					if(_rightJS.getY() > 0) {
-						rightDirection = 1;
-					}else {
-						rightDirection = -1;
-					}
-					if(_leftJS.getY() > 0) {
-						leftDirection = 1;
-					}else {
-						leftDirection = -1;
-					}
 					_driveStraight = false;
 					if(!_swappedDrive) {
 						if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
-							_drive.set(Math.pow(_rightJS.getY(), Enums.DRIVE_CURVE_FACTOR) * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * rightDirection,Math.pow(_leftJS.getY(), Enums.DRIVE_CURVE_FACTOR) * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * leftDirection);
+							_drive.set(_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * rightDirection,_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * leftDirection);
 						}
 						else						
-							_drive.set(Math.pow(_rightJS.getY(), Enums.DRIVE_CURVE_FACTOR) * this._reversedDrive * rightDirection, Math.pow(_leftJS.getY(), Enums.DRIVE_CURVE_FACTOR) * this._reversedDrive * leftDirection);
+							_drive.set(_rightJS.getY() * this._reversedDrive * rightDirection, _leftJS.getY() * this._reversedDrive * leftDirection);
 					}else {
 						if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
-							_drive.set(Math.pow(_leftJS.getY(), Enums.DRIVE_CURVE_FACTOR) * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * leftDirection,Math.pow(_rightJS.getY(), Enums.DRIVE_CURVE_FACTOR) * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * rightDirection);
+							_drive.set(_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * leftDirection,_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * rightDirection);
 						}
 						else						
-							_drive.set(Math.pow(_leftJS.getY(), Enums.DRIVE_CURVE_FACTOR) * this._reversedDrive * leftDirection, Math.pow(_rightJS.getY(), Enums.DRIVE_CURVE_FACTOR) * this._reversedDrive * rightDirection);
+							_drive.set(_leftJS.getY() * this._reversedDrive * leftDirection, _rightJS.getY() * this._reversedDrive * rightDirection);
 					}
 				}
 			}

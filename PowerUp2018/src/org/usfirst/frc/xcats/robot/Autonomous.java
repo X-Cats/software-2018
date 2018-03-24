@@ -751,7 +751,7 @@ public class Autonomous {
 			lowSpeed = 0.2;
 			maxSpeed = 0.4;
 		}else {
-			lowSpeed = 0.2;
+			lowSpeed = 0.25;
 			maxSpeed = 0.4;
 		}
 

@@ -63,7 +63,7 @@ public class Enums {
 	public static final int  REAR_LEFT = 0,  FRONT_LEFT = 1, REAR_RIGHT = 2, FRONT_RIGHT = 3;
 //	public static final int DRIVE_MOTOR_NUMBERS[] = {FRONT_LEFT, FRONT_RIGHT}; //if we do not use CAN bus, the motors are created in this sequence
 	public static final int     DRIVE_MOTOR_NUMBERS[] = { REAR_LEFT, FRONT_LEFT, REAR_RIGHT, FRONT_RIGHT}; //if we do not use CAN bus, the motors are created in this sequence
-	public static final double DRIVE_CURVE_FACTOR = 2;
+	public static final double DRIVE_CURVE_FACTOR = 1;
 	
 	//before we put the encoders on drive because the cable was not long enough to reach the "Front" motor
 	//public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 2, 3, 4, 5, 6}; //these are the CAN bus ids of the motors
@@ -117,7 +117,7 @@ public class Enums {
 	public static final int ELEVATOR_ENCODER_SAFETY = 2000;
 	public static final double ELEVATOR_SPEED_ENDGAME = -1.0;
 	public static final double ELEVATOR_HEIGHT_PCT_THROTTLER = 0.5; //This is the percent the elevator is raised, that will limit the speed to prevent tipping
-	public static final double ELEVATOR_HEIGHT_THROTTLE_FACTOR = .50;  //This factor is multiplied by the joy stick speeds to limit the speed when the elevator is up
+	public static final double ELEVATOR_HEIGHT_THROTTLE_FACTOR = .70;  //This factor is multiplied by the joy stick speeds to limit the speed when the elevator is up
 	
 
 	//Climber

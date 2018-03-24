@@ -279,6 +279,9 @@ public class RobotControls {
 
 	public void drive ()
 	{
+		
+		int rightDirection;
+		int leftDirection;
 
 		//		SmartDashboard.putBoolean("isEjecting", _gear.isEjecting());
 		//		SmartDashboard.putBoolean("isShifting", _shifting);
@@ -311,19 +314,29 @@ public class RobotControls {
 					}
 
 				} else{
+					if(_rightJS.getY() > 0) {
+						rightDirection = 1;
+					}else {
+						rightDirection = -1;
+					}
+					if(_leftJS.getY() > 0) {
+						leftDirection = 1;
+					}else {
+						leftDirection = -1;
+					}
 					_driveStraight = false;
 					if(!_swappedDrive) {
 						if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
-							_drive.set(_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive,_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive);
+							_drive.set(Math.pow(_rightJS.getY(), Enums.DRIVE_CURVE_FACTOR) * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * rightDirection,Math.pow(_leftJS.getY(), Enums.DRIVE_CURVE_FACTOR) * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * leftDirection);
 						}
 						else						
-							_drive.set(_rightJS.getY() * this._reversedDrive, _leftJS.getY() * this._reversedDrive);
+							_drive.set(Math.pow(_rightJS.getY(), Enums.DRIVE_CURVE_FACTOR) * this._reversedDrive * rightDirection, Math.pow(_leftJS.getY(), Enums.DRIVE_CURVE_FACTOR) * this._reversedDrive * leftDirection);
 					}else {
 						if (_elevator.heightPercent()> Enums.ELEVATOR_HEIGHT_PCT_THROTTLER) {
-							_drive.set(_leftJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive,_rightJS.getY() * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive);
+							_drive.set(Math.pow(_leftJS.getY(), Enums.DRIVE_CURVE_FACTOR) * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * leftDirection,Math.pow(_rightJS.getY(), Enums.DRIVE_CURVE_FACTOR) * Enums.ELEVATOR_HEIGHT_THROTTLE_FACTOR * this._reversedDrive * rightDirection);
 						}
 						else						
-							_drive.set(_leftJS.getY() * this._reversedDrive, _rightJS.getY() * this._reversedDrive);
+							_drive.set(Math.pow(_leftJS.getY(), Enums.DRIVE_CURVE_FACTOR) * this._reversedDrive * leftDirection, Math.pow(_rightJS.getY(), Enums.DRIVE_CURVE_FACTOR) * this._reversedDrive * rightDirection);
 					}
 				}
 			}

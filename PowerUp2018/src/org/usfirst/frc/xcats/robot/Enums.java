@@ -27,7 +27,7 @@ public class Enums {
 	*/
 	//not used public static final double SPEED_CALIBRATION = 0.0;  
 	
-	public static final boolean IS_FINAL_ROBOT = true;
+	public static final boolean IS_FINAL_ROBOT = false;
 	public static final String  DRIVE_CONTROLLER_TYPE = "Talon"; // choices are "Jaguar" or "Talon"
 	public static final boolean HAS_MECHANUM_WHEELS = false;
 	public static final boolean USE_PID = false;    	// This is if the drive train is using PID control
@@ -63,7 +63,8 @@ public class Enums {
 	public static final int  REAR_LEFT = 0,  FRONT_LEFT = 1, REAR_RIGHT = 2, FRONT_RIGHT = 3;
 //	public static final int DRIVE_MOTOR_NUMBERS[] = {FRONT_LEFT, FRONT_RIGHT}; //if we do not use CAN bus, the motors are created in this sequence
 	public static final int     DRIVE_MOTOR_NUMBERS[] = { REAR_LEFT, FRONT_LEFT, REAR_RIGHT, FRONT_RIGHT}; //if we do not use CAN bus, the motors are created in this sequence
-
+	public static final double DRIVE_CURVE_FACTOR = 2;
+	
 	//before we put the encoders on drive because the cable was not long enough to reach the "Front" motor
 	//public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 2, 3, 4, 5, 6}; //these are the CAN bus ids of the motors
 	public static final int     CAN_DRIVE_MOTOR_NUMBERS[] = {1, 3, 4, 6}; //these are the CAN bus ids of the motors

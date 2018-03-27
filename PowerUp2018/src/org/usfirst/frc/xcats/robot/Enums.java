@@ -88,8 +88,8 @@ public class Enums {
 	//Acquisition
 	public static final int LEFT_ACQUISITION_CAN_ID = 30;//can id for left acquisition motor
 	public static final int RIGHT_ACQUISITION_CAN_ID = 31;//can id for right acquisition motor
-	public static final double ACQUISITION_SPEED_OUT = 0.3;//speed of acquisition motors, is currently test value
-	public static final double ACQUISITION_SPEED_IN = 0.5;
+	public static final double ACQUISITION_SPEED_OUT = 0.5;//speed of acquisition motors, is currently test value
+	public static final double ACQUISITION_SPEED_IN = 0.7;
 	public static final int LINKAGE_ONE_CHANNEL = 0;
 	public static final int LINKAGE_TWO_CHANNEL = 1;
 	public static final double LINQ_UP_TIMER = 1.25;

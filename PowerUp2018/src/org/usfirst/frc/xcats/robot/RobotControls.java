@@ -448,7 +448,6 @@ public class RobotControls {
 		//button for going home
 		if(_operatorJS.getRawButton(6)) {
 			_elevator.goToBottom();
-			_acquisition.moveToHome();
 		}
 
 		//button to toggle swap drive

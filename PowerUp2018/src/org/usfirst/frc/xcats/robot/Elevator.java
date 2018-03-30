@@ -95,21 +95,21 @@ public class Elevator {
 
 		int deltaEncoder;
 
-		//System.out.println("Check Bottom: "+ this.isAtBottom()+" "  + this.scaleEncoder() +" " +_targetEncoder );
+		System.out.println("Check Bottom: "+ this.isAtBottom()+" "  + this.scaleEncoder() +" " +_targetEncoder );
 
 		_setPoint = Enums.ELEVATOR_BOTTOM_SET_POINT;
 		if(!this.isAtBottom() &&  Math.abs(this.scaleEncoder() - this._setPoint ) > Enums.ELEVATOR_ENCODER_SAFETY ) {
-			//System.out.println("GOTO BOTTOM");	
+			System.out.println("GOTO BOTTOM");	
 			_elevatorMoving = true;
 			_targetLimit = this._bottom;		
 
 			deltaEncoder = (int) (this.scaleEncoder() - this._setPoint);
 			if(deltaEncoder > 0) {
-				//System.out.println("Going down");
+				System.out.println("Going down");
 				this._elevatorMaster.set( _elevatorDownSpeed);
 				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
 			}else if(deltaEncoder < 0) {
-				//System.out.println("Going up");
+				System.out.println("Going up");
 				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_UP);
 				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
 			}

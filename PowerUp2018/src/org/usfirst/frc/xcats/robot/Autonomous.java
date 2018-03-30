@@ -491,19 +491,19 @@ public class Autonomous {
 	}
 
 	private void addCrossCoutSteps(){
-		double segmentA = 200; //was 235
-		double segmentJ = 190; //was 207
+		double segmentA = 220; //was 235
+		double segmentJ = 195; //was 207
 		double segmentK = 24; //was 85
 		double segmentM = 12;
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0.0,1.0,1.0,segmentA));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"let robot settle",0.2,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 85));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 90));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.8,0.8,segmentJ));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"let robot settle",0.2,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,_angleMod1 * 88));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",2,0,0,_angleMod1 * 90));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"Go To Scale",5,0,0,0));
@@ -751,8 +751,8 @@ public class Autonomous {
 			lowSpeed = 0.2;
 			maxSpeed = 0.4;
 		}else {
-			lowSpeed = 0.25;
-			maxSpeed = 0.4;
+			lowSpeed = 0.28;
+			maxSpeed = 0.5;
 		}
 
 		double tolerance=0.50; // be within this angle to stop

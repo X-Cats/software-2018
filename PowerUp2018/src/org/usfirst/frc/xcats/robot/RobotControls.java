@@ -229,6 +229,10 @@ public class RobotControls {
 		}
 
 	}
+	
+	/**
+	 * 
+	 */
 	private void prepAuto(){
 
 		if (_commandAuto != null)
@@ -244,12 +248,12 @@ public class RobotControls {
 
 		steps.add(new AutonomousStep(AutonomousStep.stepTypes.BRAKEMODE,"set brakemode",0,0,0,0));
 		steps.add(new AutonomousStep(AutonomousStep.stepTypes.LOW_SPEED,"low speed",0,0,0,0));
-		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward",0,.5,.5,3)); //assuming 99.64 inches
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive Forward",0,.5,.5,2)); //assuming 99.64 inches
 		steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"raise elevator to scale",3,0,0,0));
 		steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"settle",0.5,0,0,0));
-		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Reverse",0,-.5,-.5,-6));
-//		steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"wait to settle",1,0,0,0));
-//		steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_BOTTOM,"climb",5,0,0,0));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Reverse",0,-.5,-.5,-10));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"wait to settle",1,0,0,0));
+		steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_BOTTOM,"climb",5,0,0,0));
 		_commandAuto = new Autonomous(this,steps,10);
 		_commandAuto.execute();
 	}
@@ -473,7 +477,7 @@ public class RobotControls {
 			//this.prepAuto();
 		}
 		
-		if(_rightJS.getRawButton(6)) {
+		if(_rightJS.getRawButtonPressed(6)) {
 			_elevator.prepareForClimb();
 			this.prepAuto();
 		}

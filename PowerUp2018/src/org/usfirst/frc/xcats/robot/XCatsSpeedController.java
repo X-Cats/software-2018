@@ -582,7 +582,12 @@ this._setPoint = setPoint;
 		if(_zeroTimer.get() > Enums.SPEED_CONTROLLER_ZERO_TIME) {//When encoder is zeroed, encoder value does not go instantaneously to zero, this gives it time to zero the encoder
 			switch (_sctype){
 			case TALON:
-				return ((WPI_TalonSRX) motor).getSensorCollection(). getQuadraturePosition();			
+				try {
+					return ((WPI_TalonSRX) motor).getSensorCollection(). getQuadraturePosition();
+				}catch(Exception e) {
+					e.printStackTrace();
+					return 0;
+				}
 			default:
 				System.out.println("DANGER DANGER DANGER -- speed controller type in XCatsSpeedController not handled!");
 				return 0;

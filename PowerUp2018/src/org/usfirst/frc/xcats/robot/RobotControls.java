@@ -477,10 +477,10 @@ public class RobotControls {
 			//this.prepAuto();
 		}
 		
-		if(_rightJS.getRawButtonPressed(6)) {
-			_elevator.prepareForClimb();
-			this.prepAuto();
-		}
+//		if(_rightJS.getRawButtonPressed(6)) {
+//			_elevator.prepareForClimb();
+//			this.prepAuto();
+//		}
 
 	}
 

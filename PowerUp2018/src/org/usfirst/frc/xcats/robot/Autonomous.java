@@ -74,6 +74,7 @@ public class Autonomous {
 	private char _notStartSide = 'R';
 	private double _angleMod1 = 1;
 	private double _angleMod2 = -1;
+	private char _scoringSide = 'R';
 	private SendableChooser _robotPosition;
 	private SendableChooser _crossCourt;
 	private SendableChooser _scoringPreferences;
@@ -200,6 +201,8 @@ public class Autonomous {
 		_steps =  new ArrayList<AutonomousStep>();
 
 		boolean blueAlliance = false;
+		
+		//TODO: loop till this is a message
 		_gameData = DriverStation.getInstance().getGameSpecificMessage();
 
 
@@ -426,21 +429,27 @@ public class Autonomous {
 		if(_scoringPreference == this._scoringPreferenceScale) {
 			if(_gameData.charAt(1) == _notStartSide && _crossCourtSelected == _autoCrossCourtYes) {
 				this.addCrossCoutSteps();
+				this._scoringSide = this._notStartSide;
 			}else if(_gameData.charAt(1) == _startSide) {
 				this.addScaleSteps();
+				this._scoringSide = this._startSide;
 				if(this._gameData.charAt(0) == _startSide)
 					this.add2Cube();
 			}else if(_gameData.charAt(0) == _startSide) {
+				this._scoringSide = this._startSide;
 				this.addSwitchSteps();
 			}else {
 				this.addDriveForward();
 			}
 		}else if(_scoringPreference == this._scoringPreferenceSwitch) {
 			if(_gameData.charAt(0) == _startSide) {
+				this._scoringSide = this._startSide;
 				this.addSwitchSteps();
 			}else if(_gameData.charAt(1) == _notStartSide && _crossCourtSelected == _autoCrossCourtYes){
+				this._scoringSide = this._notStartSide;
 				this.addCrossCoutSteps();
 			}else if(_gameData.charAt(1) == _startSide) {
+				this._scoringSide = this._startSide;
 				this.addScaleSteps();
 			}else {
 				this.addDriveForward();
@@ -462,6 +471,8 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 45));//rotation speed is .5
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT_FOR_SCALE,"Wait for scale",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentC));
+		if(!this.checkGameData(1))
+			return;
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_OUT,"Acquisition arms out",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"cube out",Enums.RELEASE_TIMER,0,0,0));
 		//_steps.add(new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_IN,"arms in",0,0,0,0));
@@ -487,6 +498,8 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Let robot settle",0.2,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",1,0,0,_angleMod2 * 90));//1 second max
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,.4,0.4,segmentD));
+		if(!this.checkGameData(0))
+			return;
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
 	}
 
@@ -508,6 +521,8 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"Go To Scale",5,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Fourth Leg",0,0.4,0.4,segmentM));
+		if(!this.checkGameData(1))
+			return;
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_OUT,"arms out",0,0,0,0));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for arms",0.2,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
@@ -521,6 +536,14 @@ public class Autonomous {
 	
 	private void add2Cube() {
 		
+	}
+	
+	private boolean checkGameData( int index) {
+		_gameData = DriverStation.getInstance().getGameSpecificMessage();
+		if(_gameData.charAt(index) == this._scoringSide) {
+			return true;
+		}else
+			return false;
 	}
 
 
@@ -775,7 +798,7 @@ public class Autonomous {
 
 
 			if(Math.abs(deltaYaw) > tolerance){
-				SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
+//				SmartDashboard.putNumber("Auto Yaw", _controls.getNavx().getYaw());
 
 				// deltaYaw / distance = 100% of change use the nominal rate
 
@@ -789,8 +812,8 @@ public class Autonomous {
 				//however, we want to set a lower floor on the speed because the motor stalls
 				//				speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
 
-				System.out.println("Offset: " + deltaYaw + " rotate speed: "+speed);
-				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
+//				System.out.println("Offset: " + deltaYaw + " rotate speed: "+speed);
+//				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
 
 				_controls.getDrive().set(speed, speed, -speed, -speed);
 
@@ -865,8 +888,8 @@ public class Autonomous {
 	public void updateStatus(){
 
 		if (_steps != null && _currentAutoStep != null){
-			SmartDashboard.putNumber("Step Count", _steps.size());
-			SmartDashboard.putString("Current Command", this._currentStep + " " + _currentAutoStep.name  + "\n " + _currentAutoStep.stepTime);			
+//			SmartDashboard.putNumber("Step Count", _steps.size());
+//			SmartDashboard.putString("Current Command", this._currentStep + " " + _currentAutoStep.name  + "\n " + _currentAutoStep.stepTime);			
 		}
 
 

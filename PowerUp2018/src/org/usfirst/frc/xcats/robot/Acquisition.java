@@ -180,8 +180,8 @@ public class Acquisition {
 			}
 		}
 
-		SmartDashboard.putBoolean("Linkage Moving Up", this._linqMovingUp);
-		SmartDashboard.putBoolean("Linkage Moving Down", this._linqMovingDown);
+//		SmartDashboard.putBoolean("Linkage Moving Up", this._linqMovingUp);
+//		SmartDashboard.putBoolean("Linkage Moving Down", this._linqMovingDown);
 
 
 		if(_cubeIntake) {
@@ -212,7 +212,7 @@ public class Acquisition {
 				this.lowerLinkage();
 		}
 
-		SmartDashboard.putBoolean("Four Bar Down", this._linkageBottom.get());
+//		SmartDashboard.putBoolean("Four Bar Down", this._linkageBottom.get());
 
 
 

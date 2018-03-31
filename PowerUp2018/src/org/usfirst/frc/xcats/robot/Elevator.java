@@ -95,7 +95,7 @@ public class Elevator {
 
 		int deltaEncoder;
 
-		System.out.println("Check Bottom: "+ this.isAtBottom()+" "  + this.scaleEncoder() +" " +_targetEncoder );
+		//System.out.println("Check Bottom: "+ this.isAtBottom()+" "  + this.scaleEncoder() +" " +_targetEncoder );
 
 		_setPoint = Enums.ELEVATOR_BOTTOM_SET_POINT;
 		if(!this.isAtBottom() &&  Math.abs(this.scaleEncoder() - this._setPoint ) > Enums.ELEVATOR_ENCODER_SAFETY ) {
@@ -105,11 +105,11 @@ public class Elevator {
 
 			deltaEncoder = (int) (this.scaleEncoder() - this._setPoint);
 			if(deltaEncoder > 0) {
-				System.out.println("Going down");
+				//System.out.println("Going down");
 				this._elevatorMaster.set( _elevatorDownSpeed);
 				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
 			}else if(deltaEncoder < 0) {
-				System.out.println("Going up");
+				//System.out.println("Going up");
 				this._elevatorMaster.set( Enums.ELEVATOR_SPEED_UP);
 				_targetEncoder = this._setPoint  + Enums.ELEVATOR_ENCODER_SAFETY;
 			}
@@ -228,12 +228,12 @@ public class Elevator {
 
 		int deltaEncoder;
 
-		SmartDashboard.putBoolean("Bottom Limit", isAtBottom());
-		SmartDashboard.putBoolean("Switch Limit", isAtSwitch());
-		SmartDashboard.putBoolean("Scale Limit", isAtScale());
+//		SmartDashboard.putBoolean("Bottom Limit", isAtBottom());
+//		SmartDashboard.putBoolean("Switch Limit", isAtSwitch());
+//		SmartDashboard.putBoolean("Scale Limit", isAtScale());
 
-		SmartDashboard.putNumber("Elevator Encoder Value", this.scaleEncoder());
-		SmartDashboard.putNumber("Elevator Target Encoder Value", this._targetEncoder);
+		//SmartDashboard.putNumber("Elevator Encoder Value", this.scaleEncoder());
+		//SmartDashboard.putNumber("Elevator Target Encoder Value", this._targetEncoder);
 
 		if(isAtBottom()) {
 			this.zeroEncoder();
@@ -242,9 +242,9 @@ public class Elevator {
 		
 
 		double elevatorPercent = this.heightPercent();
-		SmartDashboard.putNumber("Elevator Percent", elevatorPercent);
+//		SmartDashboard.putNumber("Elevator Percent", elevatorPercent);
 		
-		SmartDashboard.putNumber("Elevator Encoder Position", this._elevatorMaster.getEncPosition());
+//		SmartDashboard.putNumber("Elevator Encoder Position", this._elevatorMaster.getEncPosition());
 
 		// move elevator to setpoint
 		if(this._targetLimit != null) {

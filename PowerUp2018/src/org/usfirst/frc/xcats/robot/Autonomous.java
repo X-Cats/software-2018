@@ -204,6 +204,7 @@ public class Autonomous {
 		
 		//TODO: loop till this is a message
 		_gameData = DriverStation.getInstance().getGameSpecificMessage();
+		System.out.println(_gameData);
 
 
 

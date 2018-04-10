@@ -43,6 +43,7 @@ public class Autonomous {
 
 	private final String _defaultAuto = "Do Nothing";
 	private final String _autoForwardOnly = "Go forward only and stop";
+	private final String _driveForward = "Cross Line";
 	private final String _autoL1 = "L1";
 	private final String _autoL2 = "L2";
 	private final String _autoCenter = "C";
@@ -78,6 +79,9 @@ public class Autonomous {
 	private SendableChooser _robotPosition;
 	private SendableChooser _crossCourt;
 	private SendableChooser _scoringPreferences;
+
+	private boolean _gameDataFailed = false;
+	private Timer _dataTimer;
 
 
 	public Autonomous (RobotControls controls)
@@ -156,9 +160,16 @@ public class Autonomous {
 			_scoringPreference = (String) _scoringPreferences.getSelected();
 			System.out.println("Scoring Preference: " + _scoringPreference);
 
+			_gameData = DriverStation.getInstance().getGameSpecificMessage();
+			System.out.println(_gameData);
 
-			//build the steps for the selected autonomous
-			setAuto();
+			if(this._gameData.length() < 2){
+				this._dataTimer.start();
+				this._gameDataFailed = true;
+			}else {
+				//build the steps for the selected autonomous
+				setAuto();
+			}
 		}
 
 		this._acquisition = this._controls.getAcquisition();
@@ -201,10 +212,8 @@ public class Autonomous {
 		_steps =  new ArrayList<AutonomousStep>();
 
 		boolean blueAlliance = false;
-		
-		//TODO: loop till this is a message
-		_gameData = DriverStation.getInstance().getGameSpecificMessage();
-		System.out.println(_gameData);
+
+
 
 
 
@@ -385,6 +394,11 @@ public class Autonomous {
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_DISTANCE,"Drive",0,speedTest,speedTest,60));
 			_steps.add( new AutonomousStep(AutonomousStep.stepTypes.STOP,"Stop",0,0,0,0));
 			break;
+
+			case _driveForward:
+				caseName="DriveForward";
+				this.addDriveForward();
+				break;
 
 
 		default: 
@@ -893,6 +907,19 @@ public class Autonomous {
 		if (_steps != null && _currentAutoStep != null){
 //			SmartDashboard.putNumber("Step Count", _steps.size());
 //			SmartDashboard.putString("Current Command", this._currentStep + " " + _currentAutoStep.name  + "\n " + _currentAutoStep.stepTime);			
+		}
+
+		if(_gameDataFailed){
+			_gameData = DriverStation.getInstance().getGameSpecificMessage();
+			if(this._gameData.length() > 2){
+				this._gameDataFailed = false;
+				this.setAuto();
+			}
+			if(this._dataTimer.get() > 10){
+				this._autoSelected = this._driveForward;
+				setAuto();
+			}
+
 		}
 
 

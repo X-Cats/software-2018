@@ -501,6 +501,8 @@ public class Autonomous {
 //		if(!this.checkGameData(0))
 //			return;
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.CUBEOUT,"Cube out",Enums.RELEASE_TIMER,0,0,0));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"reverse",0,-.5,-.5,segmentD));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,_angleMod1 * 90));
 	}
 
 	private void addCrossCoutSteps(){

@@ -529,11 +529,11 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"First Leg",0.0,1.0,1.0,segmentA));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"let robot settle",0.2,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",2,0,0,_angleMod2 * 90));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"First rotation",0,0,0,_angleMod2 * 90));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Second Leg",0,0.8,0.8,segmentJ));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.WAIT,"let robot settle",0.2,0,0,0));
-		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",2,0,0,_angleMod1 * 90));
+		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"second rotation",0,0,0,_angleMod1 * 90));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.WAIT,"Wait for rotate",0.1,0,0,0));
 		//_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"Third Leg",0,0.4,0.4,segmentK));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SCALE,"Go To Scale",5,0,0,0));
@@ -829,7 +829,7 @@ public class Autonomous {
 				//however, we want to set a lower floor on the speed because the motor stalls
 				//				speed = (Math.abs(speed) < lowSpeed) ? -direction * lowSpeed : speed ;
 
-//				System.out.println("Offset: " + deltaYaw + " rotate speed: "+speed);
+				System.out.println("Offset: " + deltaYaw + " rotate speed: "+speed);
 //				SmartDashboard.putNumber("Rotate Offset", deltaYaw);
 
 				_controls.getDrive().set(speed, speed, -speed, -speed);

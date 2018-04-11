@@ -95,7 +95,7 @@ public class Elevator {
 
 		int deltaEncoder;
 
-		//System.out.println("Check Bottom: "+ this.isAtBottom()+" "  + this.scaleEncoder() +" " +_targetEncoder );
+		System.out.println("Check Bottom: "+ this.isAtBottom()+" "  + this.scaleEncoder() +" " +_targetEncoder );
 
 		_setPoint = Enums.ELEVATOR_BOTTOM_SET_POINT;
 		if(!this.isAtBottom() &&  Math.abs(this.scaleEncoder() - this._setPoint ) > Enums.ELEVATOR_ENCODER_SAFETY ) {

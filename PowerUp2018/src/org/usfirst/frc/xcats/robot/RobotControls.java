@@ -166,6 +166,7 @@ public class RobotControls {
 //			camera.startAutomaticCapture(0);
 			camera.setResolution(320, 240);
 			camera.setFPS(20);
+			camera.setBrightness(35);
 		}
 		catch (Exception e)
 		{

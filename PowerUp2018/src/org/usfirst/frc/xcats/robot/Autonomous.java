@@ -494,7 +494,7 @@ public class Autonomous {
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"back up",0,-.4,-0.4,segmentC));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_BOTTOM,"lower elevator",0,0,0,0));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.FOUR_BAR_DOWN,"Lower 4 bar",Enums.LINQ_DOWN_TIMER,0,0,0));
-		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second Rotation",2,0,0,_angleMod2 * 90));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second Rotation",0,0,0,_angleMod2 * 90));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"fifth leg",0,0.8,0.8,segmentD));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"third rotation",2,0,0,_angleMod2 * 45));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"sixth leg",0,.5,.5,segmentE));

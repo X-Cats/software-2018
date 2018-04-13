@@ -100,6 +100,9 @@ public class Enums {
 	public static final double LINKAGE_SPEED_UP = -1.0;
 	public static final double LINKAGE_SPEED_DOWN = 0.70;
 	public static final int LINKAGE_BOTTOM_LIMIT = 9;
+	public static final int LINKAGE_POT_CHANNEL = 0;
+	public static final double LINKAGE_UP_LIMIT = 0.05;
+	public static final double LINKAGE_DOWN_LIMIT = 0.5;
 	
 
 	//Elevator

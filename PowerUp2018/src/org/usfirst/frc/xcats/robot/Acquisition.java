@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.xcats.robot.XCatsSpeedController.SCType;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
@@ -28,6 +29,7 @@ public class Acquisition {
 	private boolean _linqMovingUp = false;
 	private boolean _linqMovingDown = false;
 	private DigitalInput _linkageBottom;
+	private AnalogPotentiometer _linkagePot;
 
 	public Acquisition() {
 		_leftAcquisition = new XCatsSpeedController("Left Acquisition", Enums.LEFT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
@@ -42,6 +44,8 @@ public class Acquisition {
 		this._linkage = new XCatsSpeedController("Four Bar Linkage", Enums.LINKAGE_CAN_ID,true,SCType.TALON,null,null);
 
 		this._linkageBottom = new DigitalInput(Enums.LINKAGE_BOTTOM_LIMIT);
+		
+		this._linkagePot = new AnalogPotentiometer(Enums.LINKAGE_POT_CHANNEL);
 	}
 
 	//intake cube
@@ -109,17 +113,20 @@ public class Acquisition {
 	}
 
 	public void raiseLinkage() {
-		this._linkage.set(Enums.LINKAGE_SPEED_UP);
+		if(this._linkagePot.get() <= Enums.LINKAGE_UP_LIMIT)
+			this.stopLinkage();
+		else
+			this._linkage.set(Enums.LINKAGE_SPEED_UP);
 	}
 
 	public void lowerLinkage() {
-		if(Enums.IS_FINAL_ROBOT) {
-			if(this._linkageBottom.get())
+		//if(Enums.IS_FINAL_ROBOT) {
+			if(this._linkagePot.get() >= Enums.LINKAGE_DOWN_LIMIT)
 				this.stopLinkage();
 			else
 				this._linkage.set(Enums.LINKAGE_SPEED_DOWN);
-		}else
-			this._linkage.set(Enums.LINKAGE_SPEED_DOWN);
+//		}else
+//			this._linkage.set(Enums.LINKAGE_SPEED_DOWN);
 	}
 
 	public void autoLowerLinkage() {
@@ -221,6 +228,8 @@ public class Acquisition {
 		//		SmartDashboard.putString("Arms Solenoid Value", this._armsSolenoid.get().name());
 
 		SmartDashboard.putBoolean("Arms Open", this._armsOpen);
+		
+		SmartDashboard.putNumber("Linkage Pot Value", _linkagePot.get());
 
 	}
 }

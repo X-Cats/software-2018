@@ -164,6 +164,7 @@ public class Autonomous {
 			System.out.println(_gameData);
 
 			if(this._gameData.length() < 2){
+				System.out.println("Game data failed on first try, initiating loop");
 				this._dataTimer.start();
 				this._gameDataFailed = true;
 			}else {
@@ -231,6 +232,8 @@ public class Autonomous {
 			_angleMod1 = -1;
 			_angleMod2 = 1;
 		}
+		
+		System.out.println("Angle Mods: 1: " + _angleMod1 + " 2: " + _angleMod2);
 
 		if(this._autoSelected == this._autoR1) {
 			_startSide = 'R';
@@ -446,6 +449,7 @@ public class Autonomous {
 				this.addCrossCoutSteps();
 				this._scoringSide = this._notStartSide;
 			}else if(_gameData.charAt(1) == _startSide) {
+				System.out.println("Going To Scale");
 				this.addScaleSteps();
 				this._scoringSide = this._startSide;
 				if(this._gameData.charAt(0) == _startSide)
@@ -916,6 +920,7 @@ public class Autonomous {
 				this.setAuto();
 			}
 			if(this._dataTimer.get() > 10){
+				System.out.println("No Game Data After 10 Seconds, driving forward");
 				this._autoSelected = this._driveForward;
 				setAuto();
 			}

@@ -480,7 +480,7 @@ public class Autonomous {
 	private void addScaleSteps(){
 		double segmentB = 260; //was 285
 		double segmentC = 8; //was 21
-		double segmentD = 65;
+		double segmentD = 60;
 		double segmentE = 33;
 		double segmentF = 13;
 
@@ -497,11 +497,11 @@ public class Autonomous {
 		//_steps.add(new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_IN,"arms in",0,0,0,0));
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"back up",0,-.4,-0.4,segmentC));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.GOTO_BOTTOM,"lower elevator",0,0,0,0));
-		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.FOUR_BAR_DOWN,"Lower 4 bar",Enums.LINQ_DOWN_TIMER,0,0,0));
-		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second Rotation",0,0,0,_angleMod2 * 90));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.FOUR_BAR_DOWN,"Lower 4 bar",0.1,0,0,0));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"Second Rotation",0,0,0,_angleMod2 * 85));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"fifth leg",0,0.8,0.8,segmentD));
-		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"third rotation",2,0,0,_angleMod2 * 45));
-		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"sixth leg",0,.5,.5,segmentE));
+//		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"third rotation",2,0,0,_angleMod2 * 45));
+//		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"sixth leg",0,.5,.5,segmentE));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.CUBE_IN,"cube in",0.1,0,0,0));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"seventh leg",0,0.5,0.5,segmentF));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_IN,"arms in",0,0,0,0));

@@ -196,6 +196,7 @@ public class Acquisition {
 				this._cubeIn.stop();
 				this.stop();
 				_cubeIntake = false;
+				System.out.println("Stopped acq wheels");
 
 			}else {
 				this.intake();
@@ -212,7 +213,7 @@ public class Acquisition {
 		}
 
 		if(_linqMovingDown){
-			if(this._linkageBottom.get()){
+			if(this._linkagePot.get() >= Enums.LINKAGE_DOWN_LIMIT){
 				this.stopLinkage();
 				this._linqMovingDown = false;
 			}else

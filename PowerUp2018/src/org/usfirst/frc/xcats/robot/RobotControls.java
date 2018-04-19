@@ -478,6 +478,11 @@ public class RobotControls {
 			//this.prepAuto();
 		}
 		
+		//test for auto cube in
+		if(_rightJS.getRawButtonPressed(9)) {
+			this._acquisition.cubeIn();
+		}
+		
 //		if(_rightJS.getRawButtonPressed(6)) {
 //			_elevator.prepareForClimb();
 //			this.prepAuto();

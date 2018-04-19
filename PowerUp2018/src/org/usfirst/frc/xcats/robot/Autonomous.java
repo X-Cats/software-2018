@@ -481,7 +481,7 @@ public class Autonomous {
 		double segmentB = 260; //was 285
 		double segmentC = 8; //was 21
 		double segmentD = 60;
-		double segmentE = 33;
+		double segmentE = 10;
 		double segmentF = 13;
 
 		_steps.add( new AutonomousStep(AutonomousStep.stepTypes.GOTO_SWITCH,"At Switch",.1,0,0,0));
@@ -503,8 +503,9 @@ public class Autonomous {
 //		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.ROTATE,"third rotation",2,0,0,_angleMod2 * 45));
 //		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"sixth leg",0,.5,.5,segmentE));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.CUBE_IN,"cube in",0.1,0,0,0));
-		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"seventh leg",0,0.5,0.5,segmentF));
+//		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"seventh leg",0,0.5,0.5,segmentF));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.AQUISITION_IN,"arms in",0,0,0,0));
+		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.DRIVE_PROFILE,"grab cube",0,-.4,-.4,segmentE));
 		_steps.add(new AutonomousStep(AutonomousStep.stepTypes.FOUR_BAR_UP,"4 bar up",0.1,0,0,0));
 	}
 

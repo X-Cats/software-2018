@@ -413,12 +413,14 @@ public class RobotControls {
 			_elevator.raise(-_operatorJS.getRawAxis(1));
 		else if(_operatorJS.getRawAxis(1) > 0.1)
 			_elevator.lower(-_operatorJS.getRawAxis(1));
-		else if(_operatorJS.getRawButton(1))
-			_elevator.goToSwitch();
-		else if(_operatorJS.getRawButton(4))
-			_elevator.goToScale();
-		else if(!_elevator.getElevatorMoving())
-			_elevator.stop();
+		else
+			this._elevator.stop();
+//		else if(_operatorJS.getRawButton(1))
+//			_elevator.goToSwitch();
+//		else if(_operatorJS.getRawButton(4))
+//			_elevator.goToScale();
+//		else if(!_elevator.getElevatorMoving())
+//			_elevator.stop();
 
 		//buttons for acquisition arms
 

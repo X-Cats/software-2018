@@ -182,6 +182,8 @@ public class RobotControls {
 			System.out.println("Slow mode" +_slowMode);
 		}
 		//		setLowSpeed();
+		
+		
 
 
 	}
@@ -413,12 +415,15 @@ public class RobotControls {
 			_elevator.raise(-_operatorJS.getRawAxis(1));
 		else if(_operatorJS.getRawAxis(1) > 0.1)
 			_elevator.lower(-_operatorJS.getRawAxis(1));
-		else if(_operatorJS.getRawButton(1))
-			_elevator.goToSwitch();
-		else if(_operatorJS.getRawButton(4))
-			_elevator.goToScale();
-		else if(!_elevator.getElevatorMoving())
+		else
 			_elevator.stop();
+//		else if(_operatorJS.getRawButton(1))
+//			_elevator.goToSwitch();
+//		else if(_operatorJS.getRawButton(4))
+//			_elevator.goToScale();
+//		else if(!_elevator.getElevatorMoving())
+//			_elevator.stop();
+		
 
 		//buttons for acquisition arms
 
@@ -479,14 +484,18 @@ public class RobotControls {
 		}
 		
 		//test for auto cube in
-		if(_rightJS.getRawButtonPressed(9)) {
-			this._acquisition.cubeIn();
-		}
+//		if(_rightJS.getRawButtonPressed(9)) {
+//			this._acquisition.cubeIn();
+//		}
 		
 //		if(_rightJS.getRawButtonPressed(6)) {
 //			_elevator.prepareForClimb();
 //			this.prepAuto();
 //		}
+		
+		//button to override linkage pot
+		if(_rightJS.getRawButtonPressed(9) || _leftJS.getRawButtonPressed(9))
+			this._acquisition._overridePot = true;
 
 	}
 

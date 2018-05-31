@@ -101,8 +101,12 @@ public class Enums {
 	public static final double LINKAGE_SPEED_DOWN = 0.70;
 	public static final int LINKAGE_BOTTOM_LIMIT = 9;
 	public static final int LINKAGE_POT_CHANNEL = 0;
-	public static final double LINKAGE_UP_LIMIT = 0.05;
-	public static final double LINKAGE_DOWN_LIMIT = 0.5;
+	//pot values for practice bot
+//	public static final double LINKAGE_UP_LIMIT = 0.05;
+//	public static final double LINKAGE_DOWN_LIMIT = 0.5;
+	//pot values for final bot
+	public static final double LINKAGE_UP_LIMIT = 0.26;//was .32
+	public static final double LINKAGE_DOWN_LIMIT = 0.69;//was .69
 	
 
 	//Elevator

@@ -14,6 +14,7 @@ public class Teleop {
 		_controls.getElevator().terminateMotion();
 		_controls.getElevator().init();
 		_controls.setHighSpeed();
+		this._controls.getAcquisition()._overridePot = false;
 	}
 
 	public void execute ()

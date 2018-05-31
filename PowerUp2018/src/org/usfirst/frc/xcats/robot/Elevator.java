@@ -59,6 +59,10 @@ public class Elevator {
 			this.stop();
 			return;
 		}
+		if(this.isAtScale() && speed > 0) {
+			this.stop();
+			return;
+		}
 		_elevatorMaster.set(speed);
 		//System.out.println("Raise");
 	}
@@ -70,6 +74,10 @@ public class Elevator {
 		}
 		this.terminateMotion();
 		if(this.isAtBottom() && speed < 0) {
+			this.stop();
+			return;
+		}
+		if(this.isAtScale() && speed > 0) {
 			this.stop();
 			return;
 		}
@@ -106,7 +114,11 @@ public class Elevator {
 			deltaEncoder = (int) (this.scaleEncoder() - this._setPoint);
 			if(deltaEncoder > 0) {
 				//System.out.println("Going down");
-				this._elevatorMaster.set( _elevatorDownSpeed);
+				double speed = _elevatorDownSpeed;
+				if(this.scaleEncoder()< Enums.ELEVATOR_SWITCH_SET_POINT) {
+					speed = 0.5 * _elevatorDownSpeed;
+				}
+				this._elevatorMaster.set( speed);
 				_targetEncoder = this._setPoint - Enums.ELEVATOR_ENCODER_SAFETY;
 			}else if(deltaEncoder < 0) {
 				//System.out.println("Going up");

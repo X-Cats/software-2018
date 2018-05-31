@@ -30,6 +30,7 @@ public class Acquisition {
 	private boolean _linqMovingDown = false;
 	private DigitalInput _linkageBottom;
 	private AnalogPotentiometer _linkagePot;
+	public boolean _overridePot = false;
 
 	public Acquisition() {
 		_leftAcquisition = new XCatsSpeedController("Left Acquisition", Enums.LEFT_ACQUISITION_CAN_ID, true, SCType.TALON, null, null);
@@ -44,7 +45,7 @@ public class Acquisition {
 		this._linkage = new XCatsSpeedController("Four Bar Linkage", Enums.LINKAGE_CAN_ID,true,SCType.TALON,null,null);
 
 		this._linkageBottom = new DigitalInput(Enums.LINKAGE_BOTTOM_LIMIT);
-		
+
 		this._linkagePot = new AnalogPotentiometer(Enums.LINKAGE_POT_CHANNEL);
 	}
 
@@ -113,20 +114,24 @@ public class Acquisition {
 	}
 
 	public void raiseLinkage() {
-		if(this._linkagePot.get() <= Enums.LINKAGE_UP_LIMIT)
-			this.stopLinkage();
-		else
+		if(this._overridePot)
 			this._linkage.set(Enums.LINKAGE_SPEED_UP);
+		else {
+			if(this._linkagePot.get() <= Enums.LINKAGE_UP_LIMIT || this._linkagePot.get() < 0.1)
+				this.stopLinkage();
+			else
+				this._linkage.set(Enums.LINKAGE_SPEED_UP);
+		}
 	}
 
 	public void lowerLinkage() {
-		//if(Enums.IS_FINAL_ROBOT) {
-			if(this._linkagePot.get() >= Enums.LINKAGE_DOWN_LIMIT)
+		if(!this._overridePot) {
+			if(this._linkagePot.get() >= Enums.LINKAGE_DOWN_LIMIT || this._linkagePot.get() < 0.1)
 				this.stopLinkage();
 			else
 				this._linkage.set(Enums.LINKAGE_SPEED_DOWN);
-//		}else
-//			this._linkage.set(Enums.LINKAGE_SPEED_DOWN);
+		}else
+			this._linkage.set(Enums.LINKAGE_SPEED_DOWN);
 	}
 
 	public void autoLowerLinkage() {
@@ -138,9 +143,6 @@ public class Acquisition {
 
 	public void autoRaiseLinkage(){
 		if(!this._linqMovingUp) {
-			this._linqUp.stop();
-			this._linqUp.reset();
-			this._linqUp.start();
 			this.raiseLinkage();
 			this._linqMovingUp = true;
 		}
@@ -187,8 +189,8 @@ public class Acquisition {
 			}
 		}
 
-//		SmartDashboard.putBoolean("Linkage Moving Up", this._linqMovingUp);
-//		SmartDashboard.putBoolean("Linkage Moving Down", this._linqMovingDown);
+		//		SmartDashboard.putBoolean("Linkage Moving Up", this._linqMovingUp);
+		//		SmartDashboard.putBoolean("Linkage Moving Down", this._linqMovingDown);
 
 
 		if(_cubeIntake) {
@@ -204,7 +206,7 @@ public class Acquisition {
 		}
 
 		if(_linqMovingUp) {
-			if (_linqUp.get() >= Enums.LINQ_UP_TIMER) {
+			if (_linkagePot.get() <= Enums.LINKAGE_UP_LIMIT) {
 				this.stopLinkage();
 				this._linqMovingUp = false;
 			}else{
@@ -220,7 +222,7 @@ public class Acquisition {
 				this.lowerLinkage();
 		}
 
-//		SmartDashboard.putBoolean("Four Bar Down", this._linkageBottom.get());
+		//		SmartDashboard.putBoolean("Four Bar Down", this._linkageBottom.get());
 
 
 
@@ -229,7 +231,7 @@ public class Acquisition {
 		//		SmartDashboard.putString("Arms Solenoid Value", this._armsSolenoid.get().name());
 
 		SmartDashboard.putBoolean("Arms Open", this._armsOpen);
-		
+
 		SmartDashboard.putNumber("Linkage Pot Value", _linkagePot.get());
 
 	}

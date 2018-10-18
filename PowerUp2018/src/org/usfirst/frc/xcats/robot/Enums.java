@@ -105,8 +105,9 @@ public class Enums {
 //	public static final double LINKAGE_UP_LIMIT = 0.05;
 //	public static final double LINKAGE_DOWN_LIMIT = 0.5;
 	//pot values for final bot
-	public static final double LINKAGE_UP_LIMIT = 0.26;//was .32
-	public static final double LINKAGE_DOWN_LIMIT = 0.69;//was .69
+	//Modified for Ruckus after robot rebuild
+	public static final double LINKAGE_UP_LIMIT = 0.23;//was .26
+	public static final double LINKAGE_DOWN_LIMIT = 0.60;//was .69
 	
 
 	//Elevator

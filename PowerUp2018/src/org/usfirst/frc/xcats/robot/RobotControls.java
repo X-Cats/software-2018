@@ -436,10 +436,10 @@ public class RobotControls {
 			_acquisition.stop();
 
 		//buttons for setpoints on elevator
-		if(_operatorJS.getRawButton(1))
-			_elevator.goToSwitch();
-		if(_operatorJS.getRawButton(4))
-			_elevator.goToScale();
+//		if(_operatorJS.getRawButton(1))
+//			_elevator.goToSwitch();
+//		if(_operatorJS.getRawButton(4))
+//			_elevator.goToScale();
 
 		//buttons for 4-bar linkage
 		if(_operatorJS.getRawButton(8)) //right on pov stick

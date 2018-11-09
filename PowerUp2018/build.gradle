@@ -4,7 +4,7 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
 }
 
-def ROBOT_CLASS = "PowerUp2018.src.org.usfirst.frc.xcats.robot.Robot"
+def ROBOT_CLASS = "org.usfirst.frc.xcats.robot.Robot"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -41,6 +41,7 @@ dependencies {
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
+    archiveName = 'FRCUserProgram.jar'
 }
 
 // Force Java 8 Compatibility mode for deployed code, in case the develoment

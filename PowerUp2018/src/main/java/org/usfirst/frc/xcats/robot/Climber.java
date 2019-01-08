@@ -19,4 +19,9 @@ public class Climber {
 
     }
 
+    public double getClimbSpeed()
+    {
+        return _climber.get();
+    }
+
 }

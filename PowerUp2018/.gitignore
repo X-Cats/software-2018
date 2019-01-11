@@ -1,0 +1,18 @@
+
+# Java
+hs_err_pid*
+
+# Eclipse
+.settings/
+bin/
+.project
+.classpath
+
+# VSCode
+build/
+
+# SnobotSim
+temp/
+target/
+logs/
+simulator_config/joystick_config.properties

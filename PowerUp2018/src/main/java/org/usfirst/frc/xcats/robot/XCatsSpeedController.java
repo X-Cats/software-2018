@@ -2,7 +2,6 @@ package org.usfirst.frc.xcats.robot;
 
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 //import edu.wpi.first.wpilibj.CANSpeedController;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -679,5 +678,10 @@ this._setPoint = setPoint;
 
 		set(_setPoint);
 	}
+
+    public double get()
+    {
+        return motor.get();
+    }
 
 }

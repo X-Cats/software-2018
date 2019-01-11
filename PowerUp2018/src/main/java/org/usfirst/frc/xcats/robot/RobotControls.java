@@ -7,19 +7,15 @@ import java.util.ArrayList;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
@@ -160,18 +156,21 @@ public class RobotControls {
 
 		_operatorJS = new Joystick(Enums.OPERATOR_JS);
 
-		try
+        if (RobotBase.isReal())
 		{
-			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
-//			camera.startAutomaticCapture(0);
-			camera.setResolution(320, 240);
-			camera.setFPS(20);
-			camera.setBrightness(35);
-		}
-		catch (Exception e)
-		{
-			System.out.println(e);
-			e.printStackTrace();
+            try
+            {
+                UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
+                // camera.startAutomaticCapture(0);
+                camera.setResolution(320, 240);
+                camera.setFPS(20);
+                camera.setBrightness(35);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e);
+                e.printStackTrace();
+            }
 		}
 
 		// always initialize the robot in low gear

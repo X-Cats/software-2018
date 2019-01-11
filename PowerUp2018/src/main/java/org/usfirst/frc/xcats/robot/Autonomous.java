@@ -5,12 +5,8 @@ package org.usfirst.frc.xcats.robot;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -41,7 +37,7 @@ public class Autonomous {
 	private Acquisition _acquisition;
 	private Elevator _elevator;
 
-	private final String _defaultAuto = "Do Nothing";
+    private final String _defaultAuto = "Go forward only and stop";
 	private final String _autoForwardOnly = "Go forward only and stop";
 	private final String _driveForward = "Cross Line";
 	private final String _autoL1 = "L1";
@@ -77,9 +73,9 @@ public class Autonomous {
 	private double _angleMod1 = 1;
 	private double _angleMod2 = -1;
 	private char _scoringSide = 'R';
-	private SendableChooser _robotPosition;
-	private SendableChooser _crossCourt;
-	private SendableChooser _scoringPreferences;
+    private SendableChooser<String> _robotPosition;
+    private SendableChooser<String> _crossCourt;
+    private SendableChooser<String> _scoringPreferences;
 
 	private boolean _gameDataFailed = false;
 	private Timer _dataTimer;
@@ -90,26 +86,26 @@ public class Autonomous {
 
 		_controls = controls;      	//passes the controls object reference
 
-		_robotPosition = new SendableChooser();
-		_robotPosition.addDefault("Default Auto", _defaultAuto);
-		_robotPosition.addObject(_autoForwardOnly, _autoForwardOnly);
-		_robotPosition.addObject(_autoL1, _autoL1);
-		_robotPosition.addObject(_autoR1, _autoR1);
-		_robotPosition.addObject(_autoCenter, _autoCenter);
-		_robotPosition.addObject(_autoReadFile,_autoReadFile);
-		_robotPosition.addObject(_autoTestSpeed, _autoTestSpeed);
-		_robotPosition.addObject(_autoTestDistance,_autoTestDistance);
-		_robotPosition.addObject(_autoRotator, _autoRotator);
+        _robotPosition = new SendableChooser<>();
+        _robotPosition.setDefaultOption("Default Auto", _defaultAuto);
+        _robotPosition.addOption(_autoForwardOnly, _autoForwardOnly);
+        _robotPosition.addOption(_autoL1, _autoL1);
+        _robotPosition.addOption(_autoR1, _autoR1);
+        _robotPosition.addOption(_autoCenter, _autoCenter);
+        _robotPosition.addOption(_autoReadFile, _autoReadFile);
+        _robotPosition.addOption(_autoTestSpeed, _autoTestSpeed);
+        _robotPosition.addOption(_autoTestDistance, _autoTestDistance);
+        _robotPosition.addOption(_autoRotator, _autoRotator);
 		SmartDashboard.putData("Auto choices", _robotPosition);	
 
-		_crossCourt = new SendableChooser();
-		_crossCourt.addDefault(_autoCrossCourtNo, _autoCrossCourtNo);
-		_crossCourt.addObject(_autoCrossCourtYes, _autoCrossCourtYes);
+        _crossCourt = new SendableChooser<>();
+        _crossCourt.setDefaultOption(_autoCrossCourtNo, _autoCrossCourtNo);
+        _crossCourt.addOption(_autoCrossCourtYes, _autoCrossCourtYes);
 		SmartDashboard.putData("Cross Court Choices", _crossCourt);	
 
-		_scoringPreferences = new SendableChooser();
-		_scoringPreferences.addDefault(_scoringPreferenceSwitch, _scoringPreferenceSwitch);
-		_scoringPreferences.addObject(_scoringPreferenceScale, _scoringPreferenceScale);
+        _scoringPreferences = new SendableChooser<>();
+        _scoringPreferences.setDefaultOption(_scoringPreferenceSwitch, _scoringPreferenceSwitch);
+        _scoringPreferences.addOption(_scoringPreferenceScale, _scoringPreferenceScale);
 		SmartDashboard.putData("Scoring Preference", _scoringPreferences);	
 
 
